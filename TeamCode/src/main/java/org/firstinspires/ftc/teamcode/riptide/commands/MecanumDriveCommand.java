@@ -17,20 +17,11 @@ public class MecanumDriveCommand extends CommandBase {
         this.leftX = leftX;
         this.leftY = leftY;
         this.rightX = rightX;
+        addRequirements(drive);
     }
 
     @Override
     public void execute() {
             drive.drive(leftY.getAsDouble(), leftX.getAsDouble(), rightX.getAsDouble());
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        drive.stop();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return Thread.currentThread().isInterrupted() || !drive.isBusy();
     }
 }

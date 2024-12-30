@@ -178,6 +178,7 @@ public class Riptide {
 //        opMode.register(hang);
         opMode.register(pivot);
         opMode.register(claw);
+        opMode.register(krakenEye);
 
 
 

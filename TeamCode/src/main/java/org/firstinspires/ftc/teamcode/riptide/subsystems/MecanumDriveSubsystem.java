@@ -41,7 +41,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
                         leftY,
                         leftX
                 ),
-                -rightX
+                rightX
         ));
     }
 
