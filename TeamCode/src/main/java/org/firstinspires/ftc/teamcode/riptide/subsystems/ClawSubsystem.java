@@ -2,13 +2,8 @@ package org.firstinspires.ftc.teamcode.riptide.subsystems;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.RiptideConstants;
 
@@ -38,7 +33,7 @@ public class ClawSubsystem extends SubsystemBase {
     private double desiredYaw;
     private double desiredPitch;
 
-    public ClawSubsystem(Riptide riptide, CommandOpMode commandOpMode, Servo yaw_1, Servo pitch_2, Servo grip_3, Limelight3A limelight_) {
+    public ClawSubsystem(Riptide riptide, CommandOpMode commandOpMode, Servo yaw_1, Servo pitch_2, Servo grip_3) {
         mRiptide = riptide;
         mOpMode = commandOpMode;
 
@@ -111,23 +106,23 @@ public class ClawSubsystem extends SubsystemBase {
         pitch.setPosition(desiredPitch);
 
 
-        if (mRiptide.gunnerOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .3)
-        {
-            mGripState = GripState.OPEN;
-            mRiptide.krakenEye.deployed = false;
-            mRiptide.krakenEye.hasSample = false;
-        } else if(!mRiptide.krakenEye.deployed)
-        {
-            mGripState = GripState.CLOSED;
-        }
-
-
-        if (mGripState == GripState.OPEN) {
-            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
-            mRiptide.krakenEye.hasSample = false;
-        } else {
-            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE);
-        }
+//        if (mRiptide.gunnerOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .3)
+//        {
+//            mGripState = GripState.OPEN;
+//            mRiptide.krakenEye.deployed = false;
+//            mRiptide.krakenEye.hasSample = false;
+//        } else if(!mRiptide.krakenEye.deployed)
+//        {
+//            mGripState = GripState.CLOSED;
+//        }
+//
+//
+//        if (mGripState == GripState.OPEN) {
+//            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+//            mRiptide.krakenEye.hasSample = false;
+//        } else {
+//            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE);
+//        }
     }
 
     //set mGripState and set servo accordingly, if its open kraken no haves sample

@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.riptide.subsystems;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 
@@ -83,24 +80,24 @@ public class KrakenEyeSubsystem extends SubsystemBase {
                 mRiptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
             }
 
-            LLResult result = mRiptide.limelight.getLatestResult();
-            if (result != null) {
-                List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-
-                for (LLResultTypes.ColorResult cr : colorResults) {
-                    mOpMode.telemetry.addData("SAMPLE_X", cr.getTargetXDegrees());
-                    mOpMode.telemetry.addData("SAMPLE_Y", cr.getTargetYDegrees());
-                    mOpMode.telemetry.addData("SAMPLE_Rotation", GetSampleRotation(cr.getTargetCorners()));
-
-                    if(doYouClaim(cr)){
-                        mRiptide.claw.mGripState = ClawSubsystem.GripState.CLOSED;
-                        hasSample = true;
-                        RecallTheKraken();
-                    }
-                }
-                // for each result, if kraken "claims" sample (in specified range) we close and recall kraken
-                // (shutdowns limelight & krakenDeployed = false)
-            }
+//            LLResult result = mRiptide.limelight.getLatestResult();
+//            if (result != null) {
+//                List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
+//
+//                for (LLResultTypes.ColorResult cr : colorResults) {
+//                    mOpMode.telemetry.addData("SAMPLE_X", cr.getTargetXDegrees());
+//                    mOpMode.telemetry.addData("SAMPLE_Y", cr.getTargetYDegrees());
+//                    mOpMode.telemetry.addData("SAMPLE_Rotation", GetSampleRotation(cr.getTargetCorners()));
+//
+//                    if(doYouClaim(cr)){
+//                        mRiptide.claw.mGripState = ClawSubsystem.GripState.CLOSED;
+//                        hasSample = true;
+//                        RecallTheKraken();
+//                    }
+//                }
+//                // for each result, if kraken "claims" sample (in specified range) we close and recall kraken
+//                // (shutdowns limelight & krakenDeployed = false)
+//            }
         }
 
         mOpMode.telemetry.addData("krakenDeployed", deployed);
@@ -114,28 +111,28 @@ public class KrakenEyeSubsystem extends SubsystemBase {
 
     // start the limelight with a specified pipeline and open claw
     public void DeployTheKraken(SampleColor color){
-        switch(color){
-            case RED:
-                mRiptide.limelight.pipelineSwitch(0);
-                break;
-            case BLUE:
-                mRiptide.limelight.pipelineSwitch(1);
-                break;
-            case YELLOW:
-                mRiptide.limelight.pipelineSwitch(2);
-                break;
-        }
-        mRiptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
-        mRiptide.limelight.start();
-        deployed = true;
+//        switch(color){
+//            case RED:
+//                mRiptide.limelight.pipelineSwitch(0);
+//                break;
+//            case BLUE:
+//                mRiptide.limelight.pipelineSwitch(1);
+//                break;
+//            case YELLOW:
+//                mRiptide.limelight.pipelineSwitch(2);
+//                break;
+//        }
+//        mRiptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
+//        mRiptide.limelight.start();
+//        deployed = true;
     }
 
 
 
 
     public void RecallTheKraken(){
-        mRiptide.limelight.shutdown();
-        deployed = false;
+//        mRiptide.limelight.shutdown();
+//        deployed = false;
     }
 
 

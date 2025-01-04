@@ -21,7 +21,7 @@ public class RiptideConstants {
     public static double HORIZONTAL_PID_D = 0.00;
     public static double HORIZONTAL_PID_F = 0.0;
 
-    public static double VERTICAL_PID_P = 0.05;
+    public static double VERTICAL_PID_P = 0.0075;
     public static double VERTICAL_PID_I = 0.0;
     public static double VERTICAL_PID_D = 0.00;
     public static double VERTICAL_PID_F = 0.0;
@@ -43,13 +43,11 @@ public class RiptideConstants {
     public static int VERTICAL_SLIDE_HANG = 0;
     public static int VERTICAL_SLIDE_BASKET = 3853;
     public static int VERTICAL_PRELOAD_BASKET = 1900;
+    public static int VERTICAL_ENDGAME = 500;
 
     // horizontal positions
     public static int HORIZONTAL_SLIDE_HOME = 0;
-    public static int HORIZONTAL_SLIDE_WALL = 0;
-    public static int HORIZONTAL_SLIDE_HANG = 475;
-    public static int HORIZONTAL_SLIDE_BASKET = 0;
-    public static int HORIZONTAL_PRELOAD_BASKET = 1626;
+    public static int HORIZONTAL_SLIDE_OBS = 0;
 
     //    pivot positions
 

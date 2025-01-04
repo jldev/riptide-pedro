@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.riptide.opmodes;
+
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
@@ -6,9 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.commands.MecanumDriveCommand;
-import org.firstinspires.ftc.teamcode.riptide.subsystems.KrakenEyeSubsystem;
-import org.firstinspires.ftc.teamcode.riptide.subsystems.PivotSubsystem;
-import org.firstinspires.ftc.teamcode.riptide.subsystems.SlideSubsystem;
+import org.firstinspires.ftc.teamcode.riptide.subsystems.HorizontalSubsystem;
+import org.firstinspires.ftc.teamcode.riptide.subsystems.VerticalSubsystem;
 
 
 //values
@@ -23,11 +23,12 @@ public class Teleop extends CommandOpMode {
     public void initialize() {
         riptide = new Riptide(this, Riptide.OpModeType.TELEOP, Riptide.AllianceColor.RED);
 
-//        this.schedule(new RunCommand(() -> {
-//            helix.slides.addTelemetry(telemetry);
-//            helix.pivot.addTelemetry(telemetry);
-//            telemetry.update();
-//        }));
+        this.schedule(new RunCommand(() -> {
+            riptide.vertical.addTelemetry(telemetry);
+            telemetry.addLine("                this is a space");
+            riptide.horizontal.addTelemetry(telemetry);
+            telemetry.update();
+        }));
 
         // Drive control
         MecanumDriveCommand driveCommand = new MecanumDriveCommand(
@@ -45,27 +46,27 @@ public class Teleop extends CommandOpMode {
 
 
 
-        //         SLIDES
+        //         VERTICAL
 
-        // Manual Slides Button
         riptide.verticleSlideUp.whileHeld(new InstantCommand(() -> {
-            riptide.slides.verticalManualSlideControl(SlideSubsystem.VerticalManualControlDirection.UP);}));
+            riptide.vertical.verticalManualSlideControl(VerticalSubsystem.SlideManualControlDirection.UP);}));
         riptide.verticleSlideUp.whenReleased(new InstantCommand(() -> {
-            riptide.slides.verticalManualSlideControl(SlideSubsystem.VerticalManualControlDirection.OFF);}));
+            riptide.vertical.verticalManualSlideControl(VerticalSubsystem.SlideManualControlDirection.OFF);}));
         riptide.verticleSlideDown.whileHeld(new InstantCommand(() -> {
-            riptide.slides.verticalManualSlideControl(SlideSubsystem.VerticalManualControlDirection.DOWN);}));
+            riptide.vertical.verticalManualSlideControl(VerticalSubsystem.SlideManualControlDirection.DOWN);}));
         riptide.verticleSlideDown.whenReleased(new InstantCommand(() -> {
-            riptide.slides.verticalManualSlideControl(SlideSubsystem.VerticalManualControlDirection.OFF);}));
+            riptide.vertical.verticalManualSlideControl(VerticalSubsystem.SlideManualControlDirection.OFF);}));
+
+        //         HORIZONTAL
 
         riptide.horizontalSlideOut.whileHeld(new InstantCommand(() -> {
-            riptide.slides.horizontalManualSlideControl(SlideSubsystem.HorizontalManualControlDirection.OUT);}));
+            riptide.horizontal.horizontalManualSlideControl(HorizontalSubsystem.SlideManualControlDirection.UP);}));
         riptide.horizontalSlideOut.whenReleased(new InstantCommand(() -> {
-            riptide.slides.horizontalManualSlideControl(SlideSubsystem.HorizontalManualControlDirection.OFF);}));
+            riptide.horizontal.horizontalManualSlideControl(HorizontalSubsystem.SlideManualControlDirection.OFF);}));
         riptide.horizontalSlideIn.whileHeld(new InstantCommand(() -> {
-            riptide.slides.horizontalManualSlideControl(SlideSubsystem.HorizontalManualControlDirection.IN);}));
+            riptide.horizontal.horizontalManualSlideControl(HorizontalSubsystem.SlideManualControlDirection.DOWN);}));
         riptide.horizontalSlideIn.whenReleased(new InstantCommand(() -> {
-            riptide.slides.horizontalManualSlideControl(SlideSubsystem.HorizontalManualControlDirection.OFF);}));
-
+            riptide.horizontal.horizontalManualSlideControl(HorizontalSubsystem.SlideManualControlDirection.OFF);}));
 
 
         //  Presets
@@ -85,42 +86,42 @@ public class Teleop extends CommandOpMode {
 //        helix.hangLower.whenReleased(new InstantCommand(() -> {helix.hang.manualSlideControl(HangSubsystem.ManualControlDirection.OFF);}));
 
 
-        //   PIVOT
-        riptide.pivotRaise.whileHeld(new InstantCommand(() -> {
-            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.UP);}));
-        riptide.pivotRaise.whenReleased(new InstantCommand(() -> {
-            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.OFF);}));
-        riptide.pivotLower.whileHeld(new InstantCommand(() -> {
-            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.DOWN);}));
-        riptide.pivotLower.whenReleased(new InstantCommand(() -> {
-            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.OFF);}));
-
-        // Pivot Presets
-        riptide.home_pivotPreset.whenPressed(new InstantCommand(() -> {
-            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.HOME);}));
-        riptide.hang_pivotPreset.whenPressed(new InstantCommand(() -> {
-            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.HANG);}));
-        riptide.basket_pivotPreset.whenPressed(new InstantCommand(() -> {
-            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.BASKET);}));
-        riptide.sub_pivotPreset.whenPressed(new InstantCommand(() -> {
-            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.SUB);}));
+//        //   PIVOT
+//        riptide.pivotRaise.whileHeld(new InstantCommand(() -> {
+//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.UP);}));
+//        riptide.pivotRaise.whenReleased(new InstantCommand(() -> {
+//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.OFF);}));
+//        riptide.pivotLower.whileHeld(new InstantCommand(() -> {
+//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.DOWN);}));
+//        riptide.pivotLower.whenReleased(new InstantCommand(() -> {
+//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.OFF);}));
+//
+//        // Pivot Presets
+//        riptide.home_pivotPreset.whenPressed(new InstantCommand(() -> {
+//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.HOME);}));
+//        riptide.hang_pivotPreset.whenPressed(new InstantCommand(() -> {
+//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.HANG);}));
+//        riptide.basket_pivotPreset.whenPressed(new InstantCommand(() -> {
+//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.BASKET);}));
+//        riptide.sub_pivotPreset.whenPressed(new InstantCommand(() -> {
+//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.SUB);}));
 
 
         // Claw
-        riptide.cycleDesiredSampleColor.whenPressed
-                ( new InstantCommand(() -> {
-                        switch (riptide.krakenEye.desiredColor) {
-                            case YELLOW:
-                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.RED;
-                                break;
-                            case RED:
-                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.BLUE;
-                                break;
-                            case BLUE:
-                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.YELLOW;
-                                break;
-                        }}
-                ));
+//        riptide.cycleDesiredSampleColor.whenPressed
+//                ( new InstantCommand(() -> {
+//                        switch (riptide.krakenEye.desiredColor) {
+//                            case YELLOW:
+//                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.RED;
+//                                break;
+//                            case RED:
+//                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.BLUE;
+//                                break;
+//                            case BLUE:
+//                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.YELLOW;
+//                                break;
+//                        }}
+//                ));
     }
 
 }
