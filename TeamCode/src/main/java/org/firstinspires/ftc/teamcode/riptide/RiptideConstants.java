@@ -58,13 +58,42 @@ public class RiptideConstants {
     public static int PIVOT_WALL = 100;
     public static int PIVOT_PRELOAD_BASKET = 400;
 
-    //   claw positions
+    //   horizontal claw positions
 
     public static double GRIPPER_CLOSED_VALUE = 0.8f;
     public static double GRIPPER_OPEN_VALUE = 0.275f;
-    public static double CLAW_YAW_INIT = 1f;
-    public static double CLAW_PITCH_INIT = 0.5f;
 
+    public static double LIGHT_ON = 1f;
+    public static double LIGHT_OFF = 0f;
+
+    // INIT
+    public static double CLAW_PIVOT_INIT = 0f;
+    public static double CLAW_SHOULDER_INIT = 0f;
+
+    public static double CLAW_ELBOW_INIT = 0f;
+
+    public static double CLAW_WRIST_INIT = 0f;
+
+    // HOME
+    public static double HORZ_HOME_PIVOT = 0f;
+    public static double HORZ_HOME_SHOULDER = .75f;
+    public static double HORZ_HOME_ELBOW = 0f;
+
+    public static double HORZ_HOME_WRIST = 0f;
+
+    // DEPLOYED
+
+    public static double HORZ_DEPLOYED_PIVOT = 0f;
+    public static double HORZ_DEPLOYED_SHOULDER = .275f;
+    // .275 - .825
+    public static double HORZ_DEPLOYED_ELBOW = 0f;
+    // 0 - .6
+    public static double HORZ_DEPLOYED_WRIST = 0f;
+
+
+
+
+    // OLD
     public static double YAW_HOME = 1;
     public static double PITCH_HOME = 0;
     public static double YAW_HANG = 0.0;

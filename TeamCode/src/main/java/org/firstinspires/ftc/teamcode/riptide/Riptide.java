@@ -135,20 +135,6 @@ public class Riptide {
                 RiptideConstants.SLIDES_PID_TOLERANCE
         );
 
-
-
-
-        //     pivot
-//        pivot = new PivotSubsystem(this,
-//                new MotorEx(opMode.hardwareMap, "pivotMotor", Motor.GoBILDA.RPM_223),
-//                opMode,
-//                RiptideConstants.SLIDES_PID_POS_COEFFICIENT,
-//                RiptideConstants.SLIDES_PID_TOLERANCE
-//        );
-
-
-
-
         //     hang
 //        hang = new HangSubsystem(this,
 //                new MotorEx(opMode.hardwareMap, "hangMotor", Motor.GoBILDA.RPM_435),
@@ -162,9 +148,11 @@ public class Riptide {
         //     claw
         claw = new ClawSubsystem(this,
                 opMode,
-                opMode.hardwareMap.get(Servo.class, "yaw_1"),
-                opMode.hardwareMap.get(Servo.class, "pitch_2"),
-                opMode.hardwareMap.get(Servo.class, "grip_3"));
+                opMode.hardwareMap.get(Servo.class, "pivot"),
+                opMode.hardwareMap.get(Servo.class, "shoulder"),
+                opMode.hardwareMap.get(Servo.class, "elbow"),
+                opMode.hardwareMap.get(Servo.class, "wrist"),
+                opMode.hardwareMap.get(Servo.class, "grip"));
 //                opMode.hardwareMap.get(Limelight3A.class, "limelight"));
 
 

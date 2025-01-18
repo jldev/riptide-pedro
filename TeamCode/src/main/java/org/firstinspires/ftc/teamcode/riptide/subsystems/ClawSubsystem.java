@@ -13,8 +13,12 @@ public class ClawSubsystem extends SubsystemBase {
 
     private final CommandOpMode mOpMode;
 
-    private final Servo yaw;
-    private final Servo pitch;
+    private final Servo pivot;
+    private final Servo shoulder;
+
+    private final Servo elbow;
+
+    private final Servo wrist;
     private final Servo grip;
 
     public enum ClawState {
@@ -33,22 +37,30 @@ public class ClawSubsystem extends SubsystemBase {
     private double desiredYaw;
     private double desiredPitch;
 
-    public ClawSubsystem(Riptide riptide, CommandOpMode commandOpMode, Servo yaw_1, Servo pitch_2, Servo grip_3) {
+    public ClawSubsystem(Riptide riptide, CommandOpMode commandOpMode, Servo _pivot, Servo _shoulder, Servo _elbow, Servo _wrist, Servo _grip) {
         mRiptide = riptide;
         mOpMode = commandOpMode;
 
-        yaw = yaw_1;
-        pitch = pitch_2;
-        grip = grip_3;
+        pivot = _pivot;
+        shoulder = _shoulder;
+        elbow = _elbow;
+        wrist = _wrist;
+        grip = _grip;
+
+        shoulder.setDirection(Servo.Direction.REVERSE);
 
         if(riptide.mOpModeType == Riptide.OpModeType.AUTO)
         {
-            yaw.setPosition(RiptideConstants.CLAW_YAW_INIT);
-            pitch.setPosition(RiptideConstants.CLAW_PITCH_INIT);
+            pivot.setPosition(RiptideConstants.CLAW_PIVOT_INIT);
+            shoulder.setPosition(RiptideConstants.CLAW_SHOULDER_INIT);
+            elbow.setPosition(RiptideConstants.CLAW_ELBOW_INIT);
+            wrist.setPosition(RiptideConstants.CLAW_WRIST_INIT);
             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE);
         }
-        yaw.setPosition(yaw.getPosition());
-        pitch.setPosition(pitch.getPosition());
+        pivot.setPosition(pivot.getPosition());
+        shoulder.setPosition(shoulder.getPosition());
+        elbow.setPosition(elbow.getPosition());
+        wrist.setPosition(wrist.getPosition());
         grip.setPosition(grip.getPosition());
     }
 
@@ -65,12 +77,12 @@ public class ClawSubsystem extends SubsystemBase {
         //   GUNNER CONTROL
 
 
-        desiredYaw = yaw.getPosition();
-        desiredPitch = pitch.getPosition();
+        desiredYaw = pivot.getPosition();
+        desiredPitch = shoulder.getPosition();
 
         if (Math.abs(mRiptide.gunnerOp.getLeftX()) > 0.1 || Math.abs(mRiptide.gunnerOp.getLeftY()) > 0.1) {
-            desiredYaw = yaw.getPosition() + mRiptide.gunnerOp.getLeftX() * .045;
-            desiredPitch = pitch.getPosition() + mRiptide.gunnerOp.getLeftY() * .045;
+            desiredYaw = pivot.getPosition() + mRiptide.gunnerOp.getLeftX() * .045;
+            desiredPitch = shoulder.getPosition() + mRiptide.gunnerOp.getLeftY() * .045;
         }
 
 
@@ -102,8 +114,12 @@ public class ClawSubsystem extends SubsystemBase {
 //        mOpMode.telemetry.addData("Pitch:", desiredPitch);
 
 
-        yaw.setPosition(desiredYaw);
-        pitch.setPosition(desiredPitch);
+//        pivot.setPosition(desiredYaw);
+//        shoulder.setPosition(desiredPitch);
+          pivot.setPosition(RiptideConstants.HORZ_DEPLOYED_PIVOT);
+          shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
+          elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW);
+          wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
 
 
 //        if (mRiptide.gunnerOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > .3)
@@ -141,19 +157,19 @@ public class ClawSubsystem extends SubsystemBase {
     public void ChangeClawPositionTo(ClawState newClawState) {
         switch (newClawState) {
             case HOME:
-                yaw.setPosition(RiptideConstants.YAW_HOME);
-                pitch.setPosition(RiptideConstants.PITCH_HOME);
+                pivot.setPosition(RiptideConstants.YAW_HOME);
+                shoulder.setPosition(RiptideConstants.PITCH_HOME);
                 break;
             case HANG:
-                yaw.setPosition(RiptideConstants.YAW_HANG);
-                pitch.setPosition(RiptideConstants.PITCH_HANG);
+                pivot.setPosition(RiptideConstants.YAW_HANG);
+                shoulder.setPosition(RiptideConstants.PITCH_HANG);
                 break;
             case BASKET:
 
                 break;
             case SUB:
-                yaw.setPosition(RiptideConstants.YAW_SUB);
-                pitch.setPosition(RiptideConstants.PITCH_SUB);
+                pivot.setPosition(RiptideConstants.YAW_SUB);
+                shoulder.setPosition(RiptideConstants.PITCH_SUB);
                 break;
         }
     }
