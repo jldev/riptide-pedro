@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
@@ -52,7 +53,13 @@ public class VerticalSubsystem extends SubsystemBase {
     private final PIDFController mSlide1PIDController;
     private final PIDFController mSlide2PIDController;
 
-    public VerticalSubsystem(Riptide riptide, MotorEx slideMotor1, MotorEx slideMotor2, CommandOpMode opmode, double pos_coefficient, double pos_tolerance) {
+    public final Servo shoulder1;
+    public final Servo shoulder2;
+    public final Servo rotation;
+    public final Servo elbow;
+    public final Servo grip;
+
+    public VerticalSubsystem(Riptide riptide, MotorEx slideMotor1, MotorEx slideMotor2, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder1, Servo _shoulder2, Servo _rotation, Servo _elbow, Servo _grip) {
         mRiptide = riptide;
         mSlideMotor1 = slideMotor1;
         mSlideMotor2 = slideMotor2;
@@ -82,6 +89,15 @@ public class VerticalSubsystem extends SubsystemBase {
         mSlideMotor2.resetEncoder();
         mSlideMotor2.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         mSlideMotor2.encoder.setDirection(Motor.Direction.FORWARD);
+
+
+        shoulder1 = _shoulder1;
+        shoulder2 = _shoulder2;
+        rotation = _rotation;
+        elbow = _elbow;
+        grip = _grip;
+
+        shoulder1.setDirection(Servo.Direction.REVERSE);
 
 
 
@@ -145,6 +161,14 @@ public class VerticalSubsystem extends SubsystemBase {
         output = mSlide2PIDController.calculate(
                 mSlideMotor2.getCurrentPosition());
         mSlideMotor2.set(output);
+
+
+
+        shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
+        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+        grip.setPosition(RiptideConstants.VERT_HOME_GRIP);
     }
 
     private void changeSlideState(SlideSubsystemState newState){

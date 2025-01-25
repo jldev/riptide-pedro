@@ -124,7 +124,12 @@ public class Riptide {
                 new MotorEx(opMode.hardwareMap, "vertSlide2", Motor.GoBILDA.RPM_312),
                 opMode,
                 RiptideConstants.SLIDES_PID_POS_COEFFICIENT,
-                RiptideConstants.SLIDES_PID_TOLERANCE
+                RiptideConstants.SLIDES_PID_TOLERANCE,
+                opMode.hardwareMap.get(Servo.class, "shoulder1"),
+                opMode.hardwareMap.get(Servo.class, "shoulder2"),
+                opMode.hardwareMap.get(Servo.class, "rotation"),
+                opMode.hardwareMap.get(Servo.class, "vElbow"),
+                opMode.hardwareMap.get(Servo.class, "vGrip")
                 );
 
         //     horizontal
@@ -150,9 +155,9 @@ public class Riptide {
                 opMode,
                 opMode.hardwareMap.get(Servo.class, "pivot"),
                 opMode.hardwareMap.get(Servo.class, "shoulder"),
-                opMode.hardwareMap.get(Servo.class, "elbow"),
+                opMode.hardwareMap.get(Servo.class, "hElbow"),
                 opMode.hardwareMap.get(Servo.class, "wrist"),
-                opMode.hardwareMap.get(Servo.class, "grip"));
+                opMode.hardwareMap.get(Servo.class, "hGrip"));
 //                opMode.hardwareMap.get(Limelight3A.class, "limelight"));
 
 

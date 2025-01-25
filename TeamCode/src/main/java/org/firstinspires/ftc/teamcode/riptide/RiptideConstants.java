@@ -93,6 +93,34 @@ public class RiptideConstants {
 
 
 
+
+    //      VERTICAL
+
+    // home
+
+    public static double VERT_HOME_SHOULDER = 0.0f;
+    public static double VERT_HOME_ROTATION = 0.0f;
+    public static double VERT_HOME_ELBOW = 0.0f;
+    public static double VERT_HOME_GRIP = 0.0f;
+
+    // hang
+
+    public static double VERT_HANG_SHOULDER = 0.0f;
+    public static double VERT_HANG_ROTATION = 0.0f;
+    public static double VERT_HANG_ELBOW = 0.0f;
+    public static double VERT_HANG_GRIP = 0.0f;
+
+    // hang
+
+    public static double VERT_WALL_SHOULDER = 0.0f;
+    public static double VERT_WALL_ROTATION = 0.0f;
+    public static double VERT_WALL_ELBOW = 0.0f;
+    public static double VERT_WALL_GRIP = 0.0f;
+
+
+
+
+
     // OLD
     public static double YAW_HOME = 1;
     public static double PITCH_HOME = 0;
