@@ -48,6 +48,7 @@ public class RiptideConstants {
     // horizontal positions
     public static int HORIZONTAL_SLIDE_HOME = 0;
     public static int HORIZONTAL_SLIDE_OBS = 0;
+    public static int HORIZONTAL_SLIDE_SUB = 0;
 
     //    pivot positions
 

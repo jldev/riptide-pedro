@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
@@ -34,7 +35,8 @@ public class HorizontalSubsystem extends SubsystemBase {
 
     public enum Position {
         HOME,
-        OBS
+        OBS,
+        SUB
     }
 
 
@@ -46,7 +48,13 @@ public class HorizontalSubsystem extends SubsystemBase {
     private final MotorEx mSlideMotor;
     private final PIDFController mSlidePIDController;
 
-    public HorizontalSubsystem(Riptide riptide, MotorEx slideMotor1, CommandOpMode opmode, double pos_coefficient, double pos_tolerance) {
+    public final Servo turret;
+    public final Servo shoulder;
+    public final Servo elbow;
+    public final Servo wrist;
+    public final Servo grip;
+
+    public HorizontalSubsystem(Riptide riptide, MotorEx slideMotor1, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _turret, Servo _shoulder, Servo _elbow, Servo _wrist, Servo _grip) {
         mRiptide = riptide;
         mSlideMotor = slideMotor1;
         mOpMode = opmode;
@@ -66,11 +74,19 @@ public class HorizontalSubsystem extends SubsystemBase {
 
 
 
+
+
         mSlideTargetPosiion = 0;
         slidePosition = Position.HOME;
         mState = SlideSubsystemState.AUTO;
         opmode.telemetry.addLine("Slide Init");
         opmode.telemetry.update();
+
+        turret = _turret;
+        shoulder = _shoulder;
+        elbow = _elbow;
+        wrist = _wrist;
+        grip = _grip;
     }
 
 
@@ -81,9 +97,20 @@ public class HorizontalSubsystem extends SubsystemBase {
                 switch (slidePosition) {
                     case HOME:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HOME;
+                        turret.setPosition(RiptideConstants.HORZ_HOME_PIVOT);
+                        shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER);
+                        elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW);
+                        wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST);
                         break;
                     case OBS:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_OBS;
+                        break;
+                    case SUB :
+                        mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_SUB;
+                        turret.setPosition(RiptideConstants.HORZ_DEPLOYED_PIVOT);
+                        shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
+                        elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW);
+                        wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
                         break;
             }
         } else {

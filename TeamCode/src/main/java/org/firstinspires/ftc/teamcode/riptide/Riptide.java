@@ -137,7 +137,12 @@ public class Riptide {
                 new MotorEx(opMode.hardwareMap, "horzSlide", Motor.GoBILDA.RPM_1620),
                 opMode,
                 RiptideConstants.SLIDES_PID_POS_COEFFICIENT,
-                RiptideConstants.SLIDES_PID_TOLERANCE
+                RiptideConstants.SLIDES_PID_TOLERANCE,
+                opMode.hardwareMap.get(Servo.class, "turret"),
+                opMode.hardwareMap.get(Servo.class, "shoulder"),
+                opMode.hardwareMap.get(Servo.class, "elbow"),
+                opMode.hardwareMap.get(Servo.class, "wrist"),
+                opMode.hardwareMap.get(Servo.class, "grip")
         );
 
         //     hang
@@ -247,43 +252,29 @@ public class Riptide {
 
     public Command GoSub() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    vertical.changeToSlidePosition(VerticalSubsystem.Position.HOME);
-                }),
-                new WaitCommand(300),
-                new InstantCommand(() -> claw.ChangeClawPositionTo(ClawSubsystem.ClawState.SUB))
+                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HOME)),
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.SUB))
         );
     }
 
     public Command GoHang() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    vertical.changeToSlidePosition(VerticalSubsystem.Position.HANG);
-
-                }),
-                new WaitCommand(500),
-                new InstantCommand(() -> claw.ChangeClawPositionTo(ClawSubsystem.ClawState.HANG))
+                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME))
         );
     }
 
     public Command GoWall() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    vertical.changeToSlidePosition(VerticalSubsystem.Position.WALL);
-                }),
-                new WaitCommand(300),
-                new InstantCommand(() -> claw.ChangeClawPositionTo(ClawSubsystem.ClawState.HOME))
+                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME))
         );
     }
 
     public Command GoBasket() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    vertical.changeToSlidePosition(VerticalSubsystem.Position.BASKET);
-
-                }),
-                new WaitCommand(500),
-                new InstantCommand(() -> claw.ChangeClawPositionTo(ClawSubsystem.ClawState.BASKET))
+                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME))
         );
     }
 
@@ -293,7 +284,7 @@ public class Riptide {
                 new WaitCommand(500),
                 new InstantCommand(() -> {
                     claw.ChangeClawPositionTo(ClawSubsystem.ClawState.BASKET);
-                    vertical.changeToSlidePosition(VerticalSubsystem.Position.PRELOAD_BASKET);})
+                    vertical.changePositionTo(VerticalSubsystem.Position.PRELOAD_BASKET);})
         );
     }
 }

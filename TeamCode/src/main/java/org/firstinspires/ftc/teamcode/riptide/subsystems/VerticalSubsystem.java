@@ -21,6 +21,8 @@ public class VerticalSubsystem extends SubsystemBase {
     private final CommandOpMode mOpMode;
     private SlideManualControlDirection mSlideManualDirection = SlideManualControlDirection.OFF;
 
+
+
     public enum SlideSubsystemState {
         AUTO,
         MANUAL
@@ -116,15 +118,31 @@ public class VerticalSubsystem extends SubsystemBase {
                 switch (slidePosition) {
                     case HOME:
                         mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HOME;
+                        shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+                        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+                        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
+                        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
                         break;
                     case WALL:
                         mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_WALL;
+                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
+                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
                         break;
                     case HANG:
                         mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HANG;
+                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
+                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
                         break;
                     case BASKET:
                         mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
+                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
+                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
                         break;
                     case PRELOAD_BASKET:
                         mSlideTargetPosiion = RiptideConstants.VERTICAL_PRELOAD_BASKET;
@@ -162,13 +180,6 @@ public class VerticalSubsystem extends SubsystemBase {
                 mSlideMotor2.getCurrentPosition());
         mSlideMotor2.set(output);
 
-
-
-        shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
-        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
-        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
-        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-        grip.setPosition(RiptideConstants.VERT_HOME_GRIP);
     }
 
     private void changeSlideState(SlideSubsystemState newState){
@@ -176,7 +187,7 @@ public class VerticalSubsystem extends SubsystemBase {
     }
 
 
-    public void changeToSlidePosition(Position pos){
+    public void changePositionTo(Position pos){
         slidePosition = pos;
         changeSlideState(SlideSubsystemState.AUTO);
     }
