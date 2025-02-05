@@ -40,7 +40,7 @@ public class RiptideConstants {
 
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 275;
-    public static int VERTICAL_SLIDE_HANG = 0;
+    public static int VERTICAL_SLIDE_HANG = 400;
     public static int VERTICAL_SLIDE_BASKET = 3853;
     public static int VERTICAL_PRELOAD_BASKET = 1900;
     public static int VERTICAL_ENDGAME = 500;
@@ -50,19 +50,12 @@ public class RiptideConstants {
     public static int HORIZONTAL_SLIDE_OBS = 0;
     public static int HORIZONTAL_SLIDE_SUB = 0;
 
-    //    pivot positions
-
-    public static int PIVOT_HOME = 0;
-    public static int PIVOT_HANG = 1020;
-    public static int PIVOT_BASKET = 1050;
-    public static int PIVOT_SUB = 0;
-    public static int PIVOT_WALL = 100;
-    public static int PIVOT_PRELOAD_BASKET = 400;
 
     //   horizontal claw positions
 
-    public static double GRIPPER_CLOSED_VALUE = 0.8f;
-    public static double GRIPPER_OPEN_VALUE = 0.275f;
+    public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.2f;
+    public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.375f;
+    public static double GRIPPER_OPEN_VALUE = 1f;
 
     public static double LIGHT_ON = 1f;
     public static double LIGHT_OFF = 0f;
@@ -102,32 +95,18 @@ public class RiptideConstants {
     public static double VERT_HOME_SHOULDER = 0.0f;
     public static double VERT_HOME_ROTATION = 0.0f;
     public static double VERT_HOME_ELBOW = 0.0f;
-    public static double VERT_HOME_GRIP = 0.0f;
 
     // hang
 
-    public static double VERT_HANG_SHOULDER = 0.0f;
-    public static double VERT_HANG_ROTATION = 0.0f;
-    public static double VERT_HANG_ELBOW = 0.0f;
-    public static double VERT_HANG_GRIP = 0.0f;
+    public static double VERT_HANG_SHOULDER = 0.625f;
+    public static double VERT_HANG_ROTATION = 0.55f;
+    public static double VERT_HANG_ELBOW = 0.7f;
 
-    // hang
+    // wall
 
     public static double VERT_WALL_SHOULDER = 0.0f;
     public static double VERT_WALL_ROTATION = 0.0f;
-    public static double VERT_WALL_ELBOW = 0.0f;
-    public static double VERT_WALL_GRIP = 0.0f;
+    public static double VERT_WALL_ELBOW = 0.475f;
 
-
-
-
-
-    // OLD
-    public static double YAW_HOME = 1;
-    public static double PITCH_HOME = 0;
-    public static double YAW_HANG = 0.0;
-    public static double PITCH_HANG = 0.55;
-    public static double YAW_SUB = 0.0;
-    public static double PITCH_SUB = 0.55;
     
 }

@@ -59,7 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 mGripperServo.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
                 break;
             case CLOSED:
-                mGripperServo.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE);
+                mGripperServo.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                 break;
         }
 

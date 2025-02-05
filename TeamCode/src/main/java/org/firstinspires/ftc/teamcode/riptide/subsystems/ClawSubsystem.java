@@ -55,7 +55,7 @@ public class ClawSubsystem extends SubsystemBase {
             shoulder.setPosition(RiptideConstants.CLAW_SHOULDER_INIT);
             elbow.setPosition(RiptideConstants.CLAW_ELBOW_INIT);
             wrist.setPosition(RiptideConstants.CLAW_WRIST_INIT);
-            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE);
+            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
         }
         pivot.setPosition(pivot.getPosition());
         shoulder.setPosition(shoulder.getPosition());
@@ -154,23 +154,23 @@ public class ClawSubsystem extends SubsystemBase {
 
 
     //presets
-    public void ChangeClawPositionTo(ClawState newClawState) {
-        switch (newClawState) {
-            case HOME:
-                pivot.setPosition(RiptideConstants.YAW_HOME);
-                shoulder.setPosition(RiptideConstants.PITCH_HOME);
-                break;
-            case HANG:
-                pivot.setPosition(RiptideConstants.YAW_HANG);
-                shoulder.setPosition(RiptideConstants.PITCH_HANG);
-                break;
-            case BASKET:
-
-                break;
-            case SUB:
-                pivot.setPosition(RiptideConstants.YAW_SUB);
-                shoulder.setPosition(RiptideConstants.PITCH_SUB);
-                break;
-        }
-    }
+//    public void ChangeClawPositionTo(ClawState newClawState) {
+//        switch (newClawState) {
+//            case HOME:
+//                pivot.setPosition(RiptideConstants.YAW_HOME);
+//                shoulder.setPosition(RiptideConstants.PITCH_HOME);
+//                break;
+//            case HANG:
+//                pivot.setPosition(RiptideConstants.YAW_HANG);
+//                shoulder.setPosition(RiptideConstants.PITCH_HANG);
+//                break;
+//            case BASKET:
+//
+//                break;
+//            case SUB:
+//                pivot.setPosition(RiptideConstants.YAW_SUB);
+//                shoulder.setPosition(RiptideConstants.PITCH_SUB);
+//                break;
+//        }
+//    }
 }

@@ -105,6 +105,7 @@ public class VerticalSubsystem extends SubsystemBase {
 
         mSlideTargetPosiion = 0;
         slidePosition = Position.HOME;
+        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
         mState = SlideSubsystemState.AUTO;
         opmode.telemetry.addLine("Slide Init");
         opmode.telemetry.update();
