@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode.riptide.opmodes;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
-import org.firstinspires.ftc.teamcode.riptide.commands.SimpleDriveCommand;
-import org.firstinspires.ftc.teamcode.riptide.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
+import org.firstinspires.ftc.teamcode.riptide.commands.SimpleDriveCommand;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.MecanumDriveSubsystem;
 
 public class RiptideAuto {
@@ -78,7 +76,7 @@ public class RiptideAuto {
             case RETRIEVE_SPECIMEN:
                 break;
             case DEPOSIT_SPECIMEN:
-                riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
+//                riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
                 if(riptide.pushSamples)
                 {
                     currentState = Task.PUSH_SAMPLES;
@@ -94,12 +92,12 @@ public class RiptideAuto {
                         new SequentialCommandGroup(
                                 riptide.GoPreloadBasket(),
                                 new WaitCommand(1500),
-                                new InstantCommand(() -> riptide.claw.ChangeClawPositionTo(ClawSubsystem.ClawState.SUB)),
+//                                new InstantCommand(() -> riptide.claw.ChangeClawPositionTo(ClawSubsystem.ClawState.SUB)),
                                 new WaitCommand(500),
                                 new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 4.5),
                                 new WaitCommand(500)
                                 .whenFinished(() -> {
-                                    riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
+//                                    riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
                                 //currentState = Task.PARK_BASKET;
                             }),
                                 new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 6),
@@ -131,8 +129,8 @@ public class RiptideAuto {
                                 new WaitCommand(2000),
                                 new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 18),
                                 new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.LEFT, 48),
-                                new InstantCommand(() -> {
-                                    riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;}),
+//                                new InstantCommand(() -> {
+//                                    riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;}),
                                 new WaitCommand(500).whenFinished(() -> currentState = Task.PARK_BASKET)
                         )
                 );

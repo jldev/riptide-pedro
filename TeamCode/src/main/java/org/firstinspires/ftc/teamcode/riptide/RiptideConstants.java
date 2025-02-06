@@ -49,13 +49,14 @@ public class RiptideConstants {
     public static int HORIZONTAL_SLIDE_HOME = 0;
     public static int HORIZONTAL_SLIDE_OBS = 0;
     public static int HORIZONTAL_SLIDE_SUB = 0;
+    public static int HORIZONTAL_SLIDE_WALL = 0;
 
 
     //   horizontal claw positions
 
     public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.2f;
     public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.375f;
-    public static double GRIPPER_OPEN_VALUE = 1f;
+    public static double GRIPPER_OPEN_VALUE = .6f;
 
     public static double LIGHT_ON = 1f;
     public static double LIGHT_OFF = 0f;
@@ -84,6 +85,15 @@ public class RiptideConstants {
     // 0 - .6
     public static double HORZ_DEPLOYED_WRIST = 0f;
 
+    // WALL
+
+    public static double HORZ_WALL_PIVOT = 0f;
+    public static double HORZ_WALL_SHOULDER = .275f;
+    // .275 - .825
+    public static double HORZ_WALL_ELBOW = 0f;
+    // 0 - .6
+    public static double HORZ_WALL_WRIST = 0f;
+
 
 
 
@@ -92,9 +102,9 @@ public class RiptideConstants {
 
     // home
 
-    public static double VERT_HOME_SHOULDER = 0.0f;
-    public static double VERT_HOME_ROTATION = 0.0f;
-    public static double VERT_HOME_ELBOW = 0.0f;
+    public static double VERT_HOME_SHOULDER = 0f;
+    public static double VERT_HOME_ROTATION = 0f;
+    public static double VERT_HOME_ELBOW = 0.45f;
 
     // hang
 
@@ -106,7 +116,7 @@ public class RiptideConstants {
 
     public static double VERT_WALL_SHOULDER = 0.0f;
     public static double VERT_WALL_ROTATION = 0.0f;
-    public static double VERT_WALL_ELBOW = 0.475f;
+    public static double VERT_WALL_ELBOW = 0.45f;
 
     
 }

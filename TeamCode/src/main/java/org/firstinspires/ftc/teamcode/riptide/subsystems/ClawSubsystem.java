@@ -11,7 +11,12 @@ public class ClawSubsystem extends SubsystemBase {
 
     private final Riptide mRiptide;
 
-    private final CommandOpMode mOpMode;
+    private final CommandOpMode
+
+
+
+
+            mOpMode;
 
     private final Servo pivot;
     private final Servo shoulder;

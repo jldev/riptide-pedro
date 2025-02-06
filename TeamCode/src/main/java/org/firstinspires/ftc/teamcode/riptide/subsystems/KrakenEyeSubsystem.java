@@ -77,7 +77,7 @@ public class KrakenEyeSubsystem extends SubsystemBase {
         if (deployed) {
             if(!hasSample)
             {
-                mRiptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
+//                mRiptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
             }
 
 //            LLResult result = mRiptide.limelight.getLatestResult();

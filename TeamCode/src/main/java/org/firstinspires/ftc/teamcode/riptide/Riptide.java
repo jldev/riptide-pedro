@@ -13,7 +13,6 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.riptide.subsystems.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.HorizontalSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.VerticalSubsystem;
@@ -37,7 +36,7 @@ public class Riptide {
     public final VerticalSubsystem vertical;
     public final HorizontalSubsystem horizontal;
 //    public final HangSubsystem hang;
-    public final ClawSubsystem claw;
+//    public final ClawSubsystem claw;
 //    public final KrakenEyeSubsystem krakenEye;
 
 
@@ -140,9 +139,9 @@ public class Riptide {
                 RiptideConstants.SLIDES_PID_TOLERANCE,
                 opMode.hardwareMap.get(Servo.class, "turret"),
                 opMode.hardwareMap.get(Servo.class, "shoulder"),
-                opMode.hardwareMap.get(Servo.class, "elbow"),
+                opMode.hardwareMap.get(Servo.class, "hElbow"),
                 opMode.hardwareMap.get(Servo.class, "wrist"),
-                opMode.hardwareMap.get(Servo.class, "grip")
+                opMode.hardwareMap.get(Servo.class, "hGrip")
         );
 
         //     hang
@@ -156,13 +155,13 @@ public class Riptide {
 
 
         //     claw
-        claw = new ClawSubsystem(this,
-                opMode,
-                opMode.hardwareMap.get(Servo.class, "pivot"),
-                opMode.hardwareMap.get(Servo.class, "shoulder"),
-                opMode.hardwareMap.get(Servo.class, "hElbow"),
-                opMode.hardwareMap.get(Servo.class, "wrist"),
-                opMode.hardwareMap.get(Servo.class, "hGrip"));
+//        claw = new ClawSubsystem(this,
+//                opMode,
+//                opMode.hardwareMap.get(Servo.class, "pivot"),
+//                opMode.hardwareMap.get(Servo.class, "shoulder"),
+//                opMode.hardwareMap.get(Servo.class, "hElbow"),
+//                opMode.hardwareMap.get(Servo.class, "wrist"),
+//                opMode.hardwareMap.get(Servo.class, "hGrip"));
 //                opMode.hardwareMap.get(Limelight3A.class, "limelight"));
 
 
@@ -177,7 +176,7 @@ public class Riptide {
         opMode.register(vertical);
         opMode.register(horizontal);
 //        opMode.register(hang);
-        opMode.register(claw);
+//        opMode.register(claw);
 //        opMode.register(krakenEye);
 
 
@@ -283,7 +282,7 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new WaitCommand(500),
                 new InstantCommand(() -> {
-                    claw.ChangeClawPositionTo(ClawSubsystem.ClawState.BASKET);
+//                    claw.ChangeClawPositionTo(ClawSubsystem.ClawState.BASKET);
                     vertical.changePositionTo(VerticalSubsystem.Position.PRELOAD_BASKET);})
         );
     }

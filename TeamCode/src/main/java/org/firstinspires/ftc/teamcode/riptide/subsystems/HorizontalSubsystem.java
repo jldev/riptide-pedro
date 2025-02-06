@@ -36,7 +36,8 @@ public class HorizontalSubsystem extends SubsystemBase {
     public enum Position {
         HOME,
         OBS,
-        SUB
+        SUB,
+        WALL
     }
 
 
@@ -87,6 +88,10 @@ public class HorizontalSubsystem extends SubsystemBase {
         elbow = _elbow;
         wrist = _wrist;
         grip = _grip;
+
+        turret.setDirection(Servo.Direction.FORWARD);
+
+//        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
     }
 
 
@@ -97,7 +102,7 @@ public class HorizontalSubsystem extends SubsystemBase {
                 switch (slidePosition) {
                     case HOME:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HOME;
-                        turret.setPosition(RiptideConstants.HORZ_HOME_PIVOT);
+//                        turret.setPosition(RiptideConstants.HORZ_HOME_PIVOT);
                         shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER);
                         elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW);
                         wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST);
@@ -111,6 +116,13 @@ public class HorizontalSubsystem extends SubsystemBase {
                         shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
                         elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW);
                         wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
+                        break;
+                    case WALL :
+                        mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_WALL;
+                        turret.setPosition(RiptideConstants.HORZ_WALL_PIVOT);
+                        shoulder.setPosition(RiptideConstants.HORZ_WALL_SHOULDER);
+                        elbow.setPosition(RiptideConstants.HORZ_WALL_ELBOW);
+                        wrist.setPosition(RiptideConstants.HORZ_WALL_WRIST);
                         break;
             }
         } else {
