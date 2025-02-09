@@ -30,7 +30,8 @@ public class Riptide {
     public Pose2d currentPos;
 
 
-//    public final SwitchReader magSwitchButton;
+    public final SwitchReader magSwitchButton1;
+    public final SwitchReader magSwitchButton2;
 
     //subsystems
     public final VerticalSubsystem vertical;
@@ -170,8 +171,10 @@ public class Riptide {
 
 
         // pseudo buttons
-//        magSwitchButton = new SwitchReader(opMode.hardwareMap, false, "vSwitch");
-//        magSwitchButton.whenPressed(new InstantCommand(slides::stopMotorResetEncoder));
+        magSwitchButton1 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
+        magSwitchButton1.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder));
+        magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch2");
+        magSwitchButton2.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder));
 
         opMode.register(vertical);
         opMode.register(horizontal);
@@ -196,7 +199,7 @@ public class Riptide {
         horizontalSlideOut = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_LEFT);
         horizontalSlideIn = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_RIGHT);
 
-           //slidePresets
+           // presets
         home_slidePreset = new GamepadButton(gunnerOp, GamepadKeys.Button.A);
         wall_slidePreset = new GamepadButton(gunnerOp, GamepadKeys.Button.X);
         hang_slidePreset = new GamepadButton(gunnerOp, GamepadKeys.Button.B);
@@ -252,28 +255,42 @@ public class Riptide {
     public Command GoSub() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HOME)),
-                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.SUB))
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.SUB)),
+                vertical.changeServos(VerticalSubsystem.Position.HOME)
+
         );
     }
 
     public Command GoHang() {
         return new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                    vertical.defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
+                    vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                }),
+                new WaitCommand(250),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
-                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME))
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+                vertical.changeServos(VerticalSubsystem.Position.HANG)
         );
     }
 
     public Command GoWall() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
-                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME))
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+                vertical.changeServos(VerticalSubsystem.Position.WALL)
         );
     }
 
     public Command GoBasket() {
         return new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                    vertical.defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
+                    vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                }),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),
-                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME))
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+                vertical.changeServos(VerticalSubsystem.Position.BASKET)
         );
     }
 

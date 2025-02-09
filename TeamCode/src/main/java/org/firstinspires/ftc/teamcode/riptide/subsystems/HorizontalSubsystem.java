@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.riptide.subsystems;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -55,6 +56,10 @@ public class HorizontalSubsystem extends SubsystemBase {
     public final Servo wrist;
     public final Servo grip;
 
+    private double desiredYaw;
+    private boolean deployed;
+    public double defaultState;
+
     public HorizontalSubsystem(Riptide riptide, MotorEx slideMotor1, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _turret, Servo _shoulder, Servo _elbow, Servo _wrist, Servo _grip) {
         mRiptide = riptide;
         mSlideMotor = slideMotor1;
@@ -70,7 +75,7 @@ public class HorizontalSubsystem extends SubsystemBase {
         mSlideMotor.setRunMode(MotorEx.RunMode.RawPower);
         mSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         mSlideMotor.resetEncoder();
-        mSlideMotor.motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideMotor.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         mSlideMotor.encoder.setDirection(Motor.Direction.FORWARD);
 
 
@@ -89,51 +94,88 @@ public class HorizontalSubsystem extends SubsystemBase {
         wrist = _wrist;
         grip = _grip;
 
-        turret.setDirection(Servo.Direction.FORWARD);
+        elbow.setDirection(Servo.Direction.REVERSE);
 
 //        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+
+        deployed = false;
     }
 
 
     @Override
     public void periodic() {
-        if (mState == SlideSubsystemState.AUTO) {
 
+        turret.setPosition(turret.getPosition() + mRiptide.gunnerOp.getRightX() * 0.45);
+
+        if(mRiptide.gunnerOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > .5f){ //we can add check for if claw down ect in the future
+            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
+        } else {
+            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+        }
+
+        // special case for claw control in sub
+        if(slidePosition == Position.SUB){
+            if(mRiptide.gunnerOp.getLeftY() < -0.5f)
+            {
+                shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER_DOWN);
+            } else {
+                shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
+            }
+
+            //wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST); // if testing the bellow comment this out
+
+            // idk if this works lol
+
+            if(!deployed) {
+                wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
+                desiredYaw = RiptideConstants.HORZ_DEPLOYED_WRIST;
+                deployed = true;
+            } else {
+                desiredYaw = wrist.getPosition() + mRiptide.gunnerOp.getLeftX() * .045;
+                if (desiredYaw > 1.00)
+                    desiredYaw = 1.00;
+                if (desiredYaw < 0.00)
+                    desiredYaw = 0.00;
+                wrist.setPosition(desiredYaw);
+            }
+        }
+        //button for horziontal to go from wall to home, open first
+
+
+        if (mState == SlideSubsystemState.AUTO) {
                 switch (slidePosition) {
                     case HOME:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HOME;
-//                        turret.setPosition(RiptideConstants.HORZ_HOME_PIVOT);
                         shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER);
                         elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW);
                         wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST);
+                        deployed = false;
                         break;
                     case OBS:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_OBS;
+                        deployed = false;
                         break;
                     case SUB :
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_SUB;
-                        turret.setPosition(RiptideConstants.HORZ_DEPLOYED_PIVOT);
-                        shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
                         elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW);
-                        wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
                         break;
                     case WALL :
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_WALL;
-                        turret.setPosition(RiptideConstants.HORZ_WALL_PIVOT);
                         shoulder.setPosition(RiptideConstants.HORZ_WALL_SHOULDER);
                         elbow.setPosition(RiptideConstants.HORZ_WALL_ELBOW);
                         wrist.setPosition(RiptideConstants.HORZ_WALL_WRIST);
+                        deployed = false;
                         break;
             }
         } else {
             switch (mSlideManualDirection) {
                 case UP:
-                    mSlideTargetPosiion += RiptideConstants.SLIDE_MANUAL_SPEED;
+                    mSlideTargetPosiion += RiptideConstants.HORZ_SLIDE_MANUAL_SPEED;
                     mSlidePIDController.setP(RiptideConstants.HORIZONTAL_PID_P);
                     break;
                 case DOWN:
-                    mSlideTargetPosiion -= RiptideConstants.SLIDE_MANUAL_SPEED;
-                    mSlidePIDController.setP(0.015);
+                    mSlideTargetPosiion -= RiptideConstants.HORZ_SLIDE_MANUAL_SPEED;
+                    mSlidePIDController.setP(RiptideConstants.HORIZONTAL_PID_P);
                     break;
                 case OFF:
                     break;

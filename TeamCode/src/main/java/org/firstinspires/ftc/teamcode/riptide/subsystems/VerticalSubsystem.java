@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.riptide.subsystems;
 
 
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -49,6 +54,7 @@ public class VerticalSubsystem extends SubsystemBase {
     SlideSubsystemState mState;
 
     public Position slidePosition;
+    public Position prevSlidePosition;
 
     private final MotorEx mSlideMotor1;
     private final MotorEx mSlideMotor2;
@@ -60,6 +66,7 @@ public class VerticalSubsystem extends SubsystemBase {
     public final Servo rotation;
     public final Servo elbow;
     public final Servo grip;
+    public double defaultState;
 
     public VerticalSubsystem(Riptide riptide, MotorEx slideMotor1, MotorEx slideMotor2, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder1, Servo _shoulder2, Servo _rotation, Servo _elbow, Servo _grip) {
         mRiptide = riptide;
@@ -105,8 +112,16 @@ public class VerticalSubsystem extends SubsystemBase {
 
         mSlideTargetPosiion = 0;
         slidePosition = Position.HOME;
+        prevSlidePosition = Position.HANG;
 //        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
         mState = SlideSubsystemState.AUTO;
+
+        shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+        defaultState = RiptideConstants.GRIPPER_OPEN_VALUE;
+        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+
         opmode.telemetry.addLine("Slide Init");
         opmode.telemetry.update();
     }
@@ -114,53 +129,47 @@ public class VerticalSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (mState == SlideSubsystemState.AUTO) {
 
-                switch (slidePosition) {
-                    case HOME:
-                        mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HOME;
-                        shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
-                        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
-                        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
-                        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-                        break;
-                    case WALL:
-                        mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_WALL;
-                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
-                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
-                        break;
-                    case HANG:
-                        mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HANG;
-                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
-                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
-                        break;
-                    case BASKET:
-                        mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
-                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
-                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
-                        break;
-                    case PRELOAD_BASKET:
-                        mSlideTargetPosiion = RiptideConstants.VERTICAL_PRELOAD_BASKET;
-                        break;
-                    case ENDGAME:
-                        mSlideTargetPosiion = RiptideConstants.VERTICAL_ENDGAME;
-                        break;
+        if(mRiptide.gunnerOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5){
+            if(defaultState == RiptideConstants.GRIPPER_OPEN_VALUE) {
+                grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+            } else {
+                grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
             }
+        } else{
+            grip.setPosition(defaultState);
+        }
+
+        if (mState == SlideSubsystemState.AUTO) {
+                    switch (slidePosition) {
+                        case HOME:
+                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HOME;
+                            break;
+                        case WALL:
+                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_WALL;
+                            break;
+                        case HANG:
+                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HANG;
+                            break;
+                        case BASKET:
+                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
+                            break;
+                        case PRELOAD_BASKET:
+                            mSlideTargetPosiion = RiptideConstants.VERTICAL_PRELOAD_BASKET;
+                            break;
+                        case ENDGAME:
+                            mSlideTargetPosiion = RiptideConstants.VERTICAL_ENDGAME;
+                            break;
+                    }
         } else {
             switch (mSlideManualDirection) {
                 case UP:
-                    mSlideTargetPosiion += RiptideConstants.SLIDE_MANUAL_SPEED;
+                    mSlideTargetPosiion += RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
                     mSlide1PIDController.setP(RiptideConstants.VERTICAL_PID_P);
                     mSlide2PIDController.setP(RiptideConstants.VERTICAL_PID_P);
                     break;
                 case DOWN:
-                    mSlideTargetPosiion -= RiptideConstants.SLIDE_MANUAL_SPEED;
+                    mSlideTargetPosiion -= RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
                     mSlide1PIDController.setP(0.015);
                     mSlide2PIDController.setP(0.015);
                     break;
@@ -180,7 +189,64 @@ public class VerticalSubsystem extends SubsystemBase {
         output = mSlide2PIDController.calculate(
                 mSlideMotor2.getCurrentPosition());
         mSlideMotor2.set(output);
+    }
 
+    public Command changeServos(Position pos) {
+                switch (pos) {
+                    case HOME:
+                        return new SequentialCommandGroup(
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION)),
+                                new WaitCommand(750),
+                                new InstantCommand(()-> {
+                                    shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+                                    shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+                                    elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+                                    defaultState = RiptideConstants.GRIPPER_OPEN_VALUE;
+                                    grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+                                }));
+                    case WALL:
+                        return new SequentialCommandGroup(
+                                new InstantCommand(() -> defaultState = RiptideConstants.GRIPPER_OPEN_VALUE),
+                                new InstantCommand(() -> grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE)),
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION)),
+                                new WaitCommand(750),
+                    new InstantCommand(()-> {
+                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
+                    }));
+                    case HANG:
+                        return new SequentialCommandGroup(
+                                new InstantCommand(()-> {
+                                    defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
+                                    grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                                }),
+                                new InstantCommand(()-> {
+                                    shoulder1.setPosition(RiptideConstants.VERT_HANG_SHOULDER);
+                                    shoulder2.setPosition(RiptideConstants.VERT_HANG_SHOULDER);
+                                    elbow.setPosition(RiptideConstants.VERT_HANG_ELBOW);
+                                }),
+                                new WaitCommand(750),
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HANG_ROTATION))
+                        );
+                    case BASKET:
+                        return new SequentialCommandGroup(
+                                new InstantCommand(()-> {
+                                    defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
+                                    grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                                }),
+                                new InstantCommand(()-> {
+                                    shoulder1.setPosition(RiptideConstants.VERT_BASKET_SHOULDER);
+                                    shoulder2.setPosition(RiptideConstants.VERT_BASKET_SHOULDER);
+                                    elbow.setPosition(RiptideConstants.VERT_BASKET_ELBOW);
+                                }),
+                                new WaitCommand(750),
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_BASKET_ROTATION))
+                        );
+                    case PRELOAD_BASKET:
+                    case ENDGAME:
+                }
+                return new WaitCommand(0);
     }
 
     private void changeSlideState(SlideSubsystemState newState){
@@ -211,7 +277,10 @@ public class VerticalSubsystem extends SubsystemBase {
         mSlide1PIDController.reset();
         mSlideMotor1.stopMotor();
         mSlideMotor1.resetEncoder();
-
+        mSlide2PIDController.setSetPoint(0);
+        mSlide2PIDController.reset();
+        mSlideMotor2.stopMotor();
+        mSlideMotor2.resetEncoder();
 //        mHorizontalPIDController.clearTotalError();
 //        mHorizontalPIDController.setSetPoint(0);
 //        mHorizontalSlideMotor.stopMotor();
