@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class RiptideConstants {
 
 
-
+    public static double IN_PER_TICK = .00104;
     public static double SLIDE_SPEED = 1.0;
     public static int VERT_SLIDE_MANUAL_SPEED = 25;
     public static int HORZ_SLIDE_MANUAL_SPEED = 10;

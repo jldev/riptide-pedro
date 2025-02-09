@@ -36,8 +36,8 @@ public class Teleop extends CommandOpMode {
 //                neptune.drive, () -> -neptune.driverOp.getLeftY(),
 //                neptune.driverOp::getLeftX, neptune.driverOp::getRightX,
 
-                riptide.drive, () -> riptide.driverOp.getRightY(),
-                () -> riptide.driverOp.getRightX(), () -> riptide.driverOp.getLeftX()
+                riptide.drive, () -> -riptide.driverOp.getRightY(),
+                () -> -riptide.driverOp.getRightX(), () -> riptide.driverOp.getLeftX()
         );
         riptide.drive.setDefaultCommand(driveCommand);
 
