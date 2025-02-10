@@ -46,10 +46,6 @@ public class RiptideAuto {
         }
         Pose2d startPos = new Pose2d(12, -60, Math.toRadians(270));
         riptide.setStartPosition(startPos);
-
-//        helix.limelight.pipelineSwitch(0);
-//        helix.limelight.start();
-//        opMode.schedule(new CenterOnSpecimenCommand(helix));
     }
 
     public void run() {
@@ -57,7 +53,6 @@ public class RiptideAuto {
         opMode.telemetry.addData("Run Count", runCount++);
         opMode.telemetry.update();
         switch (currentState) {
-
             case PRELOAD_DRIVE:
                 opMode.schedule(
                         new SequentialCommandGroup(
