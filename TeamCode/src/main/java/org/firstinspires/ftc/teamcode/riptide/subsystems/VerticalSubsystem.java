@@ -26,8 +26,6 @@ public class VerticalSubsystem extends SubsystemBase {
     private final CommandOpMode mOpMode;
     private SlideManualControlDirection mSlideManualDirection = SlideManualControlDirection.OFF;
 
-
-
     public enum SlideSubsystemState {
         AUTO,
         MANUAL
@@ -49,8 +47,12 @@ public class VerticalSubsystem extends SubsystemBase {
         ENDGAME
     }
 
+    private enum GripState {
+        OPEN,
+        CLOSED
+    }
 
-
+    private GripState mGripState;
     SlideSubsystemState mState;
 
     public Position slidePosition;
@@ -66,7 +68,6 @@ public class VerticalSubsystem extends SubsystemBase {
     public final Servo rotation;
     public final Servo elbow;
     public final Servo grip;
-    public double defaultState;
 
     public VerticalSubsystem(Riptide riptide, MotorEx slideMotor1, MotorEx slideMotor2, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder1, Servo _shoulder2, Servo _rotation, Servo _elbow, Servo _grip) {
         mRiptide = riptide;
@@ -108,18 +109,15 @@ public class VerticalSubsystem extends SubsystemBase {
 
         shoulder1.setDirection(Servo.Direction.REVERSE);
 
-
-
         mSlideTargetPosiion = 0;
         slidePosition = Position.HOME;
         prevSlidePosition = Position.HANG;
-//        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
         mState = SlideSubsystemState.AUTO;
 
         shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
         shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
         elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-        defaultState = RiptideConstants.GRIPPER_OPEN_VALUE;
+        mGripState = GripState.OPEN;
         grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
 
         opmode.telemetry.addLine("Slide Init");
@@ -130,54 +128,54 @@ public class VerticalSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if(mRiptide.gunnerOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5){
-            if(defaultState == RiptideConstants.GRIPPER_OPEN_VALUE) {
-                grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
-            } else {
-                grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
-            }
-        } else{
-            grip.setPosition(defaultState);
+        if(mGripState == GripState.CLOSED){ //we can add check for if claw down ect in the future
+            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+        } else {
+            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
         }
 
         if (mState == SlideSubsystemState.AUTO) {
-                    switch (slidePosition) {
-                        case HOME:
-                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HOME;
-                            break;
-                        case WALL:
-                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_WALL;
-                            break;
-                        case HANG:
-                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HANG;
-                            break;
-                        case BASKET:
-                            mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
-                            break;
-                        case PRELOAD_BASKET:
-                            mSlideTargetPosiion = RiptideConstants.VERTICAL_PRELOAD_BASKET;
-                            break;
-                        case ENDGAME:
-                            mSlideTargetPosiion = RiptideConstants.VERTICAL_ENDGAME;
-                            break;
-                    }
+            switch (slidePosition) {
+                case HOME:
+                    mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HOME;
+                    break;
+                case WALL:
+                    mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_WALL;
+                    break;
+                case HANG:
+                    mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_HANG;
+                    break;
+                case BASKET:
+                    mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
+                    break;
+                case PRELOAD_BASKET:
+                    mSlideTargetPosiion = RiptideConstants.VERTICAL_PRELOAD_BASKET;
+                    break;
+                case ENDGAME:
+                    mSlideTargetPosiion = RiptideConstants.VERTICAL_ENDGAME;
+                    break;
+            }
         } else {
             switch (mSlideManualDirection) {
                 case UP:
                     mSlideTargetPosiion += RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
-                    mSlide1PIDController.setP(RiptideConstants.VERTICAL_PID_P);
-                    mSlide2PIDController.setP(RiptideConstants.VERTICAL_PID_P);
                     break;
                 case DOWN:
                     mSlideTargetPosiion -= RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
-                    mSlide1PIDController.setP(0.015);
-                    mSlide2PIDController.setP(0.015);
                     break;
                 case OFF:
                     break;
             }
+
             if(mSlideTargetPosiion < 0.00)
                 mSlideTargetPosiion = 0;
+
+            // add this to stay within the rules of 42" max length
+            if(mRiptide.horizontal.slidesDeployed()){
+                if (mSlideTargetPosiion > RiptideConstants.HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED){
+                    mSlideTargetPosiion = RiptideConstants.HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED;
+                }
+            }
         }
 
         mSlide1PIDController.setSetPoint(mSlideTargetPosiion);
@@ -201,24 +199,24 @@ public class VerticalSubsystem extends SubsystemBase {
                                     shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-                                    defaultState = RiptideConstants.GRIPPER_OPEN_VALUE;
+                                    mGripState = GripState.OPEN;
                                     grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
                                 }));
                     case WALL:
                         return new SequentialCommandGroup(
-                                new InstantCommand(() -> defaultState = RiptideConstants.GRIPPER_OPEN_VALUE),
+                                new InstantCommand(() -> mGripState = GripState.OPEN),
                                 new InstantCommand(() -> grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE)),
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION)),
                                 new WaitCommand(750),
-                    new InstantCommand(()-> {
-                        shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
-                        elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
-                    }));
+                                new InstantCommand(()-> {
+                                    shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                                    shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
+                                    elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
+                                }));
                     case HANG:
                         return new SequentialCommandGroup(
                                 new InstantCommand(()-> {
-                                    defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
+                                    mGripState = GripState.CLOSED;
                                     grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                                 }),
                                 new InstantCommand(()-> {
@@ -232,7 +230,7 @@ public class VerticalSubsystem extends SubsystemBase {
                     case BASKET:
                         return new SequentialCommandGroup(
                                 new InstantCommand(()-> {
-                                    defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
+                                    mGripState = GripState.CLOSED;
                                     grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                                 }),
                                 new InstantCommand(()-> {
@@ -259,44 +257,35 @@ public class VerticalSubsystem extends SubsystemBase {
         changeSlideState(SlideSubsystemState.AUTO);
     }
 
+    public void toggleClawState(){
+        if (mGripState == GripState.OPEN){
+            mGripState = GripState.CLOSED;
+        } else {
+            mGripState = GripState.OPEN;
+        }
+    }
 
-
-
-
-//    public void moveToPosition(SlidesPosition position){
-//        // anytime the user wants to move to a position we need to be in auto state
-//        changeSlideState(SlideSubsystemState.AUTO);
-//        mSlidesCurrentPosition = position;
-//    }
-
-
-    public void stopMotorResetEncoder() {
-//        mNeptune.mOpMode.telemetry.addLine("Reset Encoder");
-//        mNeptune.mOpMode.telemetry.update();
+    public void stopMotorResetEncoder1() {
         mSlide1PIDController.setSetPoint(0);
         mSlide1PIDController.reset();
         mSlideMotor1.stopMotor();
         mSlideMotor1.resetEncoder();
+    }
+    public void stopMotorResetEncoder2(){
         mSlide2PIDController.setSetPoint(0);
         mSlide2PIDController.reset();
         mSlideMotor2.stopMotor();
         mSlideMotor2.resetEncoder();
-//        mHorizontalPIDController.clearTotalError();
-//        mHorizontalPIDController.setSetPoint(0);
-//        mHorizontalSlideMotor.stopMotor();
-//        mHorizontalSlideMotor.resetEncoder();
     }
-
-
-
-
     public void verticalManualSlideControl(SlideManualControlDirection direction){
         // anytime the user want to manual control we need to be in the manual state
         changeSlideState(SlideSubsystemState.MANUAL);
         mSlideManualDirection = direction;
     }
 
-
+    public boolean slidesDeployed(){
+        return mSlideTargetPosiion > RiptideConstants.VERTICAL_SLIDE_HANG;
+    }
     public boolean isBusy (){
         return !mSlide1PIDController.atSetPoint();
     }

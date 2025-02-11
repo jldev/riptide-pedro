@@ -18,11 +18,7 @@ public class RedBasket extends CommandOpMode {
 
     @Override
     public void run(){
-        waitForStart();
-        while (opModeIsActive()) {
-            riptideAuto.run();
-            super.run();
-        }
-
+        riptideAuto.run();
+        super.run();
     }
 }

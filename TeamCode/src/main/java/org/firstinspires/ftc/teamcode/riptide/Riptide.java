@@ -23,7 +23,6 @@ public class Riptide {
     public final OpModeType mOpModeType;
 
     public final MecanumDriveSubsystem drive;
-//    public final Limelight3A limelight;
 
     public GamepadEx driverOp;
     public GamepadEx gunnerOp;
@@ -36,10 +35,6 @@ public class Riptide {
     //subsystems
     public final VerticalSubsystem vertical;
     public final HorizontalSubsystem horizontal;
-//    public final HangSubsystem hang;
-//    public final ClawSubsystem claw;
-//    public final KrakenEyeSubsystem krakenEye;
-
 
     public enum FieldPos {
         AU,
@@ -61,16 +56,8 @@ public class Riptide {
     public Target target = Target.SPECIMENS;
     public boolean pushSamples = true;
 
-
-
-           //           BUTTONSSSSS
-
-
+    //           BUTTONSSSSS
     // Gunner
-
-    public GamepadButton instakeGripperButton;
-    public GamepadButton intakeLiftButton;
-
     public GamepadButton verticleSlideUp;
     public GamepadButton verticleSlideDown;
     public GamepadButton horizontalSlideOut;
@@ -80,24 +67,10 @@ public class Riptide {
     public GamepadButton wall_slidePreset;
     public GamepadButton hang_slidePreset;
     public GamepadButton basket_slidePreset;
-
-    public GamepadButton cycleDesiredSampleColor;
-
+    public GamepadButton horizontalClawButton;
+    public GamepadButton verticalClawButton;
 
     // Driver
-
-    public GamepadButton hangRaise;
-    public GamepadButton hangLower;
-    public GamepadButton pivotRaise;
-    public GamepadButton pivotLower;
-
-    public GamepadButton home_pivotPreset;
-    public GamepadButton hang_pivotPreset;
-    public GamepadButton basket_pivotPreset;
-    public GamepadButton sub_pivotPreset;
-
-
-
 
 
 
@@ -114,9 +87,6 @@ public class Riptide {
         drive = new MecanumDriveSubsystem(new MecanumDrive(opMode.hardwareMap, initialPose), false);
         driverOp = new GamepadEx(opMode.gamepad1);
         gunnerOp = new GamepadEx(opMode.gamepad2);
-//        limelight = opMode.hardwareMap.get(Limelight3A.class, "limelight");
-
-
 
         //     vertical
         vertical = new VerticalSubsystem(this,
@@ -138,61 +108,23 @@ public class Riptide {
                 opMode,
                 RiptideConstants.SLIDES_PID_POS_COEFFICIENT,
                 RiptideConstants.SLIDES_PID_TOLERANCE,
-                opMode.hardwareMap.get(Servo.class, "turret"),
                 opMode.hardwareMap.get(Servo.class, "shoulder"),
                 opMode.hardwareMap.get(Servo.class, "hElbow"),
                 opMode.hardwareMap.get(Servo.class, "wrist"),
                 opMode.hardwareMap.get(Servo.class, "hGrip")
         );
 
-        //     hang
-//        hang = new HangSubsystem(this,
-//                new MotorEx(opMode.hardwareMap, "hangMotor", Motor.GoBILDA.RPM_435),
-//                opMode,
-//                HelixConstants.SLIDES_PID_POS_COEFFICIENT,
-//                HelixConstants.SLIDES_PID_TOLERANCE
-//        );
-
-
-
-        //     claw
-//        claw = new ClawSubsystem(this,
-//                opMode,
-//                opMode.hardwareMap.get(Servo.class, "pivot"),
-//                opMode.hardwareMap.get(Servo.class, "shoulder"),
-//                opMode.hardwareMap.get(Servo.class, "hElbow"),
-//                opMode.hardwareMap.get(Servo.class, "wrist"),
-//                opMode.hardwareMap.get(Servo.class, "hGrip"));
-//                opMode.hardwareMap.get(Limelight3A.class, "limelight"));
-
-
-//        krakenEye = new KrakenEyeSubsystem(this, mOpMode, claw, limelight);
-
-
-
         // pseudo buttons
         magSwitchButton1 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
-        magSwitchButton1.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder));
+        magSwitchButton1.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder1));
         magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch2");
-        magSwitchButton2.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder));
+        magSwitchButton2.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder2));
 
         opMode.register(vertical);
         opMode.register(horizontal);
-//        opMode.register(hang);
-//        opMode.register(claw);
-//        opMode.register(krakenEye);
-
-
-
-
 
         //       gunner setup
-
-           //intake
-//        instakeGripperButton =  new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_RIGHT);
-//        intakeLiftButton =  new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_LEFT);     // these are temp - gunner's out of buttons
-
-           //slide manual
+        //slide manual
         verticleSlideUp = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_UP);
         verticleSlideDown = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_DOWN);
 
@@ -205,33 +137,9 @@ public class Riptide {
         hang_slidePreset = new GamepadButton(gunnerOp, GamepadKeys.Button.B);
         basket_slidePreset = new GamepadButton(gunnerOp, GamepadKeys.Button.Y);
 
-          //claw
-        // yaw = LTx
-        // pitch = LTy
-        // grip = RTy
-
-        cycleDesiredSampleColor = new GamepadButton(gunnerOp, GamepadKeys.Button.LEFT_BUMPER);
-
-
-
+        horizontalClawButton = new GamepadTriggerAsButton(gunnerOp, GamepadKeys.Trigger.LEFT_TRIGGER, 0.5);
+        verticalClawButton = new GamepadTriggerAsButton(gunnerOp, GamepadKeys.Trigger.RIGHT_TRIGGER, 0.5);
         //     driver setup
-
-           //hang
-        hangRaise = new GamepadButton(driverOp, GamepadKeys.Button.DPAD_LEFT);
-        hangLower = new GamepadButton(driverOp, GamepadKeys.Button.DPAD_RIGHT);
-        // !!we should change this to have a button to go all the way up, and a button to go all the way down
-
-
-           //pivot manual
-//        pivotRaise = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_UP);
-//        pivotLower = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_DOWN);
-
-           //pivotPresets
-        home_pivotPreset = new GamepadButton(driverOp, GamepadKeys.Button.X);
-        hang_pivotPreset = new GamepadButton(driverOp, GamepadKeys.Button.B);
-        basket_pivotPreset = new GamepadButton(driverOp, GamepadKeys.Button.Y);
-        sub_pivotPreset = new GamepadButton(driverOp, GamepadKeys.Button.A);
-
 
     }
 
@@ -256,7 +164,8 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HOME)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.SUB)),
-                vertical.changeServos(VerticalSubsystem.Position.HOME)
+                vertical.changeServos(VerticalSubsystem.Position.HOME),
+                horizontal.changeServos(HorizontalSubsystem.Position.SUB)
 
         );
     }
@@ -270,7 +179,8 @@ public class Riptide {
                 new WaitCommand(250),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-                vertical.changeServos(VerticalSubsystem.Position.HANG)
+                vertical.changeServos(VerticalSubsystem.Position.HANG),
+                horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );
     }
 
@@ -278,7 +188,8 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-                vertical.changeServos(VerticalSubsystem.Position.WALL)
+                vertical.changeServos(VerticalSubsystem.Position.WALL),
+                horizontal.changeServos(HorizontalSubsystem.Position.WALL)
         );
     }
 
@@ -290,7 +201,9 @@ public class Riptide {
                 }),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-                vertical.changeServos(VerticalSubsystem.Position.BASKET)
+                vertical.changeServos(VerticalSubsystem.Position.BASKET),
+                horizontal.changeServos(HorizontalSubsystem.Position.HOME)
+
         );
     }
 

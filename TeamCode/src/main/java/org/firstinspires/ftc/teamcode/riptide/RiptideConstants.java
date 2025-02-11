@@ -46,13 +46,14 @@ public class RiptideConstants {
     public static int VERTICAL_PRELOAD_BASKET = 400; //1900;
     public static int VERTICAL_ENDGAME = 500;
 
+    public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
     // horizontal positions
     public static int HORIZONTAL_SLIDE_HOME = 0;
     public static int HORIZONTAL_SLIDE_OBS = 0;
     public static int HORIZONTAL_SLIDE_SUB = 0;
     public static int HORIZONTAL_SLIDE_WALL = 0;
 
-
+    public static final int LENGTH_LIMIT_WHEN_VERTICAL_DEPLOYED = 100;
     //   horizontal claw positions
 
     public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.2f;

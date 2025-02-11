@@ -32,19 +32,10 @@ public class Teleop extends CommandOpMode {
 
         // Drive control
         MecanumDriveCommand driveCommand = new MecanumDriveCommand(
-
-//                neptune.drive, () -> -neptune.driverOp.getLeftY(),
-//                neptune.driverOp::getLeftX, neptune.driverOp::getRightX,
-
                 riptide.drive, () -> -riptide.driverOp.getRightY(),
                 () -> -riptide.driverOp.getRightX(), () -> riptide.driverOp.getLeftX()
         );
         riptide.drive.setDefaultCommand(driveCommand);
-
-
-
-
-
 
         //         VERTICAL
 
@@ -57,6 +48,8 @@ public class Teleop extends CommandOpMode {
         riptide.verticleSlideDown.whenReleased(new InstantCommand(() -> {
             riptide.vertical.verticalManualSlideControl(VerticalSubsystem.SlideManualControlDirection.OFF);}));
 
+        riptide.verticalClawButton.whenPressed(new InstantCommand(() -> riptide.vertical.toggleClawState()));
+
         //         HORIZONTAL
 
         riptide.horizontalSlideOut.whileHeld(new InstantCommand(() -> {
@@ -68,6 +61,7 @@ public class Teleop extends CommandOpMode {
         riptide.horizontalSlideIn.whenReleased(new InstantCommand(() -> {
             riptide.horizontal.horizontalManualSlideControl(HorizontalSubsystem.SlideManualControlDirection.OFF);}));
 
+        riptide.horizontalClawButton.whenPressed(new InstantCommand(() -> riptide.horizontal.toggleClawState()));
 
         //  Presets
         riptide.home_slidePreset.whenPressed(riptide.GoSub());
