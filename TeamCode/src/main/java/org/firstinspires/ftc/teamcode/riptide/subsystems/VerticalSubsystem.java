@@ -8,7 +8,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -116,9 +115,10 @@ public class VerticalSubsystem extends SubsystemBase {
 
         shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
         shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
         elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-        mGripState = GripState.OPEN;
-        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+        mGripState = GripState.CLOSED;
+        grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
 
         opmode.telemetry.addLine("Slide Init");
         opmode.telemetry.update();
@@ -131,7 +131,7 @@ public class VerticalSubsystem extends SubsystemBase {
         if(mGripState == GripState.CLOSED){ //we can add check for if claw down ect in the future
             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
         } else {
-            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
         }
 
         if (mState == SlideSubsystemState.AUTO) {
@@ -191,7 +191,7 @@ public class VerticalSubsystem extends SubsystemBase {
 
     public Command changeServos(Position pos) {
                 switch (pos) {
-                    case HOME:
+                    case HOME: //this might be our init
                         return new SequentialCommandGroup(
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION)),
                                 new WaitCommand(750),
@@ -199,13 +199,13 @@ public class VerticalSubsystem extends SubsystemBase {
                                     shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-                                    mGripState = GripState.OPEN;
-                                    grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+                                    mGripState = GripState.CLOSED;
+                                    grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                                 }));
                     case WALL:
                         return new SequentialCommandGroup(
                                 new InstantCommand(() -> mGripState = GripState.OPEN),
-                                new InstantCommand(() -> grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE)),
+                                new InstantCommand(() -> grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL)),
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION)),
                                 new WaitCommand(750),
                                 new InstantCommand(()-> {

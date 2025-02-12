@@ -58,7 +58,8 @@ public class RiptideConstants {
 
     public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.2f;
     public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.05;
-    public static double GRIPPER_OPEN_VALUE = .50f;
+    public static double GRIPPER_OPEN_VALUE_VERTICAL = .40f;
+    public static double GRIPPER_OPEN_VALUE_HORIZONTAL = .50f;
 
     public static double LIGHT_ON = 1f;
     public static double LIGHT_OFF = 0f;

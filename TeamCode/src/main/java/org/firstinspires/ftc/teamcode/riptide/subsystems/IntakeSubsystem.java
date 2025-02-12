@@ -56,7 +56,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         switch (gripperState) {
             case OPEN:
-                mGripperServo.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+                mGripperServo.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
                 break;
             case CLOSED:
                 mGripperServo.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);

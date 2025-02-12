@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.riptide.subsystems;
 
 
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -11,7 +12,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-public class MecanumDriveSubsystem extends SubsystemBase {
+public class NewDrive extends SubsystemBase {
 
     public enum DriveDirection{
         FORWARD,
@@ -20,10 +21,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         RIGHT
     }
 
-    public final MecanumDrive drive;
+    private final MecanumDrive drive;
     private final boolean fieldCentric;
 
-    public MecanumDriveSubsystem(MecanumDrive drive, boolean isFieldCentric) {
+    public NewDrive(MecanumDrive drive, boolean isFieldCentric) {
         this.drive = drive;
         fieldCentric = isFieldCentric;
     }
@@ -46,58 +47,55 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         ));
     }
 
+
+
+    // dont even ask what this is
+
+//    public void moveTo(double x, double y) {
+//        Actions.runBlocking(
+//                drive.actionBuilder(drive.pose).splineTo(new Vector2d(x, y), new Rotation2d(0, 0)).build()
+//        );
+//    }
+
+
+    // i doubt this will go anywhere
+        public void moveTo(double x, double y) {
+        Actions.runBlocking( new ParallelAction(
+                drive.actionBuilder(drive.pose).lineToX(x).build(),
+                drive.actionBuilder(drive.pose).lineToY(y).build()
+                )
+        );
+    }
+
     public void driveDirection(DriveDirection direction, double inches){
         switch (direction){
 
-            case RIGHT:
+            case FORWARD:
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose).lineToX(drive.pose.position.x + inches).build()
                 );
                 break;
-            case LEFT:
+            case BACKWARD:
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose).lineToX(drive.pose.position.x - inches).build()
                 );
                 break;
-            case FORWARD:
+            case LEFT:
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose).lineToY(drive.pose.position.y + inches).build()
                 );
                 break;
-            case BACKWARD:
+            case RIGHT:
                 Actions.runBlocking(
                         drive.actionBuilder(drive.pose).lineToY(drive.pose.position.y - inches).build()
                 );
                 break;
         }
     }
-
     public Pose2d getPoseEstimate() {
         return drive.pose;
     }
 
-//    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
-//        return drive.trajectoryBuilder(startPose);
-//    }
-//
-//    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed, boolean slow) {
-//        if (slow){
-//            return drive.trajectoryBuilderSlow(startPose, reversed);
-//        }
-//        return drive.trajectoryBuilder(startPose, reversed);
-//    }
-//
-//    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
-//        return drive.trajectoryBuilder(startPose, startHeading);
-//    }
-//
-//    public TrajectorySequenceBuilder trajectorySequenceBuilderSlow(Pose2d startPose){
-//        return drive.trajectorySequenceBuilderSlow(startPose);
-//    }
-//
-//    public TrajectorySequenceBuilder trajectorySequenceBuilder(Pose2d startPose){
-//        return drive.trajectorySequenceBuilderSlow(startPose);
-//    }
 
     public void followAction(Action action) {
         Actions.runBlocking(action);

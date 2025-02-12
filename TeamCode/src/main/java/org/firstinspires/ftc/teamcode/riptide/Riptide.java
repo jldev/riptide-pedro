@@ -67,8 +67,8 @@ public class Riptide {
     public GamepadButton wall_slidePreset;
     public GamepadButton hang_slidePreset;
     public GamepadButton basket_slidePreset;
-    public GamepadButton horizontalClawButton;
-    public GamepadButton verticalClawButton;
+    public GamepadTriggerAsButton horizontalClawButton;
+    public GamepadTriggerAsButton verticalClawButton;
 
     // Driver
 
@@ -173,7 +173,6 @@ public class Riptide {
     public Command GoHang() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
-                    vertical.defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
                     vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                 }),
                 new WaitCommand(250),
@@ -196,7 +195,6 @@ public class Riptide {
     public Command GoBasket() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
-                    vertical.defaultState = RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL;
                     vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                 }),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),

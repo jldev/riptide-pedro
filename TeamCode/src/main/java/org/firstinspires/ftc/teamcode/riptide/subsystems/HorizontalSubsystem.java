@@ -8,7 +8,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -98,7 +97,7 @@ public class HorizontalSubsystem extends SubsystemBase {
 
         elbow.setDirection(Servo.Direction.REVERSE);
         mGripState = GripState.OPEN;
-        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
 
         deployed = false;
     }
@@ -111,7 +110,7 @@ public class HorizontalSubsystem extends SubsystemBase {
         if(mGripState == GripState.CLOSED){ //we can add check for if claw down ect in the future
             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
         } else {
-            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE);
+            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
         }
 
         // special case for claw control in sub

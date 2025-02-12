@@ -2,16 +2,14 @@ package org.firstinspires.ftc.teamcode.riptide.opmodes;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
-import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerDrive;
 import org.firstinspires.ftc.teamcode.riptide.commands.SimpleDriveCommand;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.MecanumDriveSubsystem;
 
-public class RiptideAuto {
+public class NewRoadrunnerTesting {
 
     public Riptide riptide;
 
@@ -34,7 +32,7 @@ public class RiptideAuto {
 
     private int runCount = 0;
 
-    public RiptideAuto(CommandOpMode commandOpMode, Riptide.FieldPos startingPosition, Riptide.AllianceColor allianceColor, Riptide.Target target) {
+    public NewRoadrunnerTesting(CommandOpMode commandOpMode, Riptide.FieldPos startingPosition, Riptide.AllianceColor allianceColor, Riptide.Target target) {
         opMode = commandOpMode;
         riptide = new Riptide(opMode, Riptide.OpModeType.AUTO, allianceColor);
         riptide.setStartPosition(startingPosition, allianceColor);
@@ -46,36 +44,29 @@ public class RiptideAuto {
         {
             currentState = Task.DEPOSIT_SAMPLE;
         }
-        Pose2d startPos = new Pose2d(0, 0, Math.toRadians(180));
+        Pose2d startPos = new Pose2d(12, -60, Math.toRadians(270));
         riptide.setStartPosition(startPos);
+
+//        helix.limelight.pipelineSwitch(0);
+//        helix.limelight.start();
+//        opMode.schedule(new CenterOnSpecimenCommand(helix));
     }
 
     public void run() {
         opMode.telemetry.addData("Current State", currentState);
         opMode.telemetry.addData("Run Count", runCount++);
-        opMode.telemetry.addLine(String.format("Pose X: %.2f, Y: %.2f, Rot: %.2f", riptide.drive.getPoseEstimate().position.x,
-                riptide.drive.getPoseEstimate().position.y, Math.toDegrees(riptide.drive.getPoseEstimate().heading.toDouble())));
         opMode.telemetry.update();
-
         switch (currentState) {
+
             case PRELOAD_DRIVE:
                 opMode.schedule(
                         new SequentialCommandGroup(
-                                new WaitCommand(0000),
+                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 15),
                                 riptide.GoHang(),
-                                new RoadRunnerDrive(32, 0, riptide.drive),
-                                new InstantCommand(() -> riptide.vertical.toggleClawState()),
-                                new RoadRunnerDrive(-6, 0, riptide.drive),
-                                //new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 15),
-                                riptide.GoWall(),
-                                new RoadRunnerDrive(0, -33, riptide.drive),
-                                new RoadRunnerDrive(26, 0, riptide.drive),
-                                new RoadRunnerDrive(0, -12, riptide.drive),
-                                new RoadRunnerDrive(-32, 0, riptide.drive)
-
-//                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 15).whenFinished(()->{
-//                                    currentState = Task.DEPOSIT_SPECIMEN;
-//                                })
+                                new WaitCommand(1000),
+                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 15).whenFinished(()->{
+                                    currentState = Task.DEPOSIT_SPECIMEN;
+                                })
                             )
                         );
                 currentState = Task.WAIT_FOR_DRIVE;
