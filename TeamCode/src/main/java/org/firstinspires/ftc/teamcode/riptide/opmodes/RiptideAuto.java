@@ -4,12 +4,9 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerDrive;
-import org.firstinspires.ftc.teamcode.riptide.commands.SimpleDriveCommand;
-import org.firstinspires.ftc.teamcode.riptide.subsystems.MecanumDriveSubsystem;
 
 public class RiptideAuto {
 
@@ -21,15 +18,21 @@ public class RiptideAuto {
     public Pose2d desiredPosition;
 
     private enum Task{
+        // specimen
         PRELOAD_DRIVE,
+        PUSH_SAMPLES,
+        HANG_SPECIMEN,
         RETRIEVE_SPECIMEN,
-        DEPOSIT_SPECIMEN,
+        PARK,
+
+        // basket
+        PRELOAD_BASKET_DRIVE,
         RETRIEVE_SAMPLE,
         DEPOSIT_SAMPLE,
-        WAIT_FOR_DRIVE,
-        PUSH_SAMPLES,
-        PARK,
-        PARK_BASKET
+        PARK_BASKET,
+
+        // also this
+        WAIT_FOR_TASK
     }
 
     private int runCount = 0;
@@ -44,7 +47,7 @@ public class RiptideAuto {
             currentState = Task.PRELOAD_DRIVE;
         } else
         {
-            currentState = Task.DEPOSIT_SAMPLE;
+            currentState = Task.PRELOAD_BASKET_DRIVE;
         }
         Pose2d startPos = new Pose2d(0, 0, Math.toRadians(180));
         riptide.setStartPosition(startPos);
@@ -58,6 +61,9 @@ public class RiptideAuto {
         opMode.telemetry.update();
 
         switch (currentState) {
+
+            // specimen
+
             case PRELOAD_DRIVE:
                 opMode.schedule(
                         new SequentialCommandGroup(
@@ -66,7 +72,15 @@ public class RiptideAuto {
                                 new InstantCommand(() -> riptide.vertical.toggleClawState()),
                                 new RoadRunnerDrive(-6, 0, riptide.drive),
                                 riptide.GoWall(),
-                                // backed up from preload
+                                new InstantCommand(() -> currentState = Task.PUSH_SAMPLES)
+                            )
+                        );
+                currentState = Task.WAIT_FOR_TASK;
+                break;
+            case PUSH_SAMPLES:
+                opMode.schedule(
+                        new SequentialCommandGroup(
+                                riptide.GoWall(),
                                 new RoadRunnerDrive(0, -30, riptide.drive),
                                 new RoadRunnerDrive(26, 0, riptide.drive),
                                 new RoadRunnerDrive(0, -10, riptide.drive),
@@ -75,100 +89,53 @@ public class RiptideAuto {
                                 new RoadRunnerDrive(0, -12, riptide.drive),
                                 new RoadRunnerDrive(-50, 0, riptide.drive),
                                 new RoadRunnerDrive(-6, 0, riptide.drive),
-                                //pushed samples
-                                riptide.GoHang(),
-                                new RoadRunnerDrive(26, 52, riptide.drive),
-                                new RoadRunnerDrive(6, 0, riptide.drive),
-                                new InstantCommand(() -> riptide.vertical.toggleClawState()),
-                                new RoadRunnerDrive(-6, 0, riptide.drive),
-                                riptide.GoWall()
-                                //backed up from second hang
-
-
-//                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 15).whenFinished(()->{
-//                                    currentState = Task.DEPOSIT_SPECIMEN;
-//                                })
-                            )
-                        );
-                currentState = Task.WAIT_FOR_DRIVE;
+                                new InstantCommand(() -> currentState = Task.HANG_SPECIMEN))
+                );
+                currentState = Task.WAIT_FOR_TASK;
                 break;
-            case WAIT_FOR_DRIVE:
+            case HANG_SPECIMEN:
+                opMode.schedule(new SequentialCommandGroup(
+                        riptide.GoHang(),
+                        new RoadRunnerDrive(26, 52, riptide.drive),
+                        new RoadRunnerDrive(6, 0, riptide.drive),
+                        new InstantCommand(() -> riptide.vertical.toggleClawState()),
+                        new InstantCommand(() -> currentState = Task.RETRIEVE_SPECIMEN)
+                ));
+                currentState = Task.WAIT_FOR_TASK;
                 break;
             case RETRIEVE_SPECIMEN:
+                //untested but should be basically same thing as hang specimen in reverse
+                opMode.schedule(new SequentialCommandGroup(
+                        new RoadRunnerDrive(-6, 0, riptide.drive),
+                        riptide.GoWall(),
+                        new RoadRunnerDrive(-20, -52, riptide.drive),
+                        new RoadRunnerDrive(-6, 0, riptide.drive),
+                        new RoadRunnerDrive(-20, -52, riptide.drive),
+                        new InstantCommand(() -> currentState = Task.HANG_SPECIMEN)
+                ));
+                currentState = Task.WAIT_FOR_TASK;
                 break;
-            case DEPOSIT_SPECIMEN:
-//                riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
-                if(riptide.pushSamples)
-                {
-                    currentState = Task.PUSH_SAMPLES;
-                } else
-                {
-                    currentState = Task.PARK;
-                }
+
+                // basket
+
+            case PARK:
+                currentState = Task.WAIT_FOR_TASK;
+                break;
+            case PRELOAD_BASKET_DRIVE:
+                currentState = Task.WAIT_FOR_TASK;
                 break;
             case RETRIEVE_SAMPLE:
+                currentState = Task.WAIT_FOR_TASK;
                 break;
             case DEPOSIT_SAMPLE:
-                opMode.schedule(
-                        new SequentialCommandGroup(
-                                riptide.GoPreloadBasket(),
-                                new WaitCommand(1500),
-//                                new InstantCommand(() -> riptide.claw.ChangeClawPositionTo(ClawSubsystem.ClawState.SUB)),
-                                new WaitCommand(500),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 4.5),
-                                new WaitCommand(500)
-                                .whenFinished(() -> {
-//                                    riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;
-                                //currentState = Task.PARK_BASKET;
-                            }),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 6),
-                                riptide.GoSub()
-                        )
-                );
-                currentState = Task.WAIT_FOR_DRIVE;
-                break;
-            case PUSH_SAMPLES:
-                opMode.schedule(
-                        new SequentialCommandGroup(
-                                riptide.GoWall(),
-                                new WaitCommand(2000),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 10),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.LEFT, 33),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 34),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.LEFT, 10),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 48),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 48),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.LEFT, 12),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 50)                        )
-                );
-                currentState = Task.WAIT_FOR_DRIVE;
-                break;
-            case PARK:
-                opMode.schedule(
-                        new SequentialCommandGroup(
-                                riptide.GoWall(),
-                                new WaitCommand(2000),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 18),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.LEFT, 48),
-//                                new InstantCommand(() -> {
-//                                    riptide.claw.mGripState = ClawSubsystem.GripState.OPEN;}),
-                                new WaitCommand(500).whenFinished(() -> currentState = Task.PARK_BASKET)
-                        )
-                );
-                currentState = Task.WAIT_FOR_DRIVE;
+                currentState = Task.WAIT_FOR_TASK;
                 break;
             case PARK_BASKET:
-                opMode.schedule(
-                        new SequentialCommandGroup(
-                        new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 6),
-                        riptide.GoSub(),
-                        new WaitCommand(1000),
-                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.FORWARD, 6),
-                        new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.RIGHT, 50),
-                        new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 8)
-                        )
-                );
-                currentState = Task.WAIT_FOR_DRIVE;
+                currentState = Task.WAIT_FOR_TASK;
+                break;
+
+
+            case WAIT_FOR_TASK:
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + currentState);
