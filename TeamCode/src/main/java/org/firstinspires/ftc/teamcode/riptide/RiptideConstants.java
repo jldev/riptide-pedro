@@ -74,7 +74,7 @@ public class RiptideConstants {
 
     // HOME
     public static double HORZ_HOME_PIVOT = .7f;
-    public static double HORZ_HOME_SHOULDER = .5f;
+    public static double HORZ_HOME_SHOULDER = .05f;
     public static double HORZ_HOME_ELBOW = 1f;
 
     public static double HORZ_HOME_WRIST = 0f;
@@ -113,7 +113,7 @@ public class RiptideConstants {
 
     // home
 
-    public static double VERT_HOME_SHOULDER = 0.16f;
+    public static double VERT_HOME_SHOULDER = 0.05f;
     public static double VERT_HOME_ROTATION = 0f;
     public static double VERT_HOME_ELBOW = 1f;
 

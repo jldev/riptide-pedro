@@ -61,17 +61,29 @@ public class RiptideAuto {
             case PRELOAD_DRIVE:
                 opMode.schedule(
                         new SequentialCommandGroup(
-                                new WaitCommand(0000),
                                 riptide.GoHang(),
                                 new RoadRunnerDrive(32, 0, riptide.drive),
                                 new InstantCommand(() -> riptide.vertical.toggleClawState()),
                                 new RoadRunnerDrive(-6, 0, riptide.drive),
-                                //new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 15),
                                 riptide.GoWall(),
-                                new RoadRunnerDrive(0, -33, riptide.drive),
+                                // backed up from preload
+                                new RoadRunnerDrive(0, -30, riptide.drive),
                                 new RoadRunnerDrive(26, 0, riptide.drive),
+                                new RoadRunnerDrive(0, -10, riptide.drive),
+                                new RoadRunnerDrive(-44, 0, riptide.drive),
+                                new RoadRunnerDrive(44, 0, riptide.drive),
                                 new RoadRunnerDrive(0, -12, riptide.drive),
-                                new RoadRunnerDrive(-32, 0, riptide.drive)
+                                new RoadRunnerDrive(-50, 0, riptide.drive),
+                                new RoadRunnerDrive(-6, 0, riptide.drive),
+                                //pushed samples
+                                riptide.GoHang(),
+                                new RoadRunnerDrive(26, 52, riptide.drive),
+                                new RoadRunnerDrive(6, 0, riptide.drive),
+                                new InstantCommand(() -> riptide.vertical.toggleClawState()),
+                                new RoadRunnerDrive(-6, 0, riptide.drive),
+                                riptide.GoWall()
+                                //backed up from second hang
+
 
 //                                new SimpleDriveCommand(riptide.drive, MecanumDriveSubsystem.DriveDirection.BACKWARD, 15).whenFinished(()->{
 //                                    currentState = Task.DEPOSIT_SPECIMEN;

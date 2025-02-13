@@ -30,7 +30,7 @@ public class RoadRunnerDrive extends CommandBase {
 
     @Override
     public void initialize(){
-        action = drive.drive.actionBuilder(drive.drive.pose).strafeTo(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y)).build();
+        action = drive.drive.actionBuilder(drive.drive.pose).strafeToConstantHeading(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y)).build();
     }
     @Override
     public Set<Subsystem> getRequirements(){

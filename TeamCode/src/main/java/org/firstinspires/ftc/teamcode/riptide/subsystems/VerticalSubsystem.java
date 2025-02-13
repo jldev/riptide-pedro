@@ -46,12 +46,12 @@ public class VerticalSubsystem extends SubsystemBase {
         ENDGAME
     }
 
-    private enum GripState {
+    public enum GripState {
         OPEN,
         CLOSED
     }
 
-    private GripState mGripState;
+    public GripState mGripState;
     SlideSubsystemState mState;
 
     public Position slidePosition;

@@ -173,11 +173,13 @@ public class Riptide {
     public Command GoHang() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
+                    vertical.mGripState = VerticalSubsystem.GripState.CLOSED;
                     vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                 }),
                 new WaitCommand(250),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+                new WaitCommand(250),
                 vertical.changeServos(VerticalSubsystem.Position.HANG),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );
@@ -185,6 +187,10 @@ public class Riptide {
 
     public Command GoWall() {
         return new SequentialCommandGroup(
+                new InstantCommand(() -> {
+                    vertical.mGripState = VerticalSubsystem.GripState.OPEN;
+                    vertical.grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
+                }),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
                 vertical.changeServos(VerticalSubsystem.Position.WALL),

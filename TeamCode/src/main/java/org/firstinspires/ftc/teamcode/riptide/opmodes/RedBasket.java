@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 
 @Config
-@Autonomous(group = "drive", name = "Red Basket")
+@Autonomous(group = "drive", name = "Basket")
 public class RedBasket extends CommandOpMode {
     RiptideAuto riptideAuto;
     @Override
