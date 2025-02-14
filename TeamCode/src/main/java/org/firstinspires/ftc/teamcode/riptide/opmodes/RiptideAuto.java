@@ -81,14 +81,14 @@ public class RiptideAuto {
                 opMode.schedule(
                         new SequentialCommandGroup(
                                 riptide.GoWall(),
-                                new RoadRunnerDrive(0, -30, riptide.drive),
+                                new RoadRunnerDrive(0, -32, riptide.drive),
                                 new RoadRunnerDrive(26, 0, riptide.drive),
-                                new RoadRunnerDrive(0, -10, riptide.drive),
+                                new RoadRunnerDrive(0, -8, riptide.drive),
                                 new RoadRunnerDrive(-44, 0, riptide.drive),
                                 new RoadRunnerDrive(44, 0, riptide.drive),
                                 new RoadRunnerDrive(0, -12, riptide.drive),
-                                new RoadRunnerDrive(-50, 0, riptide.drive),
-                                new RoadRunnerDrive(-6, 0, riptide.drive),
+                                new RoadRunnerDrive(-46, 0, riptide.drive),
+                                new RoadRunnerDrive(-10, 0, riptide.drive),
                                 new InstantCommand(() -> currentState = Task.HANG_SPECIMEN))
                 );
                 currentState = Task.WAIT_FOR_TASK;
@@ -96,8 +96,8 @@ public class RiptideAuto {
             case HANG_SPECIMEN:
                 opMode.schedule(new SequentialCommandGroup(
                         riptide.GoHang(),
-                        new RoadRunnerDrive(26, 52, riptide.drive),
-                        new RoadRunnerDrive(6, 0, riptide.drive),
+                        new RoadRunnerDrive(21, 54, riptide.drive),
+                        new RoadRunnerDrive(11, 0, riptide.drive),
                         new InstantCommand(() -> riptide.vertical.toggleClawState()),
                         new InstantCommand(() -> currentState = Task.RETRIEVE_SPECIMEN)
                 ));

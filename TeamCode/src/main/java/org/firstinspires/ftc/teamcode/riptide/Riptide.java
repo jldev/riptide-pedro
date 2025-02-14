@@ -115,9 +115,9 @@ public class Riptide {
         );
 
         // pseudo buttons
-        magSwitchButton1 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
+        magSwitchButton1 = new SwitchReader(opMode.hardwareMap, false, "vSwitch2");
         magSwitchButton1.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder1));
-        magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch2");
+        magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
         magSwitchButton2.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder2));
 
         opMode.register(vertical);
