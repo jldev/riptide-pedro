@@ -67,6 +67,8 @@ public class RiptideAuto {
         opMode.telemetry.update();
 
         switch (currentState) {
+            // if theres a time we drive say (6, 0) followed by (0, 32) it would shave time to move (6, 6) followed by (0, 26) or an even more drastic split
+            // added ~! where that might work
 
             // specimen
 
@@ -77,7 +79,7 @@ public class RiptideAuto {
                                 new WaitCommand(750),
                                 new RoadRunnerDrive(32, 0, riptide.drive),
                                 new InstantCommand(() -> riptide.vertical.toggleClawState()),
-                                new RoadRunnerDrive(-6, 0, riptide.drive),
+                                new RoadRunnerDrive(-6, 0, riptide.drive), // ~!
                                 new InstantCommand(() -> currentState = Task.PUSH_SAMPLES)
                             )
                         );
@@ -89,8 +91,8 @@ public class RiptideAuto {
                         new SequentialCommandGroup(
                                 new RoadRunnerDrive(0, -28, riptide.drive),
                                 new RoadRunnerDrive(30, -12, riptide.drive),
-                                new RoadRunnerDrive(-48, 0, riptide.drive),
-                                new RoadRunnerDrive(48, 0, riptide.drive),
+                                new RoadRunnerDrive(-48, 0, riptide.drive), // this might can be shorter
+                                new RoadRunnerDrive(48, 0, riptide.drive), //
                                 new RoadRunnerDrive(0, -12, riptide.drive),
                                 new RoadRunnerDrive(-48, 10, riptide.drive),
                                 new RoadRunnerDrive(-8, 0, riptide.drive),
@@ -102,9 +104,9 @@ public class RiptideAuto {
                 opMode.schedule(
                         riptide.GoHang(),
                         new SequentialCommandGroup(
-                                new WaitCommand(250),
+                                new WaitCommand(250),   // see if this can be lower but its pretty low
                         new RoadRunnerDrive(22, 37 + (additionalCycles * 3), riptide.drive),
-                        new RoadRunnerDrive(18, 0, riptide.drive),
+                        new RoadRunnerDrive(18, 0, riptide.drive), // make this drive +X less but more on the above if possible
                         new InstantCommand(() -> riptide.vertical.toggleClawState()),
                         new InstantCommand(() -> currentState = Task.RETRIEVE_SPECIMEN)
                 ));
@@ -113,10 +115,10 @@ public class RiptideAuto {
             case RETRIEVE_SPECIMEN:
                 additionalCycles++;
                 opMode.schedule(new SequentialCommandGroup(
-                        new RoadRunnerDrive(-6, 0, riptide.drive),
+                        new RoadRunnerDrive(-6, 0, riptide.drive), // ~!
                         riptide.GoWall(),
-                        new RoadRunnerDrive(-18, -37, riptide.drive),
-                        new RoadRunnerDrive(-8, 0, riptide.drive),
+                        new RoadRunnerDrive(-18, -37, riptide.drive), // see if we can combine this and the above into 1
+                        new RoadRunnerDrive(-8, 0, riptide.drive), // ((possibly)) this too
                         new InstantCommand(() -> riptide.vertical.toggleClawState()),
                         new InstantCommand(() -> currentState = Task.HANG_SPECIMEN)
                 ));

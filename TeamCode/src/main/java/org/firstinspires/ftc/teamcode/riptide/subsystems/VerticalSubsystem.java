@@ -113,17 +113,18 @@ public class VerticalSubsystem extends SubsystemBase {
         prevSlidePosition = Position.HANG;
         mState = SlideSubsystemState.AUTO;
 
-        shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
-        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
-        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
-        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-        mGripState = GripState.CLOSED;
-        grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+        if(riptide.mOpModeType == Riptide.OpModeType.AUTO) {
+            shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+            shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+            rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
+            elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+            mGripState = GripState.CLOSED;
+            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+        }
 
         opmode.telemetry.addLine("Slide Init");
         opmode.telemetry.update();
     }
-
 
     @Override
     public void periodic() {

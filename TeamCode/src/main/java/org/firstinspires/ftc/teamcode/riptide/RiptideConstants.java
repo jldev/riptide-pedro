@@ -7,12 +7,8 @@ public class RiptideConstants {
 
 
     public static double IN_PER_TICK = .00104;
-    public static double SLIDE_SPEED = 1.0;
     public static int VERT_SLIDE_MANUAL_SPEED = 25;
     public static int HORZ_SLIDE_MANUAL_SPEED = 10;
-    public static double PIVOT_SPEED = 1.0;
-    public static int PIVOT_MANUAL_SPEED = 15;
-    public static double SLIDE_LOCK_POWER = 0.2;
 
     public static double SLIDES_PID_TOLERANCE = 10;
     public static double SLIDES_PID_POS_COEFFICIENT = .25;
@@ -26,11 +22,6 @@ public class RiptideConstants {
     public static double VERTICAL_PID_I = 0.0;
     public static double VERTICAL_PID_D = 0.00;
     public static double VERTICAL_PID_F = 0.0;
-
-    public static double PIVOT_PID_P = 0.0175;
-    public static double PIVOT_PID_I = 0.0;
-    public static double PIVOT_PID_D = 0.001;
-    public static double PIVOT_PID_F = 0.0;
 
     public  static double LIFT_POS_0 = 0.975f;
     public  static double LIFT_POS_1 = 0.9f;
@@ -73,7 +64,6 @@ public class RiptideConstants {
     public static double CLAW_WRIST_INIT = 0f;
 
     // HOME
-    public static double HORZ_HOME_PIVOT = .7f;
     public static double HORZ_HOME_SHOULDER = .05f;
     public static double HORZ_HOME_ELBOW = 1f;
 
@@ -81,7 +71,6 @@ public class RiptideConstants {
 
     // DEPLOYED
 
-    public static double HORZ_DEPLOYED_PIVOT = 0.55f;
     public static double HORZ_DEPLOYED_SHOULDER = .5f;
     public static double HORZ_DEPLOYED_SHOULDER_DOWN = .68f;
     // .275 - .825
@@ -91,7 +80,6 @@ public class RiptideConstants {
 
     // WALL
 
-    public static double HORZ_WALL_PIVOT = 0.1f;
     public static double HORZ_WALL_SHOULDER = .75f;
     // .275 - .825
     public static double HORZ_WALL_ELBOW = 0.35f;
@@ -99,7 +87,7 @@ public class RiptideConstants {
     public static double HORZ_WALL_WRIST = 0f;
 
     // HANDSHAKE
-    public static double HORZ_HANDSHAKE_PIVOT = 0f;
+
     public static double HORZ_HANDSHAKE_SHOULDER = .55f;
     public static double HORZ_HANDSHAKE_ELBOW = .4f;
 

@@ -96,8 +96,14 @@ public class HorizontalSubsystem extends SubsystemBase {
         grip = _grip;
 
         elbow.setDirection(Servo.Direction.REVERSE);
-        mGripState = GripState.OPEN;
-        grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
+
+        if(riptide.mOpModeType == Riptide.OpModeType.AUTO) {
+            shoulder.setPosition(RiptideConstants.HORZ_WALL_SHOULDER);
+            elbow.setPosition(RiptideConstants.HORZ_WALL_ELBOW);
+            wrist.setPosition(RiptideConstants.HORZ_WALL_WRIST);
+            mGripState = GripState.OPEN;
+            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
+        }
 
         deployed = false;
     }
@@ -121,10 +127,6 @@ public class HorizontalSubsystem extends SubsystemBase {
             } else {
                 shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
             }
-
-            //wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST); // if testing the bellow comment this out
-
-            // idk if this works lol
 
             if(!deployed) {
                 wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
