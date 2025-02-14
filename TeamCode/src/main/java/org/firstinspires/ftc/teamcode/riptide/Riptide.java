@@ -116,9 +116,9 @@ public class Riptide {
 
         // pseudo buttons
         magSwitchButton1 = new SwitchReader(opMode.hardwareMap, false, "vSwitch2");
-        magSwitchButton1.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder1));
+        magSwitchButton1.whileHeld(new InstantCommand(vertical::stopMotorResetEncoder1));
         magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
-        magSwitchButton2.whenPressed(new InstantCommand(vertical::stopMotorResetEncoder2));
+        magSwitchButton2.whileHeld(new InstantCommand(vertical::stopMotorResetEncoder2));
 
         opMode.register(vertical);
         opMode.register(horizontal);
@@ -176,10 +176,10 @@ public class Riptide {
                     vertical.mGripState = VerticalSubsystem.GripState.CLOSED;
                     vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                 }),
-                new WaitCommand(250),
+                new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-                new WaitCommand(250),
+                new WaitCommand(150),
                 vertical.changeServos(VerticalSubsystem.Position.HANG),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );
@@ -191,6 +191,7 @@ public class Riptide {
                     vertical.mGripState = VerticalSubsystem.GripState.OPEN;
                     vertical.grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
                 }),
+                new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
                 vertical.changeServos(VerticalSubsystem.Position.WALL),

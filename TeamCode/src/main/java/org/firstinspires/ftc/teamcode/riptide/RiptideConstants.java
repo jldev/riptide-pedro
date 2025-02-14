@@ -22,7 +22,7 @@ public class RiptideConstants {
     public static double HORIZONTAL_PID_D = 0.00;
     public static double HORIZONTAL_PID_F = 0.0;
 
-    public static double VERTICAL_PID_P = 0.0075;
+    public static double VERTICAL_PID_P = 0.02;
     public static double VERTICAL_PID_I = 0.0;
     public static double VERTICAL_PID_D = 0.00;
     public static double VERTICAL_PID_F = 0.0;
@@ -120,7 +120,7 @@ public class RiptideConstants {
     // hang
 
     public static double VERT_HANG_SHOULDER = 0.85f;
-    public static double VERT_HANG_ROTATION = 0.55f;
+    public static double VERT_HANG_ROTATION = 0.575f;
     public static double VERT_HANG_ELBOW = 0.85f;
 
     // wall

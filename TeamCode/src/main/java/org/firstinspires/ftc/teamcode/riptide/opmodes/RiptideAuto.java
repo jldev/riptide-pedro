@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerDrive;
@@ -35,6 +36,9 @@ public class RiptideAuto {
         WAIT_FOR_TASK
     }
 
+    private  int additionalCycles;
+    private int desiredSpecimens;
+
     private int runCount = 0;
 
     public RiptideAuto(CommandOpMode commandOpMode, Riptide.FieldPos startingPosition, Riptide.AllianceColor allianceColor, Riptide.Target target) {
@@ -51,6 +55,8 @@ public class RiptideAuto {
         }
         Pose2d startPos = new Pose2d(0, 0, Math.toRadians(180));
         riptide.setStartPosition(startPos);
+        additionalCycles = 0;
+        desiredSpecimens = 3;
     }
 
     public void run() {
@@ -66,12 +72,12 @@ public class RiptideAuto {
 
             case PRELOAD_DRIVE:
                 opMode.schedule(
+                        riptide.GoHang(),
                         new SequentialCommandGroup(
-                                riptide.GoHang(),
+                                new WaitCommand(750),
                                 new RoadRunnerDrive(32, 0, riptide.drive),
                                 new InstantCommand(() -> riptide.vertical.toggleClawState()),
                                 new RoadRunnerDrive(-6, 0, riptide.drive),
-                                riptide.GoWall(),
                                 new InstantCommand(() -> currentState = Task.PUSH_SAMPLES)
                             )
                         );
@@ -79,38 +85,39 @@ public class RiptideAuto {
                 break;
             case PUSH_SAMPLES:
                 opMode.schedule(
+                        riptide.GoWall(),
                         new SequentialCommandGroup(
-                                riptide.GoWall(),
-                                new RoadRunnerDrive(0, -32, riptide.drive),
-                                new RoadRunnerDrive(26, 0, riptide.drive),
-                                new RoadRunnerDrive(0, -8, riptide.drive),
-                                new RoadRunnerDrive(-44, 0, riptide.drive),
-                                new RoadRunnerDrive(44, 0, riptide.drive),
+                                new RoadRunnerDrive(0, -28, riptide.drive),
+                                new RoadRunnerDrive(30, -12, riptide.drive),
+                                new RoadRunnerDrive(-48, 0, riptide.drive),
+                                new RoadRunnerDrive(48, 0, riptide.drive),
                                 new RoadRunnerDrive(0, -12, riptide.drive),
-                                new RoadRunnerDrive(-46, 0, riptide.drive),
-                                new RoadRunnerDrive(-10, 0, riptide.drive),
+                                new RoadRunnerDrive(-48, 10, riptide.drive),
+                                new RoadRunnerDrive(-8, 0, riptide.drive),
                                 new InstantCommand(() -> currentState = Task.HANG_SPECIMEN))
                 );
                 currentState = Task.WAIT_FOR_TASK;
                 break;
             case HANG_SPECIMEN:
-                opMode.schedule(new SequentialCommandGroup(
+                opMode.schedule(
                         riptide.GoHang(),
-                        new RoadRunnerDrive(21, 54, riptide.drive),
-                        new RoadRunnerDrive(11, 0, riptide.drive),
+                        new SequentialCommandGroup(
+                                new WaitCommand(250),
+                        new RoadRunnerDrive(22, 37 + (additionalCycles * 3), riptide.drive),
+                        new RoadRunnerDrive(18, 0, riptide.drive),
                         new InstantCommand(() -> riptide.vertical.toggleClawState()),
                         new InstantCommand(() -> currentState = Task.RETRIEVE_SPECIMEN)
                 ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;
             case RETRIEVE_SPECIMEN:
-                //untested but should be basically same thing as hang specimen in reverse
+                additionalCycles++;
                 opMode.schedule(new SequentialCommandGroup(
                         new RoadRunnerDrive(-6, 0, riptide.drive),
                         riptide.GoWall(),
-                        new RoadRunnerDrive(-20, -52, riptide.drive),
-                        new RoadRunnerDrive(-6, 0, riptide.drive),
-                        new RoadRunnerDrive(-20, -52, riptide.drive),
+                        new RoadRunnerDrive(-18, -37, riptide.drive),
+                        new RoadRunnerDrive(-8, 0, riptide.drive),
+                        new InstantCommand(() -> riptide.vertical.toggleClawState()),
                         new InstantCommand(() -> currentState = Task.HANG_SPECIMEN)
                 ));
                 currentState = Task.WAIT_FOR_TASK;
