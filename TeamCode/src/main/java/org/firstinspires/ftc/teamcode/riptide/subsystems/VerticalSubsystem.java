@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.RiptideConstants;
+import org.firstinspires.ftc.teamcode.riptide.SwitchReader;
 
 public class VerticalSubsystem extends SubsystemBase {
     //private final Trigger encoderStopTrigger;
@@ -277,6 +278,31 @@ public class VerticalSubsystem extends SubsystemBase {
         mSlide2PIDController.reset();
         mSlideMotor2.stopMotor();
         mSlideMotor2.resetEncoder();
+    }
+
+    public void homeSlides(SwitchReader magSwitchButton1, SwitchReader magSwitchButton2) {
+        int currentPosition = 0;
+        while(!magSwitchButton1.get() || !magSwitchButton2.get()){
+            if(!magSwitchButton1.get()){
+                currentPosition = mSlideMotor1.getCurrentPosition();
+                mSlide1PIDController.setSetPoint(currentPosition - 10);
+                double output = mSlide1PIDController.calculate(
+                        mSlideMotor1.getCurrentPosition());
+                mSlideMotor1.set(output);
+            } else {
+                stopMotorResetEncoder1();
+            }
+
+            if(!magSwitchButton2.get()){
+                currentPosition = mSlideMotor2.getCurrentPosition();
+                mSlide2PIDController.setSetPoint(currentPosition - 10);
+                double output = mSlide2PIDController.calculate(
+                        mSlideMotor2.getCurrentPosition());
+                mSlideMotor2.set(output);
+            } else {
+                stopMotorResetEncoder2();
+            }
+        }
     }
     public void verticalManualSlideControl(SlideManualControlDirection direction){
         // anytime the user want to manual control we need to be in the manual state

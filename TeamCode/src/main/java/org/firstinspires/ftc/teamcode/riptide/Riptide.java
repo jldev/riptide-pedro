@@ -120,6 +120,8 @@ public class Riptide {
         magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
         magSwitchButton2.whileHeld(new InstantCommand(vertical::stopMotorResetEncoder2));
 
+        vertical.homeSlides(magSwitchButton1, magSwitchButton2);
+
         opMode.register(vertical);
         opMode.register(horizontal);
 
@@ -217,7 +219,6 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new WaitCommand(500),
                 new InstantCommand(() -> {
-//                    claw.ChangeClawPositionTo(ClawSubsystem.ClawState.BASKET);
                     vertical.changePositionTo(VerticalSubsystem.Position.PRELOAD_BASKET);})
         );
     }
