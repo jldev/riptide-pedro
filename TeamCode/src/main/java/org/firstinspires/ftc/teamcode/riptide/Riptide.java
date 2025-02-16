@@ -176,8 +176,9 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HOME)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.SUB)),
-                vertical.changeServos(VerticalSubsystem.Position.HOME),
-                horizontal.changeServos(HorizontalSubsystem.Position.SUB)
+                horizontal.changeServos(HorizontalSubsystem.Position.SUB),
+                vertical.changeServos(VerticalSubsystem.Position.HOME)
+
 
         );
     }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.riptide.subsystems;
 
 
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -129,7 +130,10 @@ public class HorizontalSubsystem extends SubsystemBase {
 
         if(slidePosition == Position.HANDSHAKE && mSlideMotor.getCurrentPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE))
         {
-            mOpMode.schedule(mRiptide.GoBasket());
+            mOpMode.schedule(new SequentialCommandGroup(
+                    new WaitCommand(200),
+                    mRiptide.GoBasket())
+            );
         }
 
 
@@ -235,6 +239,7 @@ public class HorizontalSubsystem extends SubsystemBase {
                 );
             case HANDSHAKE:
                 return new SequentialCommandGroup(
+                        new InstantCommand(() -> mServoState = Position.HANDSHAKE),
                         new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HANDSHAKE_ELBOW)),
                         new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_HANDSHAKE_SHOULDER)),
                         new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_HANDSHAKE_WRIST)),
@@ -242,7 +247,6 @@ public class HorizontalSubsystem extends SubsystemBase {
                         new InstantCommand(() ->{
                             mGripState = GripState.CLOSED;
                             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL);
-                            mServoState = Position.HANDSHAKE;
                         })
                 );
         }
