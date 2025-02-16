@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.RiptideConstants;
+import org.firstinspires.ftc.teamcode.riptide.SwitchReader;
 
 public class HorizontalSubsystem extends SubsystemBase {
     //private final Trigger encoderStopTrigger;
@@ -41,20 +42,29 @@ public class HorizontalSubsystem extends SubsystemBase {
         HOME,
         OBS,
         SUB,
-        WALL
+        WALL,
+        HANDSHAKE
     }
 
-    private enum GripState {
+    public enum GripState {
         OPEN,
         CLOSED
     }
     private GripState mGripState;
 
+    private enum DownState {
+        UP,
+        DOWN
+    }
+    private DownState mDownState;
+
     SlideSubsystemState mState;
 
     public Position slidePosition;
 
-    private final MotorEx mSlideMotor;
+    private Position mServoState;
+
+    public final MotorEx mSlideMotor;
     private final PIDFController mSlidePIDController;
 
     public final Servo shoulder;
@@ -77,7 +87,6 @@ public class HorizontalSubsystem extends SubsystemBase {
 
 
         mSlideMotor.stopAndResetEncoder();
-        mSlideMotor.setRunMode(MotorEx.RunMode.RawPower);
         mSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         mSlideMotor.resetEncoder();
         mSlideMotor.motor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -85,6 +94,7 @@ public class HorizontalSubsystem extends SubsystemBase {
 
         mSlideTargetPosiion = 0;
         slidePosition = Position.HOME;
+        mServoState = Position.HOME;
         mState = SlideSubsystemState.AUTO;
 
         opmode.telemetry.addLine("Slide Init");
@@ -96,13 +106,15 @@ public class HorizontalSubsystem extends SubsystemBase {
         grip = _grip;
 
         elbow.setDirection(Servo.Direction.REVERSE);
+        shoulder.setDirection(Servo.Direction.REVERSE);
 
         if(riptide.mOpModeType == Riptide.OpModeType.AUTO) {
             shoulder.setPosition(RiptideConstants.HORZ_WALL_SHOULDER);
             elbow.setPosition(RiptideConstants.HORZ_WALL_ELBOW);
             wrist.setPosition(RiptideConstants.HORZ_WALL_WRIST);
-            mGripState = GripState.OPEN;
-            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
+            mGripState = GripState.CLOSED;
+            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
+            mDownState = DownState.UP;
         }
 
         deployed = false;
@@ -111,24 +123,32 @@ public class HorizontalSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        mOpMode.telemetry.addData("Servo State", mServoState);
+        mOpMode.telemetry.addData("Slide State", slidePosition);
+        mOpMode.telemetry.update();
+
+        if(slidePosition == Position.HANDSHAKE && mSlideMotor.getCurrentPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE))
+        {
+            mOpMode.schedule(mRiptide.GoBasket());
+        }
 
 
-        if(mGripState == GripState.CLOSED){ //we can add check for if claw down ect in the future
-            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
+        if(mGripState == GripState.CLOSED){
+            if(slidePosition != Position.HANDSHAKE)
+            {
+                grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
+            } else
+            {
+                grip.setPosition(RiptideConstants.GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL);
+            }
         } else {
             grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
         }
 
         // special case for claw control in sub
-        if(slidePosition == Position.SUB){
-            if(mRiptide.gunnerOp.getLeftY() < -0.5f)
-            {
-                shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER_DOWN);
-            } else {
-                shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
-            }
+        if(slidePosition == Position.SUB) {
 
-            if(!deployed) {
+            if (!deployed) {
                 wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
                 desiredYaw = RiptideConstants.HORZ_DEPLOYED_WRIST;
                 deployed = true;
@@ -142,23 +162,22 @@ public class HorizontalSubsystem extends SubsystemBase {
             }
         }
 
+        if(mServoState == Position.SUB){
+            if(mDownState == DownState.DOWN){
+                shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER_DOWN);
+            } else {
+                shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER);
+            }
+        }
+
         if (mState == SlideSubsystemState.AUTO) {
                 switch (slidePosition) {
                     case HOME:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HOME;
                         deployed = false;
                         break;
-                    case OBS:
-                        mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_OBS;
-                        deployed = false;
-                        break;
-                    case SUB :
-                        mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_SUB;
-                        break;
-                    case WALL :
-                        mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_WALL;
-                        deployed = false;
-                        break;
+                    case HANDSHAKE:
+                        mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE;
             }
         } else {
             switch (mSlideManualDirection) {
@@ -173,8 +192,6 @@ public class HorizontalSubsystem extends SubsystemBase {
                 case OFF:
                     break;
             }
-            if(mSlideTargetPosiion < 0.00)
-                mSlideTargetPosiion = 0;
         }
 
         // add this to stay within the rules of 42" max length
@@ -194,19 +211,39 @@ public class HorizontalSubsystem extends SubsystemBase {
                 return new SequentialCommandGroup(
                         new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER)),
                         new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST)),
-                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW))
+                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW)),
+                        new InstantCommand(() ->{
+                            mGripState = HorizontalSubsystem.GripState.CLOSED;
+                            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
+                            mServoState = Position.HOME;
+                        })
                 );
             case OBS:
                 break;
             case SUB:
                 return new SequentialCommandGroup(
-                  new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW))
+                  new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW)),
+                        new WaitCommand(250),
+                        new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER)),
+                        new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST)),
+                        new InstantCommand(() -> mDownState = DownState.UP),
+                        new InstantCommand(() ->{
+                            mGripState = GripState.OPEN;
+                            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
+                            mServoState = Position.SUB;
+                        })
                 );
-            case WALL:
+            case HANDSHAKE:
                 return new SequentialCommandGroup(
-                        new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_WALL_SHOULDER)),
-                        new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_WALL_WRIST)),
-                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_WALL_ELBOW))
+                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HANDSHAKE_ELBOW)),
+                        new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_HANDSHAKE_SHOULDER)),
+                        new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_HANDSHAKE_WRIST)),
+                        new WaitCommand(250),
+                        new InstantCommand(() ->{
+                            mGripState = GripState.CLOSED;
+                            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL);
+                            mServoState = Position.HANDSHAKE;
+                        })
                 );
         }
         return new WaitCommand(0);
@@ -219,6 +256,37 @@ public class HorizontalSubsystem extends SubsystemBase {
             mGripState = GripState.OPEN;
         }
     }
+
+    public void setClawImmediate(HorizontalSubsystem.GripState state){
+        mGripState = state;
+        if(mGripState == HorizontalSubsystem.GripState.OPEN){
+            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
+        } else {
+            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
+        }
+    }
+    public void toggleClawDownState(){
+        if (mDownState == DownState.UP){
+            mDownState = DownState.DOWN;
+        } else {
+            mDownState = DownState.UP;
+        }
+    }
+
+    public void toggleClawAuto(){ //idk if we need this u might have said or not
+        if (mGripState == GripState.OPEN){
+            mGripState = GripState.CLOSED;
+        } else {
+            mGripState = GripState.OPEN;
+        }
+
+        if(mGripState == GripState.OPEN){
+            mDownState = DownState.DOWN;
+        } else {
+            mDownState = DownState.UP;
+        }
+    }
+
     public void changeToSlidePosition(Position pos){
         slidePosition = pos;
         mState = SlideSubsystemState.AUTO;
@@ -229,7 +297,22 @@ public class HorizontalSubsystem extends SubsystemBase {
         mSlidePIDController.reset();
         mSlideMotor.stopMotor();
         mSlideMotor.resetEncoder();
+        mSlideTargetPosiion = 0;
     }
+
+    public void homeSlides(SwitchReader magSwitchButton) {
+        int currentPosition = 0;
+        while(!magSwitchButton.get()){
+            currentPosition = mSlideMotor.getCurrentPosition();
+            mSlidePIDController.setSetPoint(currentPosition - 10);
+            double output = mSlidePIDController.calculate(
+                    mSlideMotor.getCurrentPosition());
+            mSlideMotor.set(output);
+
+        }
+        stopMotorResetEncoder();
+    }
+
     public void horizontalManualSlideControl(SlideManualControlDirection direction){
         // anytime the user want to manual control we need to be in the manual state
         mState = SlideSubsystemState.MANUAL;

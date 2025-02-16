@@ -150,12 +150,6 @@ public class VerticalSubsystem extends SubsystemBase {
                 case BASKET:
                     mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
                     break;
-                case PRELOAD_BASKET:
-                    mSlideTargetPosiion = RiptideConstants.VERTICAL_PRELOAD_BASKET;
-                    break;
-                case ENDGAME:
-                    mSlideTargetPosiion = RiptideConstants.VERTICAL_ENDGAME;
-                    break;
             }
         } else {
             switch (mSlideManualDirection) {
@@ -201,8 +195,8 @@ public class VerticalSubsystem extends SubsystemBase {
                                     shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-                                    mGripState = GripState.CLOSED;
-                                    grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                                    mGripState = GripState.OPEN;
+                                    grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
                                 }));
                     case WALL:
                         return new SequentialCommandGroup(
@@ -245,6 +239,7 @@ public class VerticalSubsystem extends SubsystemBase {
                         );
                     case PRELOAD_BASKET:
                     case ENDGAME:
+
                 }
                 return new WaitCommand(0);
     }
@@ -264,6 +259,15 @@ public class VerticalSubsystem extends SubsystemBase {
             mGripState = GripState.CLOSED;
         } else {
             mGripState = GripState.OPEN;
+        }
+    }
+
+    public void setClawImmediate(GripState state){
+        mGripState = state;
+        if(mGripState == GripState.OPEN){
+            grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
+        } else {
+            grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
         }
     }
 

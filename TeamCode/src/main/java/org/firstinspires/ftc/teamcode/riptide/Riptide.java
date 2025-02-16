@@ -31,6 +31,7 @@ public class Riptide {
 
     public final SwitchReader magSwitchButton1;
     public final SwitchReader magSwitchButton2;
+    public final SwitchReader magSwitchButton3;
 
     //subsystems
     public final VerticalSubsystem vertical;
@@ -68,6 +69,7 @@ public class Riptide {
     public GamepadButton hang_slidePreset;
     public GamepadButton basket_slidePreset;
     public GamepadTriggerAsButton horizontalClawButton;
+    public GamepadButton horizontalClawDown;
     public GamepadTriggerAsButton verticalClawButton;
 
     // Driver
@@ -120,7 +122,13 @@ public class Riptide {
         magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
         magSwitchButton2.whileHeld(new InstantCommand(vertical::stopMotorResetEncoder2));
 
-        vertical.homeSlides(magSwitchButton1, magSwitchButton2);
+        magSwitchButton3 = new SwitchReader(opMode.hardwareMap, false, "hSwitch");
+        magSwitchButton3.whileHeld(new InstantCommand(horizontal::stopMotorResetEncoder));
+
+        if(mOpModeType == Riptide.OpModeType.AUTO) {
+            vertical.homeSlides(magSwitchButton1, magSwitchButton2);
+            horizontal.homeSlides(magSwitchButton3);
+        }
 
         opMode.register(vertical);
         opMode.register(horizontal);
@@ -132,6 +140,8 @@ public class Riptide {
 
         horizontalSlideOut = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_LEFT);
         horizontalSlideIn = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_RIGHT);
+
+        horizontalClawDown = new GamepadButton(gunnerOp, GamepadKeys.Button.LEFT_BUMPER);
 
            // presets
         home_slidePreset = new GamepadButton(gunnerOp, GamepadKeys.Button.A);
@@ -175,8 +185,7 @@ public class Riptide {
     public Command GoHang() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
-                    vertical.mGripState = VerticalSubsystem.GripState.CLOSED;
-                    vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                    vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED);
                 }),
                 new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
@@ -190,8 +199,7 @@ public class Riptide {
     public Command GoWall() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
-                    vertical.mGripState = VerticalSubsystem.GripState.OPEN;
-                    vertical.grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
+                    vertical.setClawImmediate(VerticalSubsystem.GripState.OPEN);
                 }),
                 new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
@@ -204,13 +212,28 @@ public class Riptide {
     public Command GoBasket() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
-                    vertical.grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                    vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED);
+                    horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
                 }),
+                new WaitCommand(200),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
                 vertical.changeServos(VerticalSubsystem.Position.BASKET),
+                new WaitCommand(200),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
 
+        );
+    }
+
+    public Command GoHandshake(){
+        return new SequentialCommandGroup(
+                vertical.changeServos(VerticalSubsystem.Position.HOME),
+                horizontal.changeServos(HorizontalSubsystem.Position.HANDSHAKE),
+                new WaitCommand(500),
+                new InstantCommand(() -> {
+                    vertical.changePositionTo(VerticalSubsystem.Position.HOME);
+                    horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HANDSHAKE);
+                })
         );
     }
 
