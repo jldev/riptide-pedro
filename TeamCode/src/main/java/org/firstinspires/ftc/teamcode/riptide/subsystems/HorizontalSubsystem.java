@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.riptide.subsystems;
 
 
 import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -43,8 +42,8 @@ public class HorizontalSubsystem extends SubsystemBase {
         HOME,
         OBS,
         SUB,
-        WALL,
-        HANDSHAKE
+        HANDSHAKE,
+        SPECIFIED
     }
 
     public enum GripState {
@@ -75,6 +74,8 @@ public class HorizontalSubsystem extends SubsystemBase {
 
     private double desiredYaw;
     private boolean deployed;
+
+    public int specifiedPos = 0;
 
     public HorizontalSubsystem(Riptide riptide, MotorEx slideMotor1, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder, Servo _elbow, Servo _wrist, Servo _grip) {
         mRiptide = riptide;
@@ -110,9 +111,10 @@ public class HorizontalSubsystem extends SubsystemBase {
         shoulder.setDirection(Servo.Direction.REVERSE);
 
         if(riptide.mOpModeType == Riptide.OpModeType.AUTO) {
-            shoulder.setPosition(RiptideConstants.HORZ_WALL_SHOULDER);
-            elbow.setPosition(RiptideConstants.HORZ_WALL_ELBOW);
-            wrist.setPosition(RiptideConstants.HORZ_WALL_WRIST);
+            mServoState = Position.HOME;
+            shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER);
+            elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW);
+            wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST);
             mGripState = GripState.CLOSED;
             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
             mDownState = DownState.UP;
@@ -182,6 +184,23 @@ public class HorizontalSubsystem extends SubsystemBase {
                         break;
                     case HANDSHAKE:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE;
+                    case SPECIFIED:
+                        mSlideTargetPosiion = specifiedPos;
+                        mOpMode.schedule(changeServos(Position.SUB));
+                        mServoState = Position.SUB;
+                        if(mSlideMotor.getCurrentPosition() > (specifiedPos - RiptideConstants.SLIDES_PID_TOLERANCE))
+                        {
+                            toggleClawDownState();
+                            toggleClawState();
+                            mOpMode.schedule(
+                                    new SequentialCommandGroup(
+                                            new WaitCommand(1000),
+                                            // go to handshake
+                                            new InstantCommand(() -> {
+                                                slidePosition = Position.HOME;
+                                                mServoState = Position.SUB;
+                                            })));
+                        }
             }
         } else {
             switch (mSlideManualDirection) {
@@ -213,23 +232,24 @@ public class HorizontalSubsystem extends SubsystemBase {
         switch(pos){
             case HOME:
                 return new SequentialCommandGroup(
+                        new InstantCommand(() -> mServoState = Position.HOME),
                         new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER)),
                         new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST)),
                         new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW)),
                         new InstantCommand(() ->{
                             mGripState = HorizontalSubsystem.GripState.CLOSED;
                             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
-                            mServoState = Position.HOME;
                         })
                 );
             case OBS:
                 break;
             case SUB:
                 return new SequentialCommandGroup(
-                  new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW)),
-                        new WaitCommand(250),
                         new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER)),
                         new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST)),
+                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW + .075)),
+                        new WaitCommand(200),
+                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW)),
                         new InstantCommand(() -> mDownState = DownState.UP),
                         new InstantCommand(() ->{
                             mGripState = GripState.OPEN;
@@ -243,7 +263,6 @@ public class HorizontalSubsystem extends SubsystemBase {
                         new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HANDSHAKE_ELBOW)),
                         new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_HANDSHAKE_SHOULDER)),
                         new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_HANDSHAKE_WRIST)),
-                        new WaitCommand(250),
                         new InstantCommand(() ->{
                             mGripState = GripState.CLOSED;
                             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL);
@@ -251,6 +270,12 @@ public class HorizontalSubsystem extends SubsystemBase {
                 );
         }
         return new WaitCommand(0);
+    }
+
+    public void setSpecifiedPos(int pos)
+    {
+        specifiedPos = pos;
+        slidePosition = Position.SPECIFIED;
     }
 
     public void toggleClawState(){

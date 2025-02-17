@@ -13,7 +13,7 @@ public class RiptideConstants {
     public static double SLIDES_PID_TOLERANCE = 10;
     public static double SLIDES_PID_POS_COEFFICIENT = .25;
 
-    public static double HORIZONTAL_PID_P = 0.02;
+    public static double HORIZONTAL_PID_P = 0.1;
     public static double HORIZONTAL_PID_I = 0.001;
     public static double HORIZONTAL_PID_D = 0.00;
     public static double HORIZONTAL_PID_F = 0.0;
@@ -63,7 +63,7 @@ public class RiptideConstants {
     public static double CLAW_WRIST_INIT = 0f;
 
     // HOME
-    public static double HORZ_HOME_SHOULDER = .475f;
+    public static double HORZ_HOME_SHOULDER = .75f;
     public static double HORZ_HOME_ELBOW = .05f;
 
     public static double HORZ_HOME_WRIST = .48f;
@@ -77,17 +77,10 @@ public class RiptideConstants {
     // 0 - .6
     public static double HORZ_DEPLOYED_WRIST = .48f;
 
-    // WALL
-
-    public static double HORZ_WALL_SHOULDER = .75f;
-    // .275 - .825
-    public static double HORZ_WALL_ELBOW = 0.35f;
-    // 0 - .6
-    public static double HORZ_WALL_WRIST = 0f;
 
     // HANDSHAKE
 
-    public static double HORZ_HANDSHAKE_SHOULDER = .55f;
+    public static double HORZ_HANDSHAKE_SHOULDER = .25f;
     public static double HORZ_HANDSHAKE_ELBOW = .875f;
 
     public static double HORZ_HANDSHAKE_WRIST = .48f;
@@ -102,7 +95,7 @@ public class RiptideConstants {
 
     public static double VERT_HOME_SHOULDER = 0.05f;
     public static double VERT_HOME_ROTATION = 0f;
-    public static double VERT_HOME_ELBOW = 1f;
+    public static double VERT_HOME_ELBOW = .975f;
 
     // hang
 
@@ -115,12 +108,6 @@ public class RiptideConstants {
     public static double VERT_WALL_SHOULDER = 0.16f;
     public static double VERT_WALL_ROTATION = 0.0f;
     public static double VERT_WALL_ELBOW = 0.8f;
-
-    // HANDSHAKE
-
-    public static double VERT_HANDSHAKE_SHOULDER = 0.05f;
-    public static double VERT_HANDSHAKE_ROTATION = 0f;
-    public static double VERT_HANDSHAKE_ELBOW = 1f;
 
     // basket
 

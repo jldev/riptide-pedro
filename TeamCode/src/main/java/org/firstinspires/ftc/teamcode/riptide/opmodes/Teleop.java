@@ -33,7 +33,7 @@ public class Teleop extends CommandOpMode {
         // Drive control
         MecanumDriveCommand driveCommand = new MecanumDriveCommand(
                 riptide.drive, () -> -riptide.driverOp.getRightY(),
-                () -> -riptide.driverOp.getRightX(), () -> riptide.driverOp.getLeftX()
+                () -> -riptide.driverOp.getRightX(), () -> (-riptide.driverOp.getLeftX() * .6)
         );
         riptide.drive.setDefaultCommand(driveCommand);
 

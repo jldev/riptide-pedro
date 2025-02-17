@@ -165,6 +165,8 @@ public class VerticalSubsystem extends SubsystemBase {
 
             if(mSlideTargetPosiion < 0.00)
                 mSlideTargetPosiion = 0;
+            if(mSlideTargetPosiion > RiptideConstants.VERTICAL_SLIDE_BASKET)
+                mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
 
             // add this to stay within the rules of 42" max length
             if(mRiptide.horizontal.slidesDeployed()){
@@ -194,7 +196,14 @@ public class VerticalSubsystem extends SubsystemBase {
                                 new InstantCommand(()-> {
                                     shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
-                                    elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+                                    //i apologize for this if statement if too tired to care rn
+                                    if(mRiptide.horizontal.slidePosition == HorizontalSubsystem.Position.SUB)
+                                    {
+                                        elbow.setPosition(1);
+                                    } else
+                                    {
+                                        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+                                    }
                                     mGripState = GripState.OPEN;
                                     grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
                                 }));

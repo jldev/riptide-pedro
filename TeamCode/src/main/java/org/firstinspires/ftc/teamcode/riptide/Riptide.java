@@ -201,12 +201,13 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
                     vertical.setClawImmediate(VerticalSubsystem.GripState.OPEN);
+                    horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
                 }),
                 new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
                 vertical.changeServos(VerticalSubsystem.Position.WALL),
-                horizontal.changeServos(HorizontalSubsystem.Position.WALL)
+                horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );
     }
 
@@ -220,13 +221,14 @@ public class Riptide {
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
                 vertical.changeServos(VerticalSubsystem.Position.BASKET),
-                new WaitCommand(200),
+                new WaitCommand(500),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
 
         );
     }
 
     public Command GoHandshake(){
+        // we need to specify if were going to basket or dropping behind and maybe have a drop behind command here
         return new SequentialCommandGroup(
                 vertical.changeServos(VerticalSubsystem.Position.HOME),
                 horizontal.changeServos(HorizontalSubsystem.Position.HANDSHAKE),
