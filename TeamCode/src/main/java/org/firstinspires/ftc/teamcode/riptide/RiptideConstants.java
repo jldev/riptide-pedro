@@ -31,7 +31,7 @@ public class RiptideConstants {
     //    vertical positions
 
     public static int VERTICAL_SLIDE_HOME = 0;
-    public static int VERTICAL_SLIDE_WALL = 150;
+    public static int VERTICAL_SLIDE_WALL = 0;
     public static int VERTICAL_SLIDE_HANG = 400;
     public static int VERTICAL_SLIDE_BASKET = 2725; //2800;
     public static int VERTICAL_PRELOAD_BASKET = 400; //1900;
@@ -99,9 +99,9 @@ public class RiptideConstants {
 
     // hang
 
-    public static double VERT_HANG_SHOULDER = 0.85f;
-    public static double VERT_HANG_ROTATION = 0.575f;
-    public static double VERT_HANG_ELBOW = 0.85f;
+    public static double VERT_HANG_SHOULDER = 0.8f;
+    public static double VERT_HANG_ROTATION = 0.55f;
+    public static double VERT_HANG_ELBOW = 0.8f;
 
     // wall
 

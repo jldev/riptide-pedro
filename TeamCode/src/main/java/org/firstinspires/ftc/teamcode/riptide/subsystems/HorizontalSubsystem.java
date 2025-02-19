@@ -359,4 +359,8 @@ public class HorizontalSubsystem extends SubsystemBase {
     public boolean slidesDeployed(){
         return deployed;
     }
+
+    public int getCurrentPosition(){
+        return mSlideMotor.getCurrentPosition();
+    }
 }

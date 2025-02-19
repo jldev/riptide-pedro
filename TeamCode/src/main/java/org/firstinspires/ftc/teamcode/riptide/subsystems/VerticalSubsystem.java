@@ -22,7 +22,7 @@ public class VerticalSubsystem extends SubsystemBase {
     //private final Trigger encoderStopTrigger;
     private final Riptide mRiptide;
     private int mSlideTargetPosiion = 0;
-
+    private int mDesiredPosition = 0;
     private final CommandOpMode mOpMode;
     private SlideManualControlDirection mSlideManualDirection = SlideManualControlDirection.OFF;
 
@@ -110,6 +110,7 @@ public class VerticalSubsystem extends SubsystemBase {
         shoulder1.setDirection(Servo.Direction.REVERSE);
 
         mSlideTargetPosiion = 0;
+        mDesiredPosition = 0;
         slidePosition = Position.HOME;
         prevSlidePosition = Position.HANG;
         mState = SlideSubsystemState.AUTO;
@@ -169,22 +170,42 @@ public class VerticalSubsystem extends SubsystemBase {
                 mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
 
             // add this to stay within the rules of 42" max length
-            if(mRiptide.horizontal.slidesDeployed()){
+            if(mRiptide.horizontal.getCurrentPosition() > RiptideConstants.LENGTH_LIMIT_WHEN_VERTICAL_DEPLOYED){
                 if (mSlideTargetPosiion > RiptideConstants.HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED){
                     mSlideTargetPosiion = RiptideConstants.HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED;
                 }
             }
         }
 
-        mSlide1PIDController.setSetPoint(mSlideTargetPosiion);
+        if(Math.abs(mDesiredPosition - mSlideTargetPosiion) <= RiptideConstants.VERT_SLIDE_MANUAL_SPEED){
+            mDesiredPosition = mSlideTargetPosiion;
+        } else {
+            if(mDesiredPosition < mSlideTargetPosiion){
+                mDesiredPosition += RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
+            } else if (mDesiredPosition > mSlideTargetPosiion) {
+                mDesiredPosition -= RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
+            }
+        }
+
+        mSlide1PIDController.setSetPoint(mDesiredPosition);
         double output = mSlide1PIDController.calculate(
                 mSlideMotor1.getCurrentPosition());
-            mSlideMotor1.set(output);
+        mSlideMotor1.set(output);
 
-        mSlide2PIDController.setSetPoint(mSlideTargetPosiion);
+        mSlide2PIDController.setSetPoint(mDesiredPosition);
         output = mSlide2PIDController.calculate(
                 mSlideMotor2.getCurrentPosition());
         mSlideMotor2.set(output);
+
+//        mSlide1PIDController.setSetPoint(mSlideTargetPosiion);
+//        double output = mSlide1PIDController.calculate(
+//                mSlideMotor1.getCurrentPosition());
+//            mSlideMotor1.set(output);
+//
+//        mSlide2PIDController.setSetPoint(mSlideTargetPosiion);
+//        output = mSlide2PIDController.calculate(
+//                mSlideMotor2.getCurrentPosition());
+//        mSlideMotor2.set(output);
     }
 
     public Command changeServos(Position pos) {
