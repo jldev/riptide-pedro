@@ -62,7 +62,7 @@ public class Teleop extends CommandOpMode {
             riptide.horizontal.horizontalManualSlideControl(HorizontalSubsystem.SlideManualControlDirection.OFF);}));
 
         riptide.horizontalClawButton.whenPressed(new InstantCommand(() -> riptide.horizontal.toggleClawState()));
-        riptide.horizontalClawDown.whenPressed(new InstantCommand(() -> riptide.horizontal.toggleClawDownState()));
+//        riptide.horizontalClawDown.whenPressed(new InstantCommand(() -> riptide.horizontal.toggleClawDownState()));
 
         //  Presets
         riptide.home_slidePreset.whenPressed(riptide.GoSub());

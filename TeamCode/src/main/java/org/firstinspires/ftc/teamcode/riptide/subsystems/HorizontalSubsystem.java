@@ -77,6 +77,7 @@ public class HorizontalSubsystem extends SubsystemBase {
 
     public int specifiedPos = 0;
 
+
     public HorizontalSubsystem(Riptide riptide, MotorEx slideMotor1, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder, Servo _elbow, Servo _wrist, Servo _grip) {
         mRiptide = riptide;
         mSlideMotor = slideMotor1;
@@ -129,6 +130,16 @@ public class HorizontalSubsystem extends SubsystemBase {
         mOpMode.telemetry.addData("Servo State", mServoState);
         mOpMode.telemetry.addData("Slide State", slidePosition);
         mOpMode.telemetry.update();
+
+
+        if(slidePosition != Position.SPECIFIED){
+            if(mRiptide.gunnerOp.getRightY() > .5){
+                setClawDownState(DownState.DOWN);
+            } else{
+                setClawDownState(DownState.UP);
+            }
+        }
+
 
         if(slidePosition == Position.HANDSHAKE && mSlideMotor.getCurrentPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE))
         {
@@ -184,23 +195,27 @@ public class HorizontalSubsystem extends SubsystemBase {
                         break;
                     case HANDSHAKE:
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE;
+                        break;
                     case SPECIFIED:
+                        // none of this should be in periodic lol only the check for if were at the specified position
                         mSlideTargetPosiion = specifiedPos;
                         mOpMode.schedule(changeServos(Position.SUB));
                         mServoState = Position.SUB;
                         if(mSlideMotor.getCurrentPosition() > (specifiedPos - RiptideConstants.SLIDES_PID_TOLERANCE))
                         {
-                            toggleClawDownState();
-                            toggleClawState();
+                            setClawDownState(DownState.DOWN);
                             mOpMode.schedule(
                                     new SequentialCommandGroup(
-                                            new WaitCommand(1000),
+                                            new WaitCommand(200),
+                                            new InstantCommand(() -> setClawImmediate(GripState.CLOSED)),
+                                            new WaitCommand(200),
                                             // go to handshake
                                             new InstantCommand(() -> {
                                                 slidePosition = Position.HOME;
                                                 mServoState = Position.SUB;
                                             })));
                         }
+                        break;
             }
         } else {
             switch (mSlideManualDirection) {
@@ -300,6 +315,10 @@ public class HorizontalSubsystem extends SubsystemBase {
         } else {
             mDownState = DownState.UP;
         }
+    }
+
+    public void setClawDownState(DownState state){
+        mDownState = state;
     }
 
     public void toggleClawAuto(){ //idk if we need this u might have said or not

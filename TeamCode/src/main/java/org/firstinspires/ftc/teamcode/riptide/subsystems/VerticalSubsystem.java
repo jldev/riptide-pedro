@@ -44,7 +44,8 @@ public class VerticalSubsystem extends SubsystemBase {
         HANG,
         BASKET,
         PRELOAD_BASKET,
-        ENDGAME
+        ENDGAME,
+        HANDSHAKE
     }
 
     public enum GripState {
@@ -164,8 +165,8 @@ public class VerticalSubsystem extends SubsystemBase {
                     break;
             }
 
-            if(mSlideTargetPosiion < 0.00)
-                mSlideTargetPosiion = 0;
+//            if(mSlideTargetPosiion < 0.00)
+//                mSlideTargetPosiion = 0;
             if(mSlideTargetPosiion > RiptideConstants.VERTICAL_SLIDE_BASKET)
                 mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
 
@@ -267,6 +268,19 @@ public class VerticalSubsystem extends SubsystemBase {
                                 new WaitCommand(750),
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_BASKET_ROTATION))
                         );
+
+                    case HANDSHAKE:
+                        return new SequentialCommandGroup(
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION)),
+                                new WaitCommand(750),
+                                new InstantCommand(()-> {
+                                    shoulder1.setPosition(RiptideConstants.VERT_HANDSHAKE_SHOULDER);
+                                    shoulder2.setPosition(RiptideConstants.VERT_HANDSHAKE_SHOULDER);
+                                    elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+                                    mGripState = GripState.OPEN;
+                                    grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
+                                }));
+
                     case PRELOAD_BASKET:
                     case ENDGAME:
 

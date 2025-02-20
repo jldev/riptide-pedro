@@ -33,14 +33,14 @@ public class RiptideConstants {
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 0;
     public static int VERTICAL_SLIDE_HANG = 400;
-    public static int VERTICAL_SLIDE_BASKET = 2725; //2800;
+    public static int VERTICAL_SLIDE_BASKET = 2775; //2800;
     public static int VERTICAL_PRELOAD_BASKET = 400; //1900;
     public static int VERTICAL_ENDGAME = 500;
 
     public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
     // horizontal positions
     public static int HORIZONTAL_SLIDE_HOME = 0;
-    public static int HORIZONTAL_SLIDE_HANDSHAKE = 70;
+    public static int HORIZONTAL_SLIDE_HANDSHAKE = 30;
 
     public static final int LENGTH_LIMIT_WHEN_VERTICAL_DEPLOYED = 100;
     //   horizontal claw positions
@@ -97,21 +97,23 @@ public class RiptideConstants {
     public static double VERT_HOME_ROTATION = 0f;
     public static double VERT_HOME_ELBOW = .975f;
 
+    public static double VERT_HANDSHAKE_SHOULDER = 0.02;
+
     // hang
 
-    public static double VERT_HANG_SHOULDER = 0.8f;
+    public static double VERT_HANG_SHOULDER = 0.83f;
     public static double VERT_HANG_ROTATION = 0.55f;
     public static double VERT_HANG_ELBOW = 0.8f;
 
     // wall
 
-    public static double VERT_WALL_SHOULDER = 0.16f;
+    public static double VERT_WALL_SHOULDER = 0.22f;
     public static double VERT_WALL_ROTATION = 0.0f;
-    public static double VERT_WALL_ELBOW = 0.8f;
+    public static double VERT_WALL_ELBOW = 0.85f;
 
     // basket
 
-    public static double VERT_BASKET_SHOULDER = 0.7f;
+    public static double VERT_BASKET_SHOULDER = 0.6f;
     public static double VERT_BASKET_ROTATION = 0.55f;
     public static double VERT_BASKET_ELBOW = 0.6f;
 

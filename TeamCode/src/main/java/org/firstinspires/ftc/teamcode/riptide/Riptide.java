@@ -141,7 +141,7 @@ public class Riptide {
         horizontalSlideOut = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_LEFT);
         horizontalSlideIn = new GamepadButton(gunnerOp, GamepadKeys.Button.DPAD_RIGHT);
 
-        horizontalClawDown = new GamepadButton(gunnerOp, GamepadKeys.Button.LEFT_BUMPER);
+//        horizontalClawDown = new GamepadButton(gunnerOp, GamepadKeys.Button.LEFT_BUMPER);
 
            // presets
         home_slidePreset = new GamepadButton(gunnerOp, GamepadKeys.Button.A);
@@ -206,8 +206,9 @@ public class Riptide {
                 new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-                vertical.changeServos(VerticalSubsystem.Position.WALL),
-                horizontal.changeServos(HorizontalSubsystem.Position.HOME)
+                horizontal.changeServos(HorizontalSubsystem.Position.HOME),
+                new WaitCommand(200),
+                vertical.changeServos(VerticalSubsystem.Position.WALL)
         );
     }
 
@@ -230,7 +231,7 @@ public class Riptide {
     public Command GoHandshake(){
         // we need to specify if were going to basket or dropping behind and maybe have a drop behind command here
         return new SequentialCommandGroup(
-                vertical.changeServos(VerticalSubsystem.Position.HOME),
+                vertical.changeServos(VerticalSubsystem.Position.HANDSHAKE),
                 horizontal.changeServos(HorizontalSubsystem.Position.HANDSHAKE),
                 new WaitCommand(500),
                 new InstantCommand(() -> {

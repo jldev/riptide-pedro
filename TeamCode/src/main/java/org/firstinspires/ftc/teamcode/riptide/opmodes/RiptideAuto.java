@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerDrive;
+import org.firstinspires.ftc.teamcode.riptide.subsystems.VerticalSubsystem;
 
 public class RiptideAuto {
 
@@ -89,10 +90,10 @@ public class RiptideAuto {
                         new SequentialCommandGroup(
                                 new RoadRunnerDrive(0, -28, riptide.drive),
                                 new RoadRunnerDrive(30, -12, riptide.drive),
-                                new RoadRunnerDrive(-46, 0, riptide.drive),
-                                new RoadRunnerDrive(46, 0, riptide.drive),
+                                new RoadRunnerDrive(-46, 3, riptide.drive),
+                                new RoadRunnerDrive(43, -3, riptide.drive),
                                 new RoadRunnerDrive(0, -12, riptide.drive),
-                                new RoadRunnerDrive(-48, 10, riptide.drive),
+                                new RoadRunnerDrive(-45, 10, riptide.drive),
                                 new RoadRunnerDrive(-8, 0, riptide.drive),
                                 new InstantCommand(() -> currentState = Task.HANG_SPECIMEN))
                 );
@@ -105,7 +106,10 @@ public class RiptideAuto {
                                 new WaitCommand(250),
                         new RoadRunnerDrive(22, 40 + (additionalCycles * 3), riptide.drive),
                         new RoadRunnerDrive(18, 0, riptide.drive),
-                        new InstantCommand(() -> riptide.vertical.toggleClawState()),
+                        new InstantCommand(() -> {
+                            riptide.vertical.toggleClawState();
+                            riptide.vertical.changePositionTo(VerticalSubsystem.Position.WALL);
+                        }),
                         new InstantCommand(() -> currentState = Task.RETRIEVE_SPECIMEN)
                 ));
                 currentState = Task.WAIT_FOR_TASK;
