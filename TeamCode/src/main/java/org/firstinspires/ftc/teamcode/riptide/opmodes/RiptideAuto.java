@@ -127,13 +127,15 @@ public class RiptideAuto {
                 currentState = Task.WAIT_FOR_TASK;
                 break;
 
+
                 // basket
+
 
             case PARK:
                 currentState = Task.WAIT_FOR_TASK;
                 break;
             case PRELOAD_BASKET_DRIVE:
-                opMode.schedule(new InstantCommand(() ->riptide.horizontal.setSpecifiedPos(200)));
+                riptide.horizontal.Extend(200);
                 currentState = Task.WAIT_FOR_TASK;
                 break;
             case RETRIEVE_SAMPLE:

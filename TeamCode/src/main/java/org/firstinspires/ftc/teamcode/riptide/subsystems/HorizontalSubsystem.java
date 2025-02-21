@@ -43,7 +43,8 @@ public class HorizontalSubsystem extends SubsystemBase {
         OBS,
         SUB,
         HANDSHAKE,
-        SPECIFIED
+        SPECIFIED,
+        REST
     }
 
     public enum GripState {
@@ -52,7 +53,7 @@ public class HorizontalSubsystem extends SubsystemBase {
     }
     private GripState mGripState;
 
-    private enum DownState {
+    public enum DownState {
         UP,
         DOWN
     }
@@ -132,7 +133,7 @@ public class HorizontalSubsystem extends SubsystemBase {
         mOpMode.telemetry.update();
 
 
-        if(slidePosition != Position.SPECIFIED){
+        if(mRiptide.mOpModeType != Riptide.OpModeType.AUTO){
             if(mRiptide.gunnerOp.getRightY() > .5){
                 setClawDownState(DownState.DOWN);
             } else{
@@ -144,7 +145,7 @@ public class HorizontalSubsystem extends SubsystemBase {
         if(slidePosition == Position.HANDSHAKE && mSlideMotor.getCurrentPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE))
         {
             mOpMode.schedule(new SequentialCommandGroup(
-                    new WaitCommand(200),
+                    new WaitCommand(250),
                     mRiptide.GoBasket())
             );
         }
@@ -197,24 +198,14 @@ public class HorizontalSubsystem extends SubsystemBase {
                         mSlideTargetPosiion = RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE;
                         break;
                     case SPECIFIED:
-                        // none of this should be in periodic lol only the check for if were at the specified position
                         mSlideTargetPosiion = specifiedPos;
-                        mOpMode.schedule(changeServos(Position.SUB));
-                        mServoState = Position.SUB;
                         if(mSlideMotor.getCurrentPosition() > (specifiedPos - RiptideConstants.SLIDES_PID_TOLERANCE))
                         {
-                            setClawDownState(DownState.DOWN);
-                            mOpMode.schedule(
-                                    new SequentialCommandGroup(
-                                            new WaitCommand(200),
-                                            new InstantCommand(() -> setClawImmediate(GripState.CLOSED)),
-                                            new WaitCommand(200),
-                                            // go to handshake
-                                            new InstantCommand(() -> {
-                                                slidePosition = Position.HOME;
-                                                mServoState = Position.SUB;
-                                            })));
+                            slidePosition = Position.REST;
+                            mOpMode.schedule(Retract());
                         }
+                        break;
+                    case REST:
                         break;
             }
         } else {
@@ -230,6 +221,9 @@ public class HorizontalSubsystem extends SubsystemBase {
                 case OFF:
                     break;
             }
+            if(mSlideTargetPosiion > 425){
+                mSlideTargetPosiion = 425;
+            }
         }
 
         // add this to stay within the rules of 42" max length
@@ -243,33 +237,49 @@ public class HorizontalSubsystem extends SubsystemBase {
         mSlideMotor.set(output);
     }
 
+    public void Extend(int pos){
+        slidePosition = Position.SPECIFIED;
+        mServoState = Position.SUB;
+        mOpMode.schedule(changeServos(Position.SUB));
+        specifiedPos = pos;
+    }
+
+    public Command Retract(){
+        return  new SequentialCommandGroup(
+                        new InstantCommand(() -> setClawDownState(DownState.DOWN)),
+                        new WaitCommand(400),
+                        new InstantCommand(() -> setClawImmediate(GripState.CLOSED)),
+                        new WaitCommand(250),
+                        mRiptide.GoHandshake()
+        );
+    }
+
     public Command changeServos(Position pos){
         switch(pos){
             case HOME:
                 return new SequentialCommandGroup(
                         new InstantCommand(() -> mServoState = Position.HOME),
+                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW)),
+                        new WaitCommand(150),
                         new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER)),
                         new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST)),
-                        new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW)),
                         new InstantCommand(() ->{
                             mGripState = HorizontalSubsystem.GripState.CLOSED;
                             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_HORIZONTAL);
                         })
                 );
-            case OBS:
-                break;
             case SUB:
                 return new SequentialCommandGroup(
+                        new InstantCommand(() -> mServoState = Position.SUB),
+                        new InstantCommand(() -> mDownState = DownState.UP),
                         new InstantCommand(() -> shoulder.setPosition(RiptideConstants.HORZ_DEPLOYED_SHOULDER)),
                         new InstantCommand(() -> wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST)),
                         new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW + .075)),
                         new WaitCommand(200),
                         new InstantCommand(() -> elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW)),
-                        new InstantCommand(() -> mDownState = DownState.UP),
                         new InstantCommand(() ->{
                             mGripState = GripState.OPEN;
                             grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_HORIZONTAL);
-                            mServoState = Position.SUB;
                         })
                 );
             case HANDSHAKE:
@@ -285,12 +295,6 @@ public class HorizontalSubsystem extends SubsystemBase {
                 );
         }
         return new WaitCommand(0);
-    }
-
-    public void setSpecifiedPos(int pos)
-    {
-        specifiedPos = pos;
-        slidePosition = Position.SPECIFIED;
     }
 
     public void toggleClawState(){

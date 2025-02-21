@@ -165,8 +165,9 @@ public class VerticalSubsystem extends SubsystemBase {
                     break;
             }
 
-//            if(mSlideTargetPosiion < 0.00)
-//                mSlideTargetPosiion = 0;
+            if(mSlideTargetPosiion < 0.00)
+                mSlideTargetPosiion = 0;
+
             if(mSlideTargetPosiion > RiptideConstants.VERTICAL_SLIDE_BASKET)
                 mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
 

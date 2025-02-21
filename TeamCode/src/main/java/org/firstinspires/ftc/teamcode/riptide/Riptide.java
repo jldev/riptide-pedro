@@ -125,10 +125,10 @@ public class Riptide {
         magSwitchButton3 = new SwitchReader(opMode.hardwareMap, false, "hSwitch");
         magSwitchButton3.whileHeld(new InstantCommand(horizontal::stopMotorResetEncoder));
 
-        if(mOpModeType == Riptide.OpModeType.AUTO) {
-            vertical.homeSlides(magSwitchButton1, magSwitchButton2);
-            horizontal.homeSlides(magSwitchButton3);
-        }
+//        if(mOpModeType == Riptide.OpModeType.AUTO) {
+//            vertical.homeSlides(magSwitchButton1, magSwitchButton2);
+//            horizontal.homeSlides(magSwitchButton3);
+//        }
 
         opMode.register(vertical);
         opMode.register(horizontal);
@@ -233,7 +233,7 @@ public class Riptide {
         return new SequentialCommandGroup(
                 vertical.changeServos(VerticalSubsystem.Position.HANDSHAKE),
                 horizontal.changeServos(HorizontalSubsystem.Position.HANDSHAKE),
-                new WaitCommand(500),
+                new WaitCommand(1000),
                 new InstantCommand(() -> {
                     vertical.changePositionTo(VerticalSubsystem.Position.HOME);
                     horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HANDSHAKE);

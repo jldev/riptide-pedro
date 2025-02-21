@@ -33,9 +33,7 @@ public class RiptideConstants {
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 0;
     public static int VERTICAL_SLIDE_HANG = 400;
-    public static int VERTICAL_SLIDE_BASKET = 2775; //2800;
-    public static int VERTICAL_PRELOAD_BASKET = 400; //1900;
-    public static int VERTICAL_ENDGAME = 500;
+    public static int VERTICAL_SLIDE_BASKET = 2725;
 
     public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
     // horizontal positions
@@ -46,10 +44,10 @@ public class RiptideConstants {
     //   horizontal claw positions
 
     public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.2f;
-    public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.05;
-    public static double GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL = 0.14;
     public static double GRIPPER_OPEN_VALUE_VERTICAL = .4f;
     public static double GRIPPER_OPEN_VALUE_HORIZONTAL = .3f;
+    public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.05;
+    public static double GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL = 0.15;
 
     public static double LIGHT_ON = 1f;
     public static double LIGHT_OFF = 0f;
@@ -95,9 +93,9 @@ public class RiptideConstants {
 
     public static double VERT_HOME_SHOULDER = 0.05f;
     public static double VERT_HOME_ROTATION = 0f;
-    public static double VERT_HOME_ELBOW = .975f;
+    public static double VERT_HOME_ELBOW = .985f;
 
-    public static double VERT_HANDSHAKE_SHOULDER = 0.02;
+    public static double VERT_HANDSHAKE_SHOULDER = 0.03;
 
     // hang
 
@@ -107,13 +105,13 @@ public class RiptideConstants {
 
     // wall
 
-    public static double VERT_WALL_SHOULDER = 0.22f;
+    public static double VERT_WALL_SHOULDER = 0.175f;
     public static double VERT_WALL_ROTATION = 0.0f;
     public static double VERT_WALL_ELBOW = 0.85f;
 
     // basket
 
-    public static double VERT_BASKET_SHOULDER = 0.6f;
+    public static double VERT_BASKET_SHOULDER = 0.7f;
     public static double VERT_BASKET_ROTATION = 0.55f;
     public static double VERT_BASKET_ELBOW = 0.6f;
 
