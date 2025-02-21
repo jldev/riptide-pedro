@@ -165,8 +165,8 @@ public class VerticalSubsystem extends SubsystemBase {
                     break;
             }
 
-            if(mSlideTargetPosiion < 0.00)
-                mSlideTargetPosiion = 0;
+//            if(mSlideTargetPosiion < 0.00)
+//                mSlideTargetPosiion = 0;
 
             if(mSlideTargetPosiion > RiptideConstants.VERTICAL_SLIDE_BASKET)
                 mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
@@ -190,14 +190,17 @@ public class VerticalSubsystem extends SubsystemBase {
         }
 
         mSlide1PIDController.setSetPoint(mDesiredPosition);
-        double output = mSlide1PIDController.calculate(
-                mSlideMotor1.getCurrentPosition());
-        mSlideMotor1.set(output);
-
         mSlide2PIDController.setSetPoint(mDesiredPosition);
-        output = mSlide2PIDController.calculate(
-                mSlideMotor2.getCurrentPosition());
-        mSlideMotor2.set(output);
+
+        if(mSlide1PIDController.atSetPoint() || mSlide2PIDController.atSetPoint()){
+            mSlide2PIDController.setSetPoint(mSlideMotor2.getCurrentPosition());
+            mSlide1PIDController.setSetPoint(mSlideMotor1.getCurrentPosition());
+        }
+
+        double output1 = mSlide1PIDController.calculate(mSlideMotor1.getCurrentPosition());
+        double output2 = mSlide2PIDController.calculate(mSlideMotor2.getCurrentPosition());
+        mSlideMotor1.set(output1);
+        mSlideMotor2.set(output2);
 
 //        mSlide1PIDController.setSetPoint(mSlideTargetPosiion);
 //        double output = mSlide1PIDController.calculate(
@@ -318,12 +321,14 @@ public class VerticalSubsystem extends SubsystemBase {
 
     public void stopMotorResetEncoder1() {
         mSlide1PIDController.setSetPoint(0);
+        mSlideTargetPosiion = 0;
         mSlide1PIDController.reset();
         mSlideMotor1.stopMotor();
         mSlideMotor1.resetEncoder();
     }
     public void stopMotorResetEncoder2(){
         mSlide2PIDController.setSetPoint(0);
+        mSlideTargetPosiion = 0;
         mSlide2PIDController.reset();
         mSlideMotor2.stopMotor();
         mSlideMotor2.resetEncoder();

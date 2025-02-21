@@ -118,12 +118,12 @@ public class Riptide {
 
         // pseudo buttons
         magSwitchButton1 = new SwitchReader(opMode.hardwareMap, false, "vSwitch2");
-        magSwitchButton1.whileHeld(new InstantCommand(vertical::stopMotorResetEncoder1));
+        magSwitchButton1.whenActive(new InstantCommand(vertical::stopMotorResetEncoder1));
         magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
-        magSwitchButton2.whileHeld(new InstantCommand(vertical::stopMotorResetEncoder2));
+        magSwitchButton2.whenActive(new InstantCommand(vertical::stopMotorResetEncoder2));
 
         magSwitchButton3 = new SwitchReader(opMode.hardwareMap, false, "hSwitch");
-        magSwitchButton3.whileHeld(new InstantCommand(horizontal::stopMotorResetEncoder));
+        magSwitchButton3.whenActive(new InstantCommand(horizontal::stopMotorResetEncoder));
 
 //        if(mOpModeType == Riptide.OpModeType.AUTO) {
 //            vertical.homeSlides(magSwitchButton1, magSwitchButton2);
