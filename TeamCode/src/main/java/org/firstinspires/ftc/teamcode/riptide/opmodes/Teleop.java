@@ -27,6 +27,10 @@ public class Teleop extends CommandOpMode {
             riptide.vertical.addTelemetry(telemetry);
             telemetry.addLine("                this is a space");
             riptide.horizontal.addTelemetry(telemetry);
+            telemetry.addData("Mag switch 1 - ", riptide.magSwitchButton1.get());
+            telemetry.addData("Mag switch 2 - ", riptide.magSwitchButton2.get());
+            telemetry.addData("Mag switch 3 - ", riptide.magSwitchButton3.get());
+
             telemetry.update();
         }));
 

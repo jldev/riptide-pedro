@@ -18,7 +18,7 @@ public class RiptideConstants {
     public static double HORIZONTAL_PID_D = 0.00;
     public static double HORIZONTAL_PID_F = 0.0;
 
-    public static double VERTICAL_PID_P = 0.02;
+    public static double VERTICAL_PID_P = 0.01;
     public static double VERTICAL_PID_I = 0.0;
     public static double VERTICAL_PID_D = 0.00;
     public static double VERTICAL_PID_F = 0.0;
@@ -91,11 +91,12 @@ public class RiptideConstants {
 
     // home
 
-    public static double VERT_HOME_SHOULDER = 0.05f;
+    public static double VERT_HOME_SHOULDER = 0.15f;
     public static double VERT_HOME_ROTATION = 0f;
-    public static double VERT_HOME_ELBOW = .985f;
+    public static double VERT_HOME_ELBOW = 1;
 
     public static double VERT_HANDSHAKE_SHOULDER = 0.03;
+    public static double VERT_HANDSHAKE_ELBOW = .985;
 
     // hang
 

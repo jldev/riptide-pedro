@@ -226,6 +226,12 @@ public class HorizontalSubsystem extends SubsystemBase {
             }
         }
 
+        if(mRiptide.magSwitchButton3.get()){
+            if(mSlideTargetPosiion < 0){
+                mSlideTargetPosiion = 0;
+            }
+        }
+
         // add this to stay within the rules of 42" max length
         if(mRiptide.vertical.slidesDeployed()){
             if(mSlideTargetPosiion > RiptideConstants.LENGTH_LIMIT_WHEN_VERTICAL_DEPLOYED){
