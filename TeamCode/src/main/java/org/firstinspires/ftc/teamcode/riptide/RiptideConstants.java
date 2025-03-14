@@ -8,12 +8,12 @@ public class RiptideConstants {
 
     public static double IN_PER_TICK = .00104;
     public static int VERT_SLIDE_MANUAL_SPEED = 25;
-    public static int HORZ_SLIDE_MANUAL_SPEED = 10;
+    public static int HORZ_SLIDE_MANUAL_SPEED = 50;
 
     public static double SLIDES_PID_TOLERANCE = 10;
     public static double SLIDES_PID_POS_COEFFICIENT = .25;
 
-    public static double HORIZONTAL_PID_P = 0.1;
+    public static double HORIZONTAL_PID_P = 0.025;
     public static double HORIZONTAL_PID_I = 0.001;
     public static double HORIZONTAL_PID_D = 0.00;
     public static double HORIZONTAL_PID_F = 0.0;

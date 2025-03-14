@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode.riptide.opmodes;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
+import org.firstinspires.ftc.teamcode.riptide.commands.HorizontalSlideCommand;
 import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerDrive;
+import org.firstinspires.ftc.teamcode.riptide.subsystems.HorizontalSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.VerticalSubsystem;
 
 public class RiptideAuto {
@@ -23,6 +26,7 @@ public class RiptideAuto {
         // specimen
         PRELOAD_DRIVE,
         PUSH_SAMPLES,
+        GRAB_SAMPLES,
         HANG_SPECIMEN,
         RETRIEVE_SPECIMEN,
         PARK,
@@ -52,7 +56,7 @@ public class RiptideAuto {
             currentState = Task.PRELOAD_DRIVE;
         } else
         {
-            currentState = Task.PRELOAD_BASKET_DRIVE;
+            currentState = Task.GRAB_SAMPLES;
         }
         Pose2d startPos = new Pose2d(0, 0, Math.toRadians(180));
         riptide.setStartPosition(startPos);
@@ -98,6 +102,17 @@ public class RiptideAuto {
                                 new RoadRunnerDrive(-8, 0, riptide.drive),
                                 new InstantCommand(() -> currentState = Task.HANG_SPECIMEN))
                 );
+                currentState = Task.WAIT_FOR_TASK;
+                break;
+            case GRAB_SAMPLES:
+                opMode.schedule(
+                        new SequentialCommandGroup(
+                                new ParallelCommandGroup(
+                                        new HorizontalSlideCommand(riptide.horizontal, 500),
+                                        riptide.horizontal.changeServos(HorizontalSubsystem.Position.SUB)
+                                ),
+                                new InstantCommand(() -> riptide.horizontal.PickupSample())
+                        ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;
             case HANG_SPECIMEN:

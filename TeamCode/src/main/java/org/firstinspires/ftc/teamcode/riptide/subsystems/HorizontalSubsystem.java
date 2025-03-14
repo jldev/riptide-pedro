@@ -199,11 +199,10 @@ public class HorizontalSubsystem extends SubsystemBase {
                         break;
                     case SPECIFIED:
                         mSlideTargetPosiion = specifiedPos;
-                        if(mSlideMotor.getCurrentPosition() > (specifiedPos - RiptideConstants.SLIDES_PID_TOLERANCE))
-                        {
-                            slidePosition = Position.REST;
-                            mOpMode.schedule(Retract());
-                        }
+//                        if(mSlideMotor.getCurrentPosition() > (specifiedPos - RiptideConstants.SLIDES_PID_TOLERANCE))
+//                        {
+//                            slidePosition = Position.REST;
+//                        }
                         break;
                     case REST:
                         break;
@@ -221,8 +220,8 @@ public class HorizontalSubsystem extends SubsystemBase {
                 case OFF:
                     break;
             }
-            if(mSlideTargetPosiion > 425){
-                mSlideTargetPosiion = 425;
+            if(mSlideTargetPosiion > 1450){
+                mSlideTargetPosiion = 1450;
             }
         }
 
@@ -243,22 +242,15 @@ public class HorizontalSubsystem extends SubsystemBase {
         mSlideMotor.set(output);
     }
 
-    public void Extend(int pos){
+    public void ExtendTo(int pos){
         slidePosition = Position.SPECIFIED;
         mServoState = Position.SUB;
         mOpMode.schedule(changeServos(Position.SUB));
         specifiedPos = pos;
     }
 
-    public Command Retract(){
-        return  new SequentialCommandGroup(
-                        new InstantCommand(() -> setClawDownState(DownState.DOWN)),
-                        new WaitCommand(400),
-                        new InstantCommand(() -> setClawImmediate(GripState.CLOSED)),
-                        new WaitCommand(250),
-                        mRiptide.GoHandshake()
-        );
-    }
+//    public Command Retract(){
+//    }
 
     public Command changeServos(Position pos){
         switch(pos){
@@ -331,23 +323,25 @@ public class HorizontalSubsystem extends SubsystemBase {
         mDownState = state;
     }
 
-    public void toggleClawAuto(){ //idk if we need this u might have said or not
-        if (mGripState == GripState.OPEN){
-            mGripState = GripState.CLOSED;
-        } else {
-            mGripState = GripState.OPEN;
-        }
-
-        if(mGripState == GripState.OPEN){
-            mDownState = DownState.DOWN;
-        } else {
-            mDownState = DownState.UP;
-        }
+    public void PickupSample(){
+        mOpMode.schedule(new SequentialCommandGroup(
+                new InstantCommand(() -> setClawDownState(DownState.DOWN)),
+                new WaitCommand(400),
+                new InstantCommand(() -> setClawImmediate(GripState.CLOSED)),
+                new WaitCommand(200),
+                new InstantCommand(() -> setClawDownState(DownState.DOWN))
+        ));
     }
 
     public void changeToSlidePosition(Position pos){
         slidePosition = pos;
         mState = SlideSubsystemState.AUTO;
+    }
+
+    public void changeToSlidePosition(int specPosition){
+        slidePosition = Position.SPECIFIED;
+        mState = SlideSubsystemState.AUTO;
+        specifiedPos = specPosition;
     }
 
     public void stopMotorResetEncoder() {
@@ -391,5 +385,9 @@ public class HorizontalSubsystem extends SubsystemBase {
 
     public int getCurrentPosition(){
         return mSlideMotor.getCurrentPosition();
+    }
+
+    public boolean AtSetPosition(Position position){
+        return (slidePosition == position && mSlidePIDController.atSetPoint());
     }
 }

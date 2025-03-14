@@ -106,7 +106,7 @@ public class Riptide {
 
         //     horizontal
         horizontal = new HorizontalSubsystem(this,
-                new MotorEx(opMode.hardwareMap, "horzSlide", Motor.GoBILDA.RPM_1620),
+                new MotorEx(opMode.hardwareMap, "horzSlide", Motor.GoBILDA.RPM_435),
                 opMode,
                 RiptideConstants.SLIDES_PID_POS_COEFFICIENT,
                 RiptideConstants.SLIDES_PID_TOLERANCE,
