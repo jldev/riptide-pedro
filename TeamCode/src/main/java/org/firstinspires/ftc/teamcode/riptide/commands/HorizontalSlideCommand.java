@@ -27,6 +27,7 @@ public class HorizontalSlideCommand extends CommandBase {
     @Override
     public void initialize() {
        if(position == null){
+           position = HorizontalSubsystem.Position.SPECIFIED;
            this.system.changeToSlidePosition(specifiedPos);
        }else {
            this.system.changeToSlidePosition(position);

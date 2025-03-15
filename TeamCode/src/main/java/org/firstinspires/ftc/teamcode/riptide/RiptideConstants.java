@@ -40,6 +40,7 @@ public class RiptideConstants {
     public static int HORIZONTAL_SLIDE_HOME = 0;
     public static int HORIZONTAL_SLIDE_HANDSHAKE = 30;
 
+    public static int HORIZONTAL_SLIDE_MAX = 1425;
     public static final int LENGTH_LIMIT_WHEN_VERTICAL_DEPLOYED = 100;
     //   horizontal claw positions
 

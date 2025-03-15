@@ -8,8 +8,10 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
+import org.firstinspires.ftc.teamcode.riptide.RiptideConstants;
 import org.firstinspires.ftc.teamcode.riptide.commands.HorizontalSlideCommand;
 import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerDrive;
+import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerTurn;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.HorizontalSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.VerticalSubsystem;
 
@@ -108,10 +110,31 @@ public class RiptideAuto {
                 opMode.schedule(
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
-                                        new HorizontalSlideCommand(riptide.horizontal, 500),
-                                        riptide.horizontal.changeServos(HorizontalSubsystem.Position.SUB)
+                                    new HorizontalSlideCommand(riptide.horizontal, RiptideConstants.HORIZONTAL_SLIDE_MAX),
+                                    riptide.horizontal.changeServos(HorizontalSubsystem.Position.SUB)
                                 ),
-                                new InstantCommand(() -> riptide.horizontal.PickupSample())
+                                new InstantCommand(() -> {
+                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.DOWN);
+                                    riptide.horizontal.wrist.setPosition(.25);
+                                }),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
+                                new RoadRunnerTurn(-75, riptide.drive),
+                                new InstantCommand(() -> {
+                                    riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
+                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
+                                }),
+                                //first sample deposited
+                                new RoadRunnerTurn(67.5, riptide.drive),
+                                new RoadRunnerDrive(0, -12, riptide.drive),
+                                new InstantCommand(() -> riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.DOWN)),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
+                                new RoadRunnerTurn(-67.5, riptide.drive),
+                                new InstantCommand(() -> {
+                                    riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
+                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
+                                })
                         ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;
