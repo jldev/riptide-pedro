@@ -19,18 +19,33 @@ public class RoadRunnerDrive extends CommandBase {
     private final Set<Subsystem> requirements;
     private boolean finished = false;
 
-    private int x,y;
+    private double x,y;
+    private Double heading = null;
     private MecanumDriveSubsystem drive;
-    public RoadRunnerDrive(int x, int y, MecanumDriveSubsystem drive){
+    public RoadRunnerDrive(double x, double y, MecanumDriveSubsystem drive){
         this.drive = drive;
         this.x = x;
         this.y = y;
         this.requirements = new ArraySet<>(Arrays.asList(drive));
     }
 
+    public RoadRunnerDrive(double x, double y, double heading, MecanumDriveSubsystem drive){
+        this.drive = drive;
+        this.x = x;
+        this.y = y;
+        this.heading = heading;
+        this.requirements = new ArraySet<>(Arrays.asList(drive));
+    }
+
     @Override
     public void initialize(){
-        action = drive.drive.actionBuilder(drive.drive.pose).strafeToConstantHeading(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y)).build();
+        if(heading == null)
+        {
+            action = drive.drive.actionBuilder(drive.drive.pose).strafeToConstantHeading(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y)).build();
+        } else
+        {
+            action = drive.drive.actionBuilder(drive.drive.pose).strafeToLinearHeading(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y), drive.drive.pose.heading.toDouble() + Math.toRadians(heading)).build();
+        }
     }
     @Override
     public Set<Subsystem> getRequirements(){

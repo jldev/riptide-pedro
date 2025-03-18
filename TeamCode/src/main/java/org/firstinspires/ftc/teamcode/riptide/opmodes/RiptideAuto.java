@@ -84,9 +84,9 @@ public class RiptideAuto {
                                 new WaitCommand(750),
                                 new RoadRunnerDrive(32, 0, riptide.drive),
                                 new InstantCommand(() -> riptide.vertical.toggleClawState()),
-                                new RoadRunnerDrive(-6, -3, riptide.drive), // y 0
+                                new RoadRunnerDrive(-9, 0, riptide.drive),
 
-                                new InstantCommand(() -> currentState = Task.PUSH_SAMPLES)
+                                new InstantCommand(() -> currentState = Task.GRAB_SAMPLES)
                             )
                         );
                 currentState = Task.WAIT_FOR_TASK;
@@ -110,6 +110,7 @@ public class RiptideAuto {
                 opMode.schedule(
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
+                                        new RoadRunnerDrive(2.5, -21, 100, riptide.drive),
                                     new HorizontalSlideCommand(riptide.horizontal, RiptideConstants.HORIZONTAL_SLIDE_MAX),
                                     riptide.horizontal.changeServos(HorizontalSubsystem.Position.SUB)
                                 ),
@@ -119,22 +120,34 @@ public class RiptideAuto {
                                 }),
                                 new WaitCommand(500),
                                 new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
-                                new RoadRunnerTurn(-75, riptide.drive),
+                                new RoadRunnerTurn(-80, riptide.drive),
                                 new InstantCommand(() -> {
                                     riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
                                     riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
                                 }),
                                 //first sample deposited
-                                new RoadRunnerTurn(67.5, riptide.drive),
-                                new RoadRunnerDrive(0, -12, riptide.drive),
+                                new RoadRunnerTurn(90, riptide.drive),
+                                new RoadRunnerDrive(0, -6, riptide.drive),
                                 new InstantCommand(() -> riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.DOWN)),
                                 new WaitCommand(500),
                                 new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
-                                new RoadRunnerTurn(-67.5, riptide.drive),
+                                new RoadRunnerTurn(-90, riptide.drive),
+                                new InstantCommand(() -> {
+                                    riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
+                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
+                                }),
+                                //second sample deposited
+                                new RoadRunnerTurn(90, riptide.drive),
+                                new RoadRunnerDrive(0, -8, riptide.drive),
+                                new InstantCommand(() -> riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.DOWN)),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
+                                new RoadRunnerTurn(-90, riptide.drive),
                                 new InstantCommand(() -> {
                                     riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
                                     riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
                                 })
+                                //third sample deposited
                         ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;
