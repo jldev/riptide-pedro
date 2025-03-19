@@ -7,13 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 
 @Config
-@Autonomous(group = "drive", name = "Specimen No Sample")
-public class RedSpecimenNoSample extends CommandOpMode {
+@Autonomous(group = "drive", name = "Specimen")
+public class Specimen extends CommandOpMode {
     RiptideAuto riptideAuto;
     @Override
     public void initialize() {
         riptideAuto = new RiptideAuto(this, Riptide.FieldPos.AU, Riptide.AllianceColor.RED, Riptide.Target.SPECIMENS);
-        riptideAuto.riptide.pushSamples = false;
+        riptideAuto.riptide.pushSamples = true;
     }
 
     @Override

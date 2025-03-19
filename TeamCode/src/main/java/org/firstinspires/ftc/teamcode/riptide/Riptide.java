@@ -69,7 +69,6 @@ public class Riptide {
     public GamepadButton hang_slidePreset;
     public GamepadButton basket_slidePreset;
     public GamepadTriggerAsButton horizontalClawButton;
-    public GamepadButton horizontalClawDown;
     public GamepadTriggerAsButton verticalClawButton;
 
     // Driver
@@ -201,7 +200,7 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
                     vertical.setClawImmediate(VerticalSubsystem.GripState.OPEN);
-                    horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
+                    horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
                 }),
                 new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
@@ -216,7 +215,7 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
                     vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED);
-                    horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
+                    horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
                 }),
                 new WaitCommand(200),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),

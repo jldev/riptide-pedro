@@ -20,13 +20,13 @@ public class RiptideAuto {
     public Riptide riptide;
 
     private CommandOpMode opMode;
-    Task currentState = Task.PRELOAD_DRIVE;
+    Task currentState = Task.PRELOAD_SPECIMEN;
 
     public Pose2d desiredPosition;
 
     private enum Task{
         // specimen
-        PRELOAD_DRIVE,
+        PRELOAD_SPECIMEN,
         PUSH_SAMPLES,
         GRAB_SAMPLES,
         HANG_SPECIMEN,
@@ -34,7 +34,7 @@ public class RiptideAuto {
         PARK,
 
         // basket
-        PRELOAD_BASKET_DRIVE,
+        PRELOAD_BASKET,
         RETRIEVE_SAMPLE,
         DEPOSIT_SAMPLE,
         PARK_BASKET,
@@ -44,7 +44,6 @@ public class RiptideAuto {
     }
 
     private  int additionalCycles;
-    private int desiredSpecimens;
 
     private int runCount = 0;
 
@@ -55,15 +54,14 @@ public class RiptideAuto {
         riptide.target = target;
         if(riptide.target == Riptide.Target.SPECIMENS)
         {
-            currentState = Task.PRELOAD_DRIVE;
+            currentState = Task.PRELOAD_SPECIMEN;
         } else
         {
-            currentState = Task.GRAB_SAMPLES;
+            currentState = Task.PRELOAD_BASKET;
         }
         Pose2d startPos = new Pose2d(0, 0, Math.toRadians(180));
         riptide.setStartPosition(startPos);
         additionalCycles = 0;
-        desiredSpecimens = 3;
     }
 
     public void run() {
@@ -77,7 +75,7 @@ public class RiptideAuto {
 
             // specimen
 
-            case PRELOAD_DRIVE:
+            case PRELOAD_SPECIMEN:
                 opMode.schedule(
                         riptide.GoHang(),
                         new SequentialCommandGroup(
@@ -115,39 +113,35 @@ public class RiptideAuto {
                                     riptide.horizontal.changeServos(HorizontalSubsystem.Position.SUB)
                                 ),
                                 new InstantCommand(() -> {
-                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.DOWN);
+                                    riptide.horizontal.SetClawDownState(HorizontalSubsystem.DownState.DOWN);
                                     riptide.horizontal.wrist.setPosition(.25);
                                 }),
-                                new WaitCommand(500),
-                                new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
+                                new InstantCommand(() -> riptide.horizontal.Grab()),
                                 new RoadRunnerTurn(-80, riptide.drive),
                                 new InstantCommand(() -> {
-                                    riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
-                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
+                                    riptide.horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
+                                    riptide.horizontal.SetClawDownState(HorizontalSubsystem.DownState.UP);
                                 }),
                                 //first sample deposited
                                 new RoadRunnerTurn(90, riptide.drive),
                                 new RoadRunnerDrive(0, -6, riptide.drive),
-                                new InstantCommand(() -> riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.DOWN)),
-                                new WaitCommand(500),
-                                new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
+                                new InstantCommand(() -> riptide.horizontal.Grab()),
                                 new RoadRunnerTurn(-90, riptide.drive),
                                 new InstantCommand(() -> {
-                                    riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
-                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
+                                    riptide.horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
+                                    riptide.horizontal.SetClawDownState(HorizontalSubsystem.DownState.UP);
                                 }),
                                 //second sample deposited
                                 new RoadRunnerTurn(90, riptide.drive),
                                 new RoadRunnerDrive(0, -8, riptide.drive),
-                                new InstantCommand(() -> riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.DOWN)),
-                                new WaitCommand(500),
-                                new InstantCommand(() -> riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.CLOSED)),
+                                new InstantCommand(() -> riptide.horizontal.Grab()),
                                 new RoadRunnerTurn(-90, riptide.drive),
                                 new InstantCommand(() -> {
-                                    riptide.horizontal.setClawImmediate(HorizontalSubsystem.GripState.OPEN);
-                                    riptide.horizontal.setClawDownStateImmediate(HorizontalSubsystem.DownState.UP);
+                                    riptide.horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
+                                    riptide.horizontal.SetClawDownState(HorizontalSubsystem.DownState.UP);
                                 })
                                 //third sample deposited
+                                //add stuff to positions for first specimen
                         ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;
@@ -175,8 +169,10 @@ public class RiptideAuto {
                         new RoadRunnerDrive(-6, 0, riptide.drive),
                         new RoadRunnerDrive(-18, -42, riptide.drive),
                         new RoadRunnerDrive(-8, 0, riptide.drive),
-                        new InstantCommand(() -> riptide.vertical.toggleClawState()),
-                        new InstantCommand(() -> currentState = Task.HANG_SPECIMEN)
+                        new InstantCommand(() -> {
+                            riptide.vertical.toggleClawState();
+                            currentState = Task.HANG_SPECIMEN;
+                        })
                 ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;
@@ -188,7 +184,7 @@ public class RiptideAuto {
             case PARK:
                 currentState = Task.WAIT_FOR_TASK;
                 break;
-            case PRELOAD_BASKET_DRIVE:
+            case PRELOAD_BASKET:
                 opMode.schedule(new SequentialCommandGroup(
                         riptide.GoBasket(),
                         new RoadRunnerDrive(0, -6, riptide.drive),

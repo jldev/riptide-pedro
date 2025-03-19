@@ -248,9 +248,11 @@ public class VerticalSubsystem extends SubsystemBase {
                                 }));
                     case WALL:
                         return new SequentialCommandGroup(
-                                new InstantCommand(() -> mGripState = GripState.OPEN),
-                                new InstantCommand(() -> grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL)),
-                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION)),
+                                new InstantCommand(() -> {
+                                    mGripState = GripState.OPEN;
+                                    grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
+                                    rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
+                                }),
                                 new WaitCommand(750),
                                 new InstantCommand(()-> {
                                     shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
@@ -346,31 +348,6 @@ public class VerticalSubsystem extends SubsystemBase {
         mSlide2PIDController.reset();
         mSlideMotor2.resetEncoder();
     }
-
-//    public void homeSlides(SwitchReader magSwitchButton1, SwitchReader magSwitchButton2) {
-//        int currentPosition = 0;
-//        while(!magSwitchButton1.get() || !magSwitchButton2.get()){
-//            if(!magSwitchButton1.get()){
-//                currentPosition = mSlideMotor1.getCurrentPosition();
-//                mSlide1PIDController.setSetPoint(currentPosition - 10);
-//                double output = mSlide1PIDController.calculate(
-//                        mSlideMotor1.getCurrentPosition());
-//                mSlideMotor1.set(output);
-//            } else {
-//                stopMotorResetEncoder1();
-//            }
-//
-//            if(!magSwitchButton2.get()){
-//                currentPosition = mSlideMotor2.getCurrentPosition();
-//                mSlide2PIDController.setSetPoint(currentPosition - 10);
-//                double output = mSlide2PIDController.calculate(
-//                        mSlideMotor2.getCurrentPosition());
-//                mSlideMotor2.set(output);
-//            } else {
-//                stopMotorResetEncoder2();
-//            }
-//        }
-//    }
     public void verticalManualSlideControl(SlideManualControlDirection direction){
         // anytime the user want to manual control we need to be in the manual state
         changeSlideState(SlideSubsystemState.MANUAL);

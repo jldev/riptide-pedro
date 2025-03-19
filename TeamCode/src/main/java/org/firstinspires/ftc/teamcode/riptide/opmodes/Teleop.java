@@ -65,8 +65,7 @@ public class Teleop extends CommandOpMode {
         riptide.horizontalSlideIn.whenReleased(new InstantCommand(() -> {
             riptide.horizontal.horizontalManualSlideControl(HorizontalSubsystem.SlideManualControlDirection.OFF);}));
 
-        riptide.horizontalClawButton.whenPressed(new InstantCommand(() -> riptide.horizontal.toggleClawState()));
-//        riptide.horizontalClawDown.whenPressed(new InstantCommand(() -> riptide.horizontal.toggleClawDownState()));
+        riptide.horizontalClawButton.whenPressed(new InstantCommand(() -> riptide.horizontal.ToggleClawState()));
 
         //  Presets
         riptide.home_slidePreset.whenPressed(riptide.GoSub());
@@ -76,51 +75,6 @@ public class Teleop extends CommandOpMode {
         riptide.hang_slidePreset.whenPressed(riptide.GoHang());
 
         riptide.basket_slidePreset.whenPressed(riptide.GoHandshake());
-
-
-        //    HANG
-//        helix.hangRaise.whileHeld(new InstantCommand(() -> {helix.hang.manualSlideControl(HangSubsystem.ManualControlDirection.UP);}));
-//        helix.hangRaise.whenReleased(new InstantCommand(() -> {helix.hang.manualSlideControl(HangSubsystem.ManualControlDirection.OFF);}));
-//        helix.hangLower.whileHeld(new InstantCommand(() -> {helix.hang.manualSlideControl(HangSubsystem.ManualControlDirection.DOWN);}));
-//        helix.hangLower.whenReleased(new InstantCommand(() -> {helix.hang.manualSlideControl(HangSubsystem.ManualControlDirection.OFF);}));
-
-
-//        //   PIVOT
-//        riptide.pivotRaise.whileHeld(new InstantCommand(() -> {
-//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.UP);}));
-//        riptide.pivotRaise.whenReleased(new InstantCommand(() -> {
-//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.OFF);}));
-//        riptide.pivotLower.whileHeld(new InstantCommand(() -> {
-//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.DOWN);}));
-//        riptide.pivotLower.whenReleased(new InstantCommand(() -> {
-//            riptide.pivot.ManualPivotControl(PivotSubsystem.ManualControlDirection.OFF);}));
-//
-//        // Pivot Presets
-//        riptide.home_pivotPreset.whenPressed(new InstantCommand(() -> {
-//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.HOME);}));
-//        riptide.hang_pivotPreset.whenPressed(new InstantCommand(() -> {
-//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.HANG);}));
-//        riptide.basket_pivotPreset.whenPressed(new InstantCommand(() -> {
-//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.BASKET);}));
-//        riptide.sub_pivotPreset.whenPressed(new InstantCommand(() -> {
-//            riptide.pivot.changeToSlidePosition(PivotSubsystem.SlidePosition.SUB);}));
-
-
-        // Claw
-//        riptide.cycleDesiredSampleColor.whenPressed
-//                ( new InstantCommand(() -> {
-//                        switch (riptide.krakenEye.desiredColor) {
-//                            case YELLOW:
-//                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.RED;
-//                                break;
-//                            case RED:
-//                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.BLUE;
-//                                break;
-//                            case BLUE:
-//                                riptide.krakenEye.desiredColor = KrakenEyeSubsystem.SampleColor.YELLOW;
-//                                break;
-//                        }}
-//                ));
     }
 
 }
