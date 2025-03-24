@@ -30,7 +30,6 @@ public class Riptide {
 
 
     public final SwitchReader magSwitchButton1;
-    public final SwitchReader magSwitchButton2;
     public final SwitchReader magSwitchButton3;
 
     //subsystems
@@ -100,7 +99,8 @@ public class Riptide {
                 opMode.hardwareMap.get(Servo.class, "shoulder2"),
                 opMode.hardwareMap.get(Servo.class, "rotation"),
                 opMode.hardwareMap.get(Servo.class, "vElbow"),
-                opMode.hardwareMap.get(Servo.class, "vGrip")
+                opMode.hardwareMap.get(Servo.class, "vGrip"),
+                opMode.hardwareMap.get(Servo.class, "speedSwitch")
                 );
 
         //     horizontal
@@ -118,8 +118,6 @@ public class Riptide {
         // pseudo buttons
         magSwitchButton1 = new SwitchReader(opMode.hardwareMap, false, "vSwitch1");
         magSwitchButton1.whenActive(new InstantCommand(vertical::stopMotorResetEncoder));
-        magSwitchButton2 = new SwitchReader(opMode.hardwareMap, false, "vSwitch2");
-        magSwitchButton2.whenActive(new InstantCommand(vertical::stopMotorResetEncoder));
 
         magSwitchButton3 = new SwitchReader(opMode.hardwareMap, false, "hSwitch");
         magSwitchButton3.whenActive(new InstantCommand(horizontal::stopMotorResetEncoder));

@@ -60,34 +60,30 @@ public class VerticalSubsystem extends SubsystemBase {
 
     private final MotorEx mSlideMotor1;
     private final MotorEx mSlideMotor2;
-    private final PIDFController mSlide1PIDController;
-    private final PIDFController mSlide2PIDController;
+    private final PIDFController mSlidePIDController;
 
     public final Servo shoulder1;
     public final Servo shoulder2;
     public final Servo rotation;
     public final Servo elbow;
     public final Servo grip;
+    public final Servo speedSwitch;
 
-    public VerticalSubsystem(Riptide riptide, MotorEx slideMotor1, MotorEx slideMotor2, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder1, Servo _shoulder2, Servo _rotation, Servo _elbow, Servo _grip) {
+    public VerticalSubsystem(Riptide riptide, MotorEx slideMotor1, MotorEx slideMotor2, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder1, Servo _shoulder2, Servo _rotation, Servo _elbow, Servo _grip, Servo _speedSwitch) {
         mRiptide = riptide;
         mSlideMotor1 = slideMotor1;
         mSlideMotor2 = slideMotor2;
         mOpMode = opmode;
 
-        mSlide1PIDController = new PIDFController(RiptideConstants.VERTICAL_PID_P, RiptideConstants.VERTICAL_PID_I,
+        mSlidePIDController = new PIDFController(RiptideConstants.VERTICAL_PID_P, RiptideConstants.VERTICAL_PID_I,
                 RiptideConstants.VERTICAL_PID_D, RiptideConstants.VERTICAL_PID_F);
-        mSlide1PIDController.setTolerance(RiptideConstants.SLIDES_PID_TOLERANCE);
-        mSlide1PIDController.setSetPoint(mSlideMotor1.getCurrentPosition());
+        mSlidePIDController.setTolerance(RiptideConstants.SLIDES_PID_TOLERANCE);
+        mSlidePIDController.setSetPoint(mSlideMotor1.getCurrentPosition());
 
-        mSlide2PIDController = new PIDFController(RiptideConstants.VERTICAL_PID_P, RiptideConstants.VERTICAL_PID_I,
-                RiptideConstants.VERTICAL_PID_D, RiptideConstants.VERTICAL_PID_F);
-        mSlide2PIDController.setTolerance(RiptideConstants.SLIDES_PID_TOLERANCE);
-        mSlide2PIDController.setSetPoint(mSlideMotor2.getCurrentPosition());
 
         if(riptide.mOpModeType == Riptide.OpModeType.AUTO) {
             mSlideMotor1.resetEncoder();
-            mSlideMotor1.resetEncoder();
+            mSlideMotor2.resetEncoder();
             slidePosition = Position.HOME;
             prevSlidePosition = Position.HANG;
         } else {
@@ -115,6 +111,7 @@ public class VerticalSubsystem extends SubsystemBase {
         rotation = _rotation;
         elbow = _elbow;
         grip = _grip;
+        speedSwitch = _speedSwitch;
 
         shoulder1.setDirection(Servo.Direction.REVERSE);
 
@@ -172,7 +169,7 @@ public class VerticalSubsystem extends SubsystemBase {
                     break;
             }
 
-            if(mRiptide.magSwitchButton1.get() || mRiptide.magSwitchButton2.get()){
+            if(mRiptide.magSwitchButton1.get()){
                 if(mSlideTargetPosiion < 0){
                     mSlideTargetPosiion = 0;
                 }
@@ -189,41 +186,16 @@ public class VerticalSubsystem extends SubsystemBase {
             }
         }
 
-//        if(Math.abs(mDesiredPosition - mSlideTargetPosiion) <= RiptideConstants.VERT_SLIDE_MANUAL_SPEED){
-//            mDesiredPosition = mSlideTargetPosiion;
-//        } else {
-//            if(mDesiredPosition < mSlideTargetPosiion){
-//                mDesiredPosition += RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
-//            } else if (mDesiredPosition > mSlideTargetPosiion) {
-//                mDesiredPosition -= RiptideConstants.VERT_SLIDE_MANUAL_SPEED;
-//            }
-//        }
 
-//        mSlide1PIDController.setSetPoint(mDesiredPosition);
-//        mSlide2PIDController.setSetPoint(mDesiredPosition);
+        mSlidePIDController.setSetPoint(mSlideTargetPosiion);
 
-        mSlide1PIDController.setSetPoint(mSlideTargetPosiion);
-        mSlide2PIDController.setSetPoint(mSlideTargetPosiion);
-
-        if(mSlide1PIDController.atSetPoint() || mSlide2PIDController.atSetPoint()){
-            mSlide2PIDController.setSetPoint(mSlideMotor2.getCurrentPosition());
-            mSlide1PIDController.setSetPoint(mSlideMotor1.getCurrentPosition());
+        if(mSlidePIDController.atSetPoint()){
+            mSlidePIDController.setSetPoint(mSlideMotor1.getCurrentPosition());
         }
 
-        double output1 = mSlide1PIDController.calculate(mSlideMotor1.getCurrentPosition());
-        double output2 = mSlide2PIDController.calculate(mSlideMotor2.getCurrentPosition());
+        double output1 = mSlidePIDController.calculate(mSlideMotor1.getCurrentPosition());
         mSlideMotor1.set(output1);
-        mSlideMotor2.set(output2);
-
-//        mSlide1PIDController.setSetPoint(mSlideTargetPosiion);
-//        double output = mSlide1PIDController.calculate(
-//                mSlideMotor1.getCurrentPosition());
-//            mSlideMotor1.set(output);
-//
-//        mSlide2PIDController.setSetPoint(mSlideTargetPosiion);
-//        output = mSlide2PIDController.calculate(
-//                mSlideMotor2.getCurrentPosition());
-//        mSlideMotor2.set(output);
+        mSlideMotor2.set(output1);
     }
 
     public Command changeServos(Position pos) {
@@ -338,14 +310,12 @@ public class VerticalSubsystem extends SubsystemBase {
         mSlideMotor1.stopMotor();
         mSlideMotor2.stopMotor();
 
-        mSlide1PIDController.setSetPoint(0);
+        mSlidePIDController.setSetPoint(0);
         mSlideTargetPosiion = 0;
-        mSlide1PIDController.reset();
+        mSlidePIDController.reset();
         mSlideMotor1.resetEncoder();
 
-        mSlide2PIDController.setSetPoint(0);
         mSlideTargetPosiion = 0;
-        mSlide2PIDController.reset();
         mSlideMotor2.resetEncoder();
     }
     public void verticalManualSlideControl(SlideManualControlDirection direction){
@@ -358,7 +328,7 @@ public class VerticalSubsystem extends SubsystemBase {
         return mSlideTargetPosiion > RiptideConstants.VERTICAL_SLIDE_HANG;
     }
     public boolean isBusy (){
-        return !mSlide1PIDController.atSetPoint();
+        return !mSlidePIDController.atSetPoint();
     }
 
     public void addTelemetry(Telemetry telemetry){
