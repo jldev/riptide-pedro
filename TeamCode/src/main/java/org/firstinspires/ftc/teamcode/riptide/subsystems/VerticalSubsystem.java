@@ -36,6 +36,11 @@ public class VerticalSubsystem extends SubsystemBase {
         OFF
     }
 
+    public enum SlideSpeed {
+        SLOW,
+        HIGH
+
+    }
 
     public enum Position {
         HOME,
@@ -87,7 +92,8 @@ public class VerticalSubsystem extends SubsystemBase {
             slidePosition = Position.HOME;
             prevSlidePosition = Position.HANG;
         } else {
-            slidePosition = Position.HANG;
+//            slidePosition = Position.HANG;
+            slidePosition = Position.HOME;
             prevSlidePosition = Position.HOME;
         }
 
@@ -95,14 +101,14 @@ public class VerticalSubsystem extends SubsystemBase {
         mSlideMotor1.setRunMode(MotorEx.RunMode.RawPower);
         mSlideMotor1.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        mSlideMotor1.motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideMotor1.motor.setDirection(DcMotorSimple.Direction.REVERSE);
         mSlideMotor1.encoder.setDirection(Motor.Direction.FORWARD);
 
         mSlideMotor2.stopAndResetEncoder();
         mSlideMotor2.setRunMode(MotorEx.RunMode.RawPower);
         mSlideMotor2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        mSlideMotor2.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideMotor2.motor.setDirection(DcMotorSimple.Direction.FORWARD);
         mSlideMotor2.encoder.setDirection(Motor.Direction.FORWARD);
 
 
@@ -113,7 +119,7 @@ public class VerticalSubsystem extends SubsystemBase {
         grip = _grip;
         speedSwitch = _speedSwitch;
 
-        shoulder1.setDirection(Servo.Direction.REVERSE);
+        shoulder2.setDirection(Servo.Direction.REVERSE);
 
         mSlideTargetPosiion = mSlideMotor1.getCurrentPosition();
 //        mDesiredPosition = mSlideMotor1.getCurrentPosition();
@@ -135,6 +141,15 @@ public class VerticalSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // for testing
+//        shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+//        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
+//        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
+//        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
+//        mGripState = GripState.CLOSED;
+//        grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+        //
+
 
         if(mGripState == GripState.CLOSED){ //we can add check for if claw down ect in the future
             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
@@ -322,6 +337,13 @@ public class VerticalSubsystem extends SubsystemBase {
         // anytime the user want to manual control we need to be in the manual state
         changeSlideState(SlideSubsystemState.MANUAL);
         mSlideManualDirection = direction;
+    }
+    public void toggleMotorSpeed(){
+        if(speedSwitch.getPosition() == RiptideConstants.SPEED_SERVO_FAST) {
+            speedSwitch.setPosition(RiptideConstants.SPEED_SERVO_SLOW);
+        }else{
+            speedSwitch.setPosition(RiptideConstants.SPEED_SERVO_FAST);
+        }
     }
 
     public boolean slidesDeployed(){

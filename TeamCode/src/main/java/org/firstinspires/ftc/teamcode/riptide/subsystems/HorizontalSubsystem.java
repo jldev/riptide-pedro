@@ -92,7 +92,7 @@ public class HorizontalSubsystem extends SubsystemBase {
         mSlideMotor.stopAndResetEncoder();
         mSlideMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         mSlideMotor.resetEncoder();
-        mSlideMotor.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideMotor.motor.setDirection(DcMotorSimple.Direction.FORWARD);
         mSlideMotor.encoder.setDirection(Motor.Direction.FORWARD);
 
         mSlideTargetPosiion = 0;
@@ -127,6 +127,8 @@ public class HorizontalSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+
         mOpMode.telemetry.addData("Servo State", mServoState);
         mOpMode.telemetry.addData("Slide State", slidePosition);
         mOpMode.telemetry.addData("GripState", mGripState);
@@ -244,6 +246,8 @@ public class HorizontalSubsystem extends SubsystemBase {
                         new InstantCommand(() -> {
                             mServoState = Position.HOME;
                             elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW);
+                            SetClaw(GripState.CLOSED);
+
                         }),
                         new WaitCommand(150),
                         new InstantCommand(() -> {

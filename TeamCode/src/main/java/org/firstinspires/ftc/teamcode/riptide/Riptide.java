@@ -67,6 +67,7 @@ public class Riptide {
     public GamepadButton wall_slidePreset;
     public GamepadButton hang_slidePreset;
     public GamepadButton basket_slidePreset;
+    public GamepadButton speed_switch_switcher;
     public GamepadTriggerAsButton horizontalClawButton;
     public GamepadTriggerAsButton verticalClawButton;
 
@@ -90,14 +91,14 @@ public class Riptide {
 
         //     vertical
         vertical = new VerticalSubsystem(this,
-                new MotorEx(opMode.hardwareMap, "vertSlide1", Motor.GoBILDA.RPM_312),
-                new MotorEx(opMode.hardwareMap, "vertSlide2", Motor.GoBILDA.RPM_312),
+                new MotorEx(opMode.hardwareMap, "vertSlide1", Motor.GoBILDA.RPM_435),
+                new MotorEx(opMode.hardwareMap, "vertSlide2", Motor.GoBILDA.RPM_435),
                 opMode,
                 RiptideConstants.SLIDES_PID_POS_COEFFICIENT,
                 RiptideConstants.SLIDES_PID_TOLERANCE,
                 opMode.hardwareMap.get(Servo.class, "shoulder1"),
                 opMode.hardwareMap.get(Servo.class, "shoulder2"),
-                opMode.hardwareMap.get(Servo.class, "rotation"),
+                opMode.hardwareMap.get(Servo.class, "vWrist"),
                 opMode.hardwareMap.get(Servo.class, "vElbow"),
                 opMode.hardwareMap.get(Servo.class, "vGrip"),
                 opMode.hardwareMap.get(Servo.class, "speedSwitch")
@@ -149,6 +150,8 @@ public class Riptide {
         horizontalClawButton = new GamepadTriggerAsButton(gunnerOp, GamepadKeys.Trigger.LEFT_TRIGGER, 0.5);
         verticalClawButton = new GamepadTriggerAsButton(gunnerOp, GamepadKeys.Trigger.RIGHT_TRIGGER, 0.5);
         //     driver setup
+
+        speed_switch_switcher = new GamepadButton(driverOp, GamepadKeys.Button.DPAD_UP);
 
     }
 

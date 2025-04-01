@@ -28,7 +28,6 @@ public class Teleop extends CommandOpMode {
             telemetry.addLine("                this is a space");
             riptide.horizontal.addTelemetry(telemetry);
             telemetry.addData("Mag switch 1 - ", riptide.magSwitchButton1.get());
-            telemetry.addData("Mag switch 2 - ", riptide.magSwitchButton2.get());
             telemetry.addData("Mag switch 3 - ", riptide.magSwitchButton3.get());
 
             telemetry.update();
@@ -53,6 +52,8 @@ public class Teleop extends CommandOpMode {
             riptide.vertical.verticalManualSlideControl(VerticalSubsystem.SlideManualControlDirection.OFF);}));
 
         riptide.verticalClawButton.whenPressed(new InstantCommand(() -> riptide.vertical.toggleClawState()));
+
+        riptide.speed_switch_switcher.whenPressed(new InstantCommand(() -> riptide.vertical.toggleMotorSpeed()));
 
         //         HORIZONTAL
 
