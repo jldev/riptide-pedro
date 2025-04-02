@@ -36,8 +36,8 @@ public class RiptideConstants {
     //   VERTICAL SLIDE POSITION
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 0;
-    public static int VERTICAL_SLIDE_HANG = 300;
-    public static int VERTICAL_SLIDE_BASKET = 2725;
+    public static int VERTICAL_SLIDE_HANG = 350;
+    public static int VERTICAL_SLIDE_BASKET = 1725;
 
     public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
 
@@ -52,18 +52,18 @@ public class RiptideConstants {
 
 
     //   CLAW GRIP VALUES
-    public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.175f;
+    public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.2f;
     public static double GRIPPER_OPEN_VALUE_VERTICAL = .5f;
-    public static double GRIPPER_OPEN_VALUE_HORIZONTAL = .3f;
-    public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.05;
+    public static double GRIPPER_OPEN_VALUE_HORIZONTAL = .26f;
+    public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.125;
     public static double GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL = 0.15;
 
 
 
                           //    HORIZONTAL CLAW PRESETS
     // HOME
-    public static double HORZ_HOME_SHOULDER = .2f;
-    public static double HORZ_HOME_ELBOW = .55f;
+    public static double HORZ_HOME_SHOULDER = .75f;
+    public static double HORZ_HOME_ELBOW = .325f;
 
     public static double HORZ_HOME_WRIST = .5f;
 
@@ -109,9 +109,9 @@ public class RiptideConstants {
     public static double VERT_WALL_ELBOW = 0.85f;
 
     // BASKET
-    public static double VERT_BASKET_SHOULDER = 0.7f;
+    public static double VERT_BASKET_SHOULDER = 0.4f;
     public static double VERT_BASKET_ROTATION = 0.55f;
-    public static double VERT_BASKET_ELBOW = 0.6f;
+    public static double VERT_BASKET_ELBOW = 0.55f;
 
 
     public static double SPEED_SERVO_SLOW=.75;

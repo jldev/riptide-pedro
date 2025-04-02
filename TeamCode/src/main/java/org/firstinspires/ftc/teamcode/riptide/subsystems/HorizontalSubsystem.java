@@ -135,16 +135,6 @@ public class HorizontalSubsystem extends SubsystemBase {
         mOpMode.telemetry.addData("DownState", mDownState);
         mOpMode.telemetry.update();
 
-
-        if(mRiptide.mOpModeType != Riptide.OpModeType.AUTO){
-            if(mRiptide.gunnerOp.getRightY() > .5){
-                SetClawDownState(DownState.DOWN);
-            } else{
-                SetClawDownState(DownState.UP);
-            }
-        }
-
-
         if(slidePosition == Position.HANDSHAKE && mSlideMotor.getCurrentPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE))
         {
             mOpMode.schedule(new SequentialCommandGroup(
@@ -182,11 +172,13 @@ public class HorizontalSubsystem extends SubsystemBase {
                         desiredYaw = 0.00;
                     wrist.setPosition(desiredYaw);
                 }
-            }
-        }
 
-        if(mServoState == Position.SUB){
-            SetClawDownState(mDownState);
+                if(mRiptide.gunnerOp.getRightY() > .5){
+                    SetClawDownState(DownState.DOWN);
+                } else{
+                    SetClawDownState(DownState.UP);
+                }
+            }
         }
 
         if (mState == SlideSubsystemState.AUTO) {
@@ -240,6 +232,7 @@ public class HorizontalSubsystem extends SubsystemBase {
     }
 
     public Command changeServos(Position pos){
+        mServoState = pos;
         switch(pos){
             case HOME:
                 return new SequentialCommandGroup(
@@ -247,7 +240,6 @@ public class HorizontalSubsystem extends SubsystemBase {
                             mServoState = Position.HOME;
                             elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW);
                             SetClaw(GripState.CLOSED);
-
                         }),
                         new WaitCommand(150),
                         new InstantCommand(() -> {
@@ -265,7 +257,7 @@ public class HorizontalSubsystem extends SubsystemBase {
                             wrist.setPosition(RiptideConstants.HORZ_DEPLOYED_WRIST);
                             elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW + .075);
                         }),
-                        new WaitCommand(200),
+//                        new WaitCommand(200),
                         new InstantCommand(() -> {
                             elbow.setPosition(RiptideConstants.HORZ_DEPLOYED_ELBOW);
                             SetClaw(GripState.OPEN);

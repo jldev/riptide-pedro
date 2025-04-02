@@ -146,8 +146,6 @@ public class VerticalSubsystem extends SubsystemBase {
 //        shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
 //        rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION);
 //        elbow.setPosition(RiptideConstants.VERT_HOME_ELBOW);
-//        mGripState = GripState.CLOSED;
-//        grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
         //
 
 
@@ -218,7 +216,6 @@ public class VerticalSubsystem extends SubsystemBase {
                     case HOME: //this might be our init
                         return new SequentialCommandGroup(
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION)),
-                                new WaitCommand(750),
                                 new InstantCommand(()-> {
                                     shoulder1.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_HOME_SHOULDER);
@@ -238,14 +235,15 @@ public class VerticalSubsystem extends SubsystemBase {
                                 new InstantCommand(() -> {
                                     mGripState = GripState.OPEN;
                                     grip.setPosition(RiptideConstants.GRIPPER_OPEN_VALUE_VERTICAL);
-                                    rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION);
                                 }),
-                                new WaitCommand(750),
                                 new InstantCommand(()-> {
                                     shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER);
                                     elbow.setPosition(RiptideConstants.VERT_WALL_ELBOW);
-                                }));
+                                }),
+                                new WaitCommand(100),
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION))
+                                );
                     case HANG:
                         return new SequentialCommandGroup(
                                 new InstantCommand(()-> {
@@ -257,8 +255,8 @@ public class VerticalSubsystem extends SubsystemBase {
                                     shoulder2.setPosition(RiptideConstants.VERT_HANG_SHOULDER);
                                     elbow.setPosition(RiptideConstants.VERT_HANG_ELBOW);
                                 }),
-                                new WaitCommand(750),
-                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HANG_ROTATION))
+                                new WaitCommand(100),
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION))
                         );
                     case BASKET:
                         return new SequentialCommandGroup(
@@ -271,14 +269,12 @@ public class VerticalSubsystem extends SubsystemBase {
                                     shoulder2.setPosition(RiptideConstants.VERT_BASKET_SHOULDER);
                                     elbow.setPosition(RiptideConstants.VERT_BASKET_ELBOW);
                                 }),
-                                new WaitCommand(750),
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_BASKET_ROTATION))
                         );
 
                     case HANDSHAKE:
                         return new SequentialCommandGroup(
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HOME_ROTATION)),
-                                new WaitCommand(750),
                                 new InstantCommand(()-> {
                                     shoulder1.setPosition(RiptideConstants.VERT_HANDSHAKE_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_HANDSHAKE_SHOULDER);

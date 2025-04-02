@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
@@ -178,8 +179,6 @@ public class Riptide {
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.SUB)),
                 horizontal.changeServos(HorizontalSubsystem.Position.SUB),
                 vertical.changeServos(VerticalSubsystem.Position.HOME)
-
-
         );
     }
 
@@ -191,7 +190,6 @@ public class Riptide {
                 new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-                new WaitCommand(150),
                 vertical.changeServos(VerticalSubsystem.Position.HANG),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );
@@ -201,14 +199,14 @@ public class Riptide {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> {
                     vertical.setClawImmediate(VerticalSubsystem.GripState.OPEN);
-                    horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
                 }),
-                new WaitCommand(100),
-                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+                new WaitCommand(50),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME),
-                new WaitCommand(200),
-                vertical.changeServos(VerticalSubsystem.Position.WALL)
+                new ParallelCommandGroup(
+                        vertical.changeServos(VerticalSubsystem.Position.WALL),
+                        new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.WALL))
+                )
         );
     }
 
