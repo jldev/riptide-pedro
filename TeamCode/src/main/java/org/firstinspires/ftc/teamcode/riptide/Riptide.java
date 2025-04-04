@@ -114,7 +114,8 @@ public class Riptide {
                 opMode.hardwareMap.get(Servo.class, "shoulder"),
                 opMode.hardwareMap.get(Servo.class, "hElbow"),
                 opMode.hardwareMap.get(Servo.class, "wrist"),
-                opMode.hardwareMap.get(Servo.class, "hGrip")
+                opMode.hardwareMap.get(Servo.class, "hGrip"),
+                opMode.hardwareMap.get(Servo.class, "hockey")
         );
 
         // pseudo buttons
@@ -184,12 +185,9 @@ public class Riptide {
 
     public Command GoHang() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED);
-                }),
-                new WaitCommand(100),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+                new WaitCommand(500),
                 vertical.changeServos(VerticalSubsystem.Position.HANG),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );

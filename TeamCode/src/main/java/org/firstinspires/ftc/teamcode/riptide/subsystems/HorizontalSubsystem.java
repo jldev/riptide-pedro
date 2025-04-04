@@ -58,6 +58,12 @@ public class HorizontalSubsystem extends SubsystemBase {
     }
     private DownState mDownState;
 
+    public enum HockeyState {
+        UP,
+        DOWN
+    }
+    private HockeyState mHockeyState;
+
     SlideSubsystemState mState;
 
     public Position slidePosition;
@@ -71,6 +77,7 @@ public class HorizontalSubsystem extends SubsystemBase {
     public final Servo elbow;
     public final Servo wrist;
     public final Servo grip;
+    public final Servo hockey;
 
     private double desiredYaw;
     private boolean deployed;
@@ -78,7 +85,7 @@ public class HorizontalSubsystem extends SubsystemBase {
     public int specifiedPos = 0;
 
 
-    public HorizontalSubsystem(Riptide riptide, MotorEx slideMotor1, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder, Servo _elbow, Servo _wrist, Servo _grip) {
+    public HorizontalSubsystem(Riptide riptide, MotorEx slideMotor1, CommandOpMode opmode, double pos_coefficient, double pos_tolerance, Servo _shoulder, Servo _elbow, Servo _wrist, Servo _grip, Servo _hockey) {
         mRiptide = riptide;
         mSlideMotor = slideMotor1;
         mOpMode = opmode;
@@ -107,6 +114,7 @@ public class HorizontalSubsystem extends SubsystemBase {
         elbow = _elbow;
         wrist = _wrist;
         grip = _grip;
+        hockey = _hockey;
 
         elbow.setDirection(Servo.Direction.REVERSE);
         shoulder.setDirection(Servo.Direction.REVERSE);
@@ -134,6 +142,7 @@ public class HorizontalSubsystem extends SubsystemBase {
         mOpMode.telemetry.addData("GripState", mGripState);
         mOpMode.telemetry.addData("DownState", mDownState);
         mOpMode.telemetry.update();
+
 
         if(slidePosition == Position.HANDSHAKE && mSlideMotor.getCurrentPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE))
         {

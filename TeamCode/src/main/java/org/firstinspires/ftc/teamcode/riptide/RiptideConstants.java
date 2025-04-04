@@ -36,7 +36,7 @@ public class RiptideConstants {
     //   VERTICAL SLIDE POSITION
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 0;
-    public static int VERTICAL_SLIDE_HANG = 350;
+    public static int VERTICAL_SLIDE_HANG = 450;
     public static int VERTICAL_SLIDE_BASKET = 1725;
 
     public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
@@ -47,7 +47,7 @@ public class RiptideConstants {
     public static int HORIZONTAL_SLIDE_HOME = 0;
     public static int HORIZONTAL_SLIDE_HANDSHAKE = 30;
 
-    public static int HORIZONTAL_SLIDE_MAX = 1425;
+    public static int HORIZONTAL_SLIDE_MAX = 1400;
     public static final int LENGTH_LIMIT_WHEN_VERTICAL_DEPLOYED = 100;
 
 
@@ -83,6 +83,10 @@ public class RiptideConstants {
 
     public static double HORZ_HANDSHAKE_WRIST = .5f;
 
+    // HOCKEY
+    public  static double HOCKEY_UP = .85;
+    public  static double HOCKEY_DOWN = .15;
+
 
 
                        //       VERTICAL CLAW PRESETS
@@ -99,14 +103,14 @@ public class RiptideConstants {
     public static double VERT_HANDSHAKE_ROTATION = .85;
 
     // HANG
-    public static double VERT_HANG_SHOULDER = 0.225f;
+    public static double VERT_HANG_SHOULDER = .175;
     public static double VERT_HANG_ROTATION = 0.3f;
-    public static double VERT_HANG_ELBOW = 0.25f;
+    public static double VERT_HANG_ELBOW = 0.1f;
 
     // WALL
-    public static double VERT_WALL_SHOULDER = 0.85f;
+    public static double VERT_WALL_SHOULDER = 0.98;
     public static double VERT_WALL_ROTATION = 0.85f;
-    public static double VERT_WALL_ELBOW = 0.85f;
+    public static double VERT_WALL_ELBOW = 0.9;
 
     // BASKET
     public static double VERT_BASKET_SHOULDER = 0.4f;

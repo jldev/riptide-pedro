@@ -247,6 +247,10 @@ public class VerticalSubsystem extends SubsystemBase {
                     case HANG:
                         return new SequentialCommandGroup(
                                 new InstantCommand(()-> {
+                                    shoulder1.setPosition(RiptideConstants.VERT_WALL_SHOULDER -.1);
+                                    shoulder2.setPosition(RiptideConstants.VERT_WALL_SHOULDER -.1);}),
+                                new WaitCommand(    500),
+                                new InstantCommand(()-> {
                                     mGripState = GripState.CLOSED;
                                     grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                                 }),
@@ -256,7 +260,7 @@ public class VerticalSubsystem extends SubsystemBase {
                                     elbow.setPosition(RiptideConstants.VERT_HANG_ELBOW);
                                 }),
                                 new WaitCommand(100),
-                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_WALL_ROTATION))
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HANG_ROTATION))
                         );
                     case BASKET:
                         return new SequentialCommandGroup(
