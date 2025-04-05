@@ -218,11 +218,10 @@ public RiptideAuto auto;
 
     public Command GoBasket() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> {
-                    vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED);
-                    horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
-                }),
-                new WaitCommand(200),
+                new InstantCommand(() -> vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED)),
+                new WaitCommand(50),
+                new InstantCommand(() -> horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN)),
+                new WaitCommand(150),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),
                 vertical.changeServos(VerticalSubsystem.Position.BASKET),

@@ -116,7 +116,7 @@ public class RiptideConstants {
 
     // BASKET
     public static double VERT_BASKET_SHOULDER = 0.4f;
-    public static double VERT_BASKET_ROTATION = 0.55f;
+    public static double VERT_BASKET_ROTATION = 0.375f;
     public static double VERT_BASKET_ELBOW = 0.55f;
 
     // INIT
