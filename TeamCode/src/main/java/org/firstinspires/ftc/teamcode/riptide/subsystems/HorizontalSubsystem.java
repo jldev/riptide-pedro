@@ -136,6 +136,12 @@ public class HorizontalSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
+        // for testing
+//        shoulder.setPosition(RiptideConstants.HORZ_HOME_SHOULDER);
+//        elbow.setPosition(RiptideConstants.HORZ_HOME_ELBOW);
+//        wrist.setPosition(RiptideConstants.HORZ_HOME_WRIST);
+        //
+
 
         mOpMode.telemetry.addData("Servo State", mServoState);
         mOpMode.telemetry.addData("Slide State", slidePosition);
@@ -144,13 +150,13 @@ public class HorizontalSubsystem extends SubsystemBase {
         mOpMode.telemetry.update();
 
 
-        if(slidePosition == Position.HANDSHAKE && mSlideMotor.getCurrentPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE))
-        {
-            mOpMode.schedule(new SequentialCommandGroup(
-                    new WaitCommand(250),
-                    mRiptide.GoBasket())
-            );
-        }
+//        if((slidePosition == Position.HANDSHAKE) && (mSlideMotor.encoder.getPosition() < (RiptideConstants.HORIZONTAL_SLIDE_HANDSHAKE + RiptideConstants.SLIDES_PID_TOLERANCE)))
+//        {
+//            mOpMode.schedule(new SequentialCommandGroup(
+//                    new WaitCommand(250),
+//                    mRiptide.GoBasket())
+//            );
+//        }
 
 
         if(mGripState == GripState.CLOSED){
@@ -181,7 +187,9 @@ public class HorizontalSubsystem extends SubsystemBase {
                         desiredYaw = 0.00;
                     wrist.setPosition(desiredYaw);
                 }
+            }
 
+            if(mServoState == Position.SUB){
                 if(mRiptide.gunnerOp.getRightY() > .5){
                     SetClawDownState(DownState.DOWN);
                 } else{
@@ -273,16 +281,14 @@ public class HorizontalSubsystem extends SubsystemBase {
                         })
                 );
             case HANDSHAKE:
-                return new SequentialCommandGroup(
-                        new InstantCommand(() -> {
+                return new InstantCommand(() -> {
                             mServoState = Position.HANDSHAKE;
                             elbow.setPosition(RiptideConstants.HORZ_HANDSHAKE_ELBOW);
                             shoulder.setPosition(RiptideConstants.HORZ_HANDSHAKE_SHOULDER);
                             wrist.setPosition(RiptideConstants.HORZ_HANDSHAKE_WRIST);
                             mGripState = GripState.CLOSED;
                             grip.setPosition(RiptideConstants.GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL);
-                        })
-                );
+                        });
         }
         return new WaitCommand(0);
     }

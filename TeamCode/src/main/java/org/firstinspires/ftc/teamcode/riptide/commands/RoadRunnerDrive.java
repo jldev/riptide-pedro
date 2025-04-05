@@ -44,7 +44,7 @@ public class RoadRunnerDrive extends CommandBase {
             action = drive.drive.actionBuilder(drive.drive.pose).strafeToConstantHeading(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y)).build();
         } else
         {
-            action = drive.drive.actionBuilder(drive.drive.pose).strafeToLinearHeading(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y), drive.drive.pose.heading.toDouble() + Math.toRadians(heading)).build();
+            action = drive.drive.actionBuilder(drive.drive.pose).strafeToLinearHeading(new Vector2d(drive.drive.pose.position.x + x, drive.drive.pose.position.y + y), Math.toRadians(heading)).build();
         }
     }
     @Override

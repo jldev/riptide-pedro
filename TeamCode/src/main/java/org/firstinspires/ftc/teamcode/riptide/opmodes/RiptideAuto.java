@@ -5,24 +5,24 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.RiptideConstants;
 import org.firstinspires.ftc.teamcode.riptide.commands.HorizontalSlideCommand;
 import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerDrive;
 import org.firstinspires.ftc.teamcode.riptide.commands.RoadRunnerTurn;
+import org.firstinspires.ftc.teamcode.riptide.commands.ServoPositionCommand;
 
 public class RiptideAuto {
 
     public Riptide riptide;
 
     private CommandOpMode opMode;
-    Task currentState = Task.PRELOAD_SPECIMEN;
+    public Task currentState = Task.PRELOAD_SPECIMEN;
 
     public Pose2d desiredPosition;
 
-    private enum Task{
+    public enum Task{
         // specimen
         PRELOAD_SPECIMEN,
         PUSH_SAMPLES,
@@ -47,7 +47,7 @@ public class RiptideAuto {
 
     public RiptideAuto(CommandOpMode commandOpMode, Riptide.FieldPos startingPosition, Riptide.AllianceColor allianceColor, Riptide.Target target) {
         opMode = commandOpMode;
-        riptide = new Riptide(opMode, Riptide.OpModeType.AUTO, allianceColor);
+        riptide = new Riptide(opMode, Riptide.OpModeType.AUTO, allianceColor, this);
         riptide.setStartPosition(startingPosition, allianceColor);
         riptide.target = target;
         if(riptide.target == Riptide.Target.SPECIMENS)
@@ -81,7 +81,7 @@ public class RiptideAuto {
                                 new InstantCommand(() -> riptide.vertical.toggleClawState()),
                                 new RoadRunnerDrive(-9, 0, riptide.drive),
 
-                                new InstantCommand(() -> currentState = Task.PUSH_SAMPLES)
+                                new InstantCommand(() -> currentState = Task.GRAB_SAMPLES)
                             )
                         );
                 currentState = Task.WAIT_FOR_TASK;
@@ -106,27 +106,27 @@ public class RiptideAuto {
                 opMode.schedule(
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
-//                                        new RoadRunnerDrive(2.5, -21, 100, riptide.drive),   // I THINK this aligns with tape from preload
-                                    new HorizontalSlideCommand(riptide.horizontal, RiptideConstants.HORIZONTAL_SLIDE_MAX),
-                                        new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_DOWN))
+                                        new RoadRunnerDrive(2.5, -22, 325, riptide.drive),
+                                    new HorizontalSlideCommand(riptide.horizontal, RiptideConstants.HORIZONTAL_SLIDE_MAX)
                                 ),
-                                new RoadRunnerTurn(-80, riptide.drive),
+                                new ServoPositionCommand(riptide.horizontal.hockey, RiptideConstants.HOCKEY_DOWN, true),
+                                new RoadRunnerTurn(-85, riptide.drive),
                                 new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_UP)),
                                 //first sample deposited
-                                new RoadRunnerTurn(90, riptide.drive),
-                                new RoadRunnerDrive(0, -6, riptide.drive),
-                                new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_DOWN)),
-                                new WaitCommand(500),
-                                new RoadRunnerTurn(-90, riptide.drive),
+                                new RoadRunnerDrive(0, -8, 320, riptide.drive),
+                                new ServoPositionCommand(riptide.horizontal.hockey, RiptideConstants.HOCKEY_DOWN, true),
+                                new RoadRunnerTurn(-80, riptide.drive),
                                 new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_UP)),
                                 //second sample deposited
-                                new RoadRunnerTurn(90, riptide.drive),
-                                new RoadRunnerDrive(0, -8, riptide.drive),
-                                new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_DOWN)),
-                                new WaitCommand(500),
-                                new RoadRunnerTurn(-90, riptide.drive),
-                                new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_UP))
+                                new RoadRunnerDrive(0, -7, 320, riptide.drive),
+                                new ServoPositionCommand(riptide.horizontal.hockey, RiptideConstants.HOCKEY_DOWN, true),
+                                new RoadRunnerTurn(-80, riptide.drive),
+                                new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_UP)),
                                 //third sample deposited
+                                new ParallelCommandGroup(
+                                        new RoadRunnerDrive(0, 0, 180, riptide.drive),
+                                        new HorizontalSlideCommand(riptide.horizontal, 0)
+                                )
                                 //add stuff to positions for first specimen
                         ));
                 currentState = Task.WAIT_FOR_TASK;

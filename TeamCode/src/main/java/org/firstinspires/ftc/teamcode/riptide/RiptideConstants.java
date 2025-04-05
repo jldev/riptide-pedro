@@ -17,6 +17,8 @@ public class RiptideConstants {
     public static double SLIDES_PID_TOLERANCE = 10;
     public static double SLIDES_PID_POS_COEFFICIENT = .25;
 
+    public static int HANDSHAKE_WAIT_TIME = 350;
+
 
     //   HORIZONTAL PID
     public static double HORIZONTAL_PID_P = 0.0125;
@@ -37,7 +39,7 @@ public class RiptideConstants {
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 0;
     public static int VERTICAL_SLIDE_HANG = 450;
-    public static int VERTICAL_SLIDE_BASKET = 1725;
+    public static int VERTICAL_SLIDE_BASKET = 1875;
 
     public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
 
@@ -45,7 +47,7 @@ public class RiptideConstants {
 
     //   HORIZONTAL SLIDE POSITIONS
     public static int HORIZONTAL_SLIDE_HOME = 0;
-    public static int HORIZONTAL_SLIDE_HANDSHAKE = 30;
+    public static int HORIZONTAL_SLIDE_HANDSHAKE = 675;
 
     public static int HORIZONTAL_SLIDE_MAX = 1400;
     public static final int LENGTH_LIMIT_WHEN_VERTICAL_DEPLOYED = 100;
@@ -78,8 +80,8 @@ public class RiptideConstants {
 
 
     // HANDSHAKE
-    public static double HORZ_HANDSHAKE_SHOULDER = .25f;
-    public static double HORZ_HANDSHAKE_ELBOW = .875f;
+    public static double HORZ_HANDSHAKE_SHOULDER = .59f;
+    public static double HORZ_HANDSHAKE_ELBOW = .95f;
 
     public static double HORZ_HANDSHAKE_WRIST = .5f;
 
@@ -98,8 +100,8 @@ public class RiptideConstants {
     public static double VERT_HOME_ELBOW = 1;
 
     // HANDSHAKE
-    public static double VERT_HANDSHAKE_SHOULDER = .975;
-    public static double VERT_HANDSHAKE_ELBOW = .9;
+    public static double VERT_HANDSHAKE_SHOULDER = .95;
+    public static double VERT_HANDSHAKE_ELBOW = .925;
     public static double VERT_HANDSHAKE_ROTATION = .85;
 
     // HANG
@@ -110,12 +112,16 @@ public class RiptideConstants {
     // WALL
     public static double VERT_WALL_SHOULDER = 0.98;
     public static double VERT_WALL_ROTATION = 0.85f;
-    public static double VERT_WALL_ELBOW = 0.9;
+    public static double VERT_WALL_ELBOW = 1;
 
     // BASKET
     public static double VERT_BASKET_SHOULDER = 0.4f;
     public static double VERT_BASKET_ROTATION = 0.55f;
     public static double VERT_BASKET_ELBOW = 0.55f;
+
+    // INIT
+    public static double VERT_INIT_SHOULDER = 0.8;
+    public static double VERT_INIT_ELBOW = 1;
 
 
     public static double SPEED_SERVO_SLOW=.75;

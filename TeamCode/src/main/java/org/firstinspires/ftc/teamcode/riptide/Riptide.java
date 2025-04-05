@@ -14,6 +14,8 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.riptide.commands.HorizontalSlideCommand;
+import org.firstinspires.ftc.teamcode.riptide.opmodes.RiptideAuto;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.HorizontalSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.VerticalSubsystem;
@@ -79,6 +81,12 @@ public class Riptide {
     public enum OpModeType {
         TELEOP,
         AUTO
+    }
+public RiptideAuto auto;
+
+    public Riptide(CommandOpMode opMode, OpModeType opModeType, AllianceColor ac, RiptideAuto auto) {
+        this(opMode, opModeType, ac);
+    this.auto = auto;
     }
 
     public Riptide(CommandOpMode opMode, OpModeType opModeType, AllianceColor ac) {
@@ -185,10 +193,10 @@ public class Riptide {
 
     public Command GoHang() {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
-                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-                new WaitCommand(500),
                 vertical.changeServos(VerticalSubsystem.Position.HANG),
+                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+//                new WaitCommand(500),
+                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );
     }
@@ -215,11 +223,11 @@ public class Riptide {
                     horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN);
                 }),
                 new WaitCommand(200),
+                horizontal.changeServos(HorizontalSubsystem.Position.HOME),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET)),
-                new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
                 vertical.changeServos(VerticalSubsystem.Position.BASKET),
-                new WaitCommand(500),
-                horizontal.changeServos(HorizontalSubsystem.Position.HOME)
+                new WaitCommand(200),
+                new HorizontalSlideCommand(horizontal, HorizontalSubsystem.Position.HOME)
 
         );
     }
@@ -228,12 +236,12 @@ public class Riptide {
         // we need to specify if were going to basket or dropping behind and maybe have a drop behind command here
         return new SequentialCommandGroup(
                 vertical.changeServos(VerticalSubsystem.Position.HANDSHAKE),
+                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HOME)),
                 horizontal.changeServos(HorizontalSubsystem.Position.HANDSHAKE),
-                new WaitCommand(1000),
-                new InstantCommand(() -> {
-                    vertical.changePositionTo(VerticalSubsystem.Position.HOME);
-                    horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HANDSHAKE);
-                })
+                new WaitCommand(RiptideConstants.HANDSHAKE_WAIT_TIME),
+                new HorizontalSlideCommand(horizontal, HorizontalSubsystem.Position.HANDSHAKE),
+                new WaitCommand(RiptideConstants.HANDSHAKE_WAIT_TIME),
+                GoBasket()
         );
     }
 
