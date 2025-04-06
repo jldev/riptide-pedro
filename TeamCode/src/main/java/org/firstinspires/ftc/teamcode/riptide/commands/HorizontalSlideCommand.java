@@ -20,14 +20,13 @@ public class HorizontalSlideCommand extends CommandBase {
     public HorizontalSlideCommand(HorizontalSubsystem system, int position) {
         this.system = system;
         this.specifiedPos = position;
-
+        this.position = HorizontalSubsystem.Position.SPECIFIED;
         addRequirements(system);
     }
 
     @Override
     public void execute() {
-       if(position == null){
-           position = HorizontalSubsystem.Position.SPECIFIED;
+       if(position == HorizontalSubsystem.Position.SPECIFIED){
            this.system.changeToSlidePosition(specifiedPos);
        }else {
            this.system.changeToSlidePosition(position);

@@ -251,7 +251,7 @@ public class HorizontalSubsystem extends SubsystemBase {
     public Command changeServos(Position pos){
         mServoState = pos;
         if(mRiptide.mOpModeType == Riptide.OpModeType.TELEOP)
-        hockey.setPosition(RiptideConstants.HOCKEY_UP);
+            hockey.setPosition(RiptideConstants.HOCKEY_UP);
         switch(pos){
             case HOME:
                 return new SequentialCommandGroup(

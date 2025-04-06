@@ -15,6 +15,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.riptide.commands.HorizontalSlideCommand;
+import org.firstinspires.ftc.teamcode.riptide.commands.ServoPositionCommand;
 import org.firstinspires.ftc.teamcode.riptide.opmodes.RiptideAuto;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.HorizontalSubsystem;
 import org.firstinspires.ftc.teamcode.riptide.subsystems.MecanumDriveSubsystem;
@@ -193,10 +194,16 @@ public RiptideAuto auto;
 
     public Command GoHang() {
         return new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                        new ServoPositionCommand(vertical.shoulder1, .9, true),
+                        new ServoPositionCommand(vertical.shoulder2, 0.9, true),
+                        new ServoPositionCommand(vertical.elbow, .9, true)
+                ),
+                new InstantCommand(() -> {vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED);}),
+                new WaitCommand(75),
+                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 vertical.changeServos(VerticalSubsystem.Position.HANG),
                 new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
-//                new WaitCommand(500),
-                new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME)
         );
     }

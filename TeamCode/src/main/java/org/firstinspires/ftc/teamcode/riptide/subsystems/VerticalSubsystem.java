@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.riptide.subsystems;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -18,8 +16,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.riptide.Riptide;
 import org.firstinspires.ftc.teamcode.riptide.RiptideConstants;
-import org.firstinspires.ftc.teamcode.riptide.commands.ServoPositionCommand;
-import org.firstinspires.ftc.teamcode.riptide.opmodes.RiptideAuto;
 
 public class VerticalSubsystem extends SubsystemBase {
     //private final Trigger encoderStopTrigger;
@@ -250,33 +246,14 @@ public class VerticalSubsystem extends SubsystemBase {
                                 );
                     case HANG:
                         return new SequentialCommandGroup(
-//                                new ParallelCommandGroup(
-//                                        new ServoPositionCommand(shoulder1, .9, true),
-//                                        new ServoPositionCommand(shoulder2, .9, true),
-//                                        new ServoPositionCommand(elbow, .85, true)
-//                                ),
-                                new ConditionalCommand(
-                                        new ParallelCommandGroup(
-                                                new ServoPositionCommand(shoulder1, .9, true),
-                                                new ServoPositionCommand(shoulder2, 0.9, true),
-                                                new ServoPositionCommand(elbow, .85, true)
-                                        ),
-                                        new WaitCommand(0000000000000000000000000000000000000000000000000000000000),
-                                        () -> mRiptide.auto !=null && mRiptide.auto.currentState != RiptideAuto.Task.PRELOAD_SPECIMEN
-                                ),
-//                                new WaitCommand(50),
-//                                new InstantCommand(()-> {
-//                                    shoulder1.setPosition(0.85);
-//                                    shoulder2.setPosition(0.85);
-//                                    elbow.setPosition(0.85f);}),
-                                new InstantCommand(()-> {
-                                    mGripState = GripState.CLOSED;
-                                    grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
-                                }),
                                 new InstantCommand(()-> {
                                     shoulder1.setPosition(RiptideConstants.VERT_HANG_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_HANG_SHOULDER);
                                     elbow.setPosition(RiptideConstants.VERT_HANG_ELBOW);
+                                }),
+                                new InstantCommand(()-> {
+                                    mGripState = GripState.CLOSED;
+                                    grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
                                 }),
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_HANG_ROTATION))
                         );
