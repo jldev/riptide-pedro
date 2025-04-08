@@ -323,7 +323,7 @@ public class HorizontalSubsystem extends SubsystemBase {
     public Command Grab(){
         return new SequentialCommandGroup(
                 new InstantCommand(() -> SetClawDownState(DownState.DOWN)),
-                new WaitCommand(500),
+                new WaitCommand(750),
                 new InstantCommand(() -> SetClaw(HorizontalSubsystem.GripState.CLOSED)));
     }
 

@@ -193,6 +193,16 @@ public RiptideAuto auto;
     }
 
     public Command GoHang() {
+        if(mOpModeType == OpModeType.AUTO){
+            if(auto.currentState == RiptideAuto.Task.PRELOAD_SPECIMEN){
+                return new ParallelCommandGroup(
+                        new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HANG)),
+                        vertical.changeServos(VerticalSubsystem.Position.HANG),
+                        new InstantCommand(() -> horizontal.changeToSlidePosition(HorizontalSubsystem.Position.HOME)),
+                        horizontal.changeServos(HorizontalSubsystem.Position.HOME)
+                );
+            }
+        }
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new ServoPositionCommand(vertical.shoulder1, .9, true),

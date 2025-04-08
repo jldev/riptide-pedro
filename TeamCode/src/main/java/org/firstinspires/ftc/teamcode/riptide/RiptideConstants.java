@@ -38,7 +38,7 @@ public class RiptideConstants {
     //   VERTICAL SLIDE POSITION
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 0;
-    public static int VERTICAL_SLIDE_HANG = 500;
+    public static int VERTICAL_SLIDE_HANG = 425;
     public static int VERTICAL_SLIDE_BASKET = 1875;
 
     public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
