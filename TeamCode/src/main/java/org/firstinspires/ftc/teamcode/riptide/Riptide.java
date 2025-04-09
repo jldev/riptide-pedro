@@ -236,7 +236,7 @@ public RiptideAuto auto;
     public Command GoBasket() {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED)),
-                new WaitCommand(50),
+                new WaitCommand(150),
                 new InstantCommand(() -> horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN)),
                 new WaitCommand(150),
                 horizontal.changeServos(HorizontalSubsystem.Position.HOME),
@@ -251,9 +251,9 @@ public RiptideAuto auto;
     public Command GoHandshake(){
         // we need to specify if were going to basket or dropping behind and maybe have a drop behind command here
         return new SequentialCommandGroup(
+                horizontal.changeServos(HorizontalSubsystem.Position.HANDSHAKE),
                 vertical.changeServos(VerticalSubsystem.Position.HANDSHAKE),
                 new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.HOME)),
-                horizontal.changeServos(HorizontalSubsystem.Position.HANDSHAKE),
                 new WaitCommand(RiptideConstants.HANDSHAKE_WAIT_TIME),
                 new HorizontalSlideCommand(horizontal, HorizontalSubsystem.Position.HANDSHAKE),
                 new WaitCommand(RiptideConstants.HANDSHAKE_WAIT_TIME),

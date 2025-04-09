@@ -58,7 +58,7 @@ public class RiptideConstants {
     public static double GRIPPER_OPEN_VALUE_VERTICAL = .5f;
     public static double GRIPPER_OPEN_VALUE_HORIZONTAL = .26f;
     public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.125;
-    public static double GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL = 0.15;
+    public static double GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL = 0.16;
 
 
 
@@ -101,7 +101,7 @@ public class RiptideConstants {
 
     // HANDSHAKE
     public static double VERT_HANDSHAKE_SHOULDER = .95;
-    public static double VERT_HANDSHAKE_ELBOW = .925;
+    public static double VERT_HANDSHAKE_ELBOW = .915;
     public static double VERT_HANDSHAKE_ROTATION = .85;
 
     // HANG
