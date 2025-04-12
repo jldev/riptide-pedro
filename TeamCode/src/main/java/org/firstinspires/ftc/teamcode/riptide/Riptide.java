@@ -205,9 +205,9 @@ public RiptideAuto auto;
         }
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                        new ServoPositionCommand(vertical.shoulder1, .9, true),
-                        new ServoPositionCommand(vertical.shoulder2, 0.9, true),
-                        new ServoPositionCommand(vertical.elbow, .9, true)
+                        new ServoPositionCommand(vertical.shoulder1, RiptideConstants.VERT_PICKUP_SHOULDER, true),
+                        new ServoPositionCommand(vertical.shoulder2, RiptideConstants.VERT_PICKUP_SHOULDER, true),
+                        new ServoPositionCommand(vertical.elbow, RiptideConstants.VERT_PICKUP_ELBOW, true)
                 ),
                 new InstantCommand(() -> {vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED);}),
                 new WaitCommand(75),

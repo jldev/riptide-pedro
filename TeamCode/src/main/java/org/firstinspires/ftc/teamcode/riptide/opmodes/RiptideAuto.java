@@ -29,6 +29,7 @@ public class RiptideAuto {
         PUSH_SAMPLES,
         GRAB_SAMPLES,
         HANG_SPECIMEN,
+        HANG_LAST_SPECIMEN,
         RETRIEVE_SPECIMEN,
         PARK,
 
@@ -82,7 +83,7 @@ public class RiptideAuto {
                 opMode.schedule(
                         riptide.GoHang(),
                         new SequentialCommandGroup(
-                                new WaitCommand(200),
+                                new WaitCommand(400),
                                 new RoadRunnerDrive(32, 0, riptide.drive),
                                 new InstantCommand(() -> riptide.vertical.toggleClawState()),
                                 new RoadRunnerDrive(-9, 0, riptide.drive),
@@ -112,14 +113,15 @@ public class RiptideAuto {
                 opMode.schedule(
                         new SequentialCommandGroup(
                                 new ParallelCommandGroup(
-                                        new RoadRunnerDrive(5, -16.5, 335, riptide.drive),
+                                        new RoadRunnerDrive(5, -15.5, 330, riptide.drive),
                                     new HorizontalSlideCommand(riptide.horizontal, RiptideConstants.HORIZONTAL_SLIDE_MAX)
                                 ),
                                 new ServoPositionCommand(riptide.horizontal.hockey, RiptideConstants.HOCKEY_DOWN, true),
-                                new RoadRunnerDrive(-4, 0, 260, riptide.drive),
+                                new WaitCommand(100),
+                                new RoadRunnerDrive(-4, 0, 270, riptide.drive),
                                 new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_UP)),
                                 //first sample deposited
-                                new RoadRunnerDrive(4, -8, 310, riptide.drive),
+                                new RoadRunnerDrive(4, -7, 320, riptide.drive),
                                 new ServoPositionCommand(riptide.horizontal.hockey, RiptideConstants.HOCKEY_DOWN, true),
                                 new RoadRunnerDrive(-16, 0, 270, riptide.drive),
                                 new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_UP)),
@@ -127,10 +129,10 @@ public class RiptideAuto {
                                 new ParallelCommandGroup(
                                         riptide.GoWall(),
                                         new InstantCommand(() -> riptide.horizontal.hockey.setPosition(RiptideConstants.HOCKEY_UP)),
-                                        new RoadRunnerDrive(-8, 0, 180, riptide.drive)
+                                        new RoadRunnerDrive(-6, -7, 180, riptide.drive)
                                         ),
-                                new RoadRunnerDrive(-2, 0, 180, riptide.drive),
-                                new WaitCommand(500),
+                                new RoadRunnerDrive(-4, 0, 180, riptide.drive),
+                                new InstantCommand(() -> riptide.drive.drive.updatePoseEstimate()),
                                 new InstantCommand(() -> currentState = Task.HANG_SPECIMEN)
                         ));
                 currentState = Task.WAIT_FOR_TASK;
@@ -139,13 +141,28 @@ public class RiptideAuto {
                 opMode.schedule(
                         riptide.GoHang(),
                         new SequentialCommandGroup(
-                        new RoadRunnerDrive(18, 32 + (additionalCycles * 2), riptide.drive),
-                        new RoadRunnerDrive(14, 0, riptide.drive),
+                        new RoadRunnerDrive(20, 39 - (additionalCycles * 2), riptide.drive),
+                        new RoadRunnerDrive(10, 0, riptide.drive),
                         new InstantCommand(() -> {
+                            new InstantCommand(() -> riptide.drive.drive.updatePoseEstimate());
                             riptide.vertical.toggleClawState();
                         }),
                         new InstantCommand(() -> currentState = Task.RETRIEVE_SPECIMEN)
                 ));
+                currentState = Task.WAIT_FOR_TASK;
+                break;
+            case HANG_LAST_SPECIMEN:
+                opMode.schedule(
+                        riptide.GoHang(),
+                        new SequentialCommandGroup(
+                                new RoadRunnerDrive(20, 35, riptide.drive),
+                                new RoadRunnerDrive(10, 0, riptide.drive),
+                                new InstantCommand(() -> {
+                                    new InstantCommand(() -> riptide.drive.drive.updatePoseEstimate());
+                                    riptide.vertical.toggleClawState();
+                                }),
+                                new InstantCommand(() -> currentState = Task.RETRIEVE_SPECIMEN)
+                        ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;
             case RETRIEVE_SPECIMEN:
@@ -154,12 +171,19 @@ public class RiptideAuto {
                         new RoadRunnerDrive(-6, 0, riptide.drive),
                         new ParallelCommandGroup(
                                 riptide.GoWall(),
-                                new RoadRunnerDrive(-26, -32 - (additionalCycles * 2), riptide.drive)
+                                new RoadRunnerDrive(-26, -39 -(additionalCycles * 2), riptide.drive)
                         ),
-                        new WaitCommand(500),
+                                new RoadRunnerDrive( -6, 0, riptide.drive),
                                 new InstantCommand(() -> {
-                                    currentState = Task.HANG_SPECIMEN;
-                                    additionalCycles++;})
+                                    riptide.drive.drive.updatePoseEstimate();
+                                    additionalCycles++;
+//                                    currentState = Task.HANG_SPECIMEN;
+                                    if(additionalCycles != 2){
+                                        currentState = Task.HANG_SPECIMEN;
+                                    } else{
+                                        currentState = Task.HANG_LAST_SPECIMEN;
+                                    }
+                                })
                 ));
                 currentState = Task.WAIT_FOR_TASK;
                 break;

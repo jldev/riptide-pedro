@@ -57,7 +57,7 @@ public class RiptideConstants {
     public static double GRIPPER_CLOSED_VALUE_VERTICAL = 0.2f;
     public static double GRIPPER_OPEN_VALUE_VERTICAL = .5f;
     public static double GRIPPER_OPEN_VALUE_HORIZONTAL = .26f;
-    public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.125;
+    public static double GRIPPER_CLOSED_VALUE_HORIZONTAL = 0.115;
     public static double GRIPPER_CLOSED_HANDSHAKE_VALUE_HORIZONTAL = 0.16;
 
 
@@ -107,12 +107,16 @@ public class RiptideConstants {
     // HANG
     public static double VERT_HANG_SHOULDER = .175;
     public static double VERT_HANG_ROTATION = 0.3f;
-    public static double VERT_HANG_ELBOW = 0.2f;
+    public static double VERT_HANG_ELBOW = 0.21f;
 
     // WALL
     public static double VERT_WALL_SHOULDER = 0.98;
     public static double VERT_WALL_ROTATION = 0.85f;
     public static double VERT_WALL_ELBOW = 1;
+
+    // PICKUP
+    public  static double VERT_PICKUP_SHOULDER = 0.85;
+    public  static double VERT_PICKUP_ELBOW = 0.9;
 
     // BASKET
     public static double VERT_BASKET_SHOULDER = 0.4f;
@@ -124,7 +128,7 @@ public class RiptideConstants {
     public static double VERT_INIT_ELBOW = 1;
 
 
-    public static double SPEED_SERVO_SLOW=.75;
-    public static double SPEED_SERVO_FAST =1;
+    public static double SPEED_SERVO_SLOW = 1;
+    public static double SPEED_SERVO_FAST = 0;
 
 }

@@ -101,15 +101,15 @@ public class VerticalSubsystem extends SubsystemBase {
         mSlideMotor1.setRunMode(MotorEx.RunMode.RawPower);
         mSlideMotor1.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        mSlideMotor1.motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        mSlideMotor1.encoder.setDirection(Motor.Direction.FORWARD);
+        mSlideMotor1.motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideMotor1.encoder.setDirection(Motor.Direction.REVERSE);
 
         mSlideMotor2.stopAndResetEncoder();
         mSlideMotor2.setRunMode(MotorEx.RunMode.RawPower);
         mSlideMotor2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        mSlideMotor2.motor.setDirection(DcMotorSimple.Direction.FORWARD);
-        mSlideMotor2.encoder.setDirection(Motor.Direction.FORWARD);
+        mSlideMotor2.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideMotor2.encoder.setDirection(Motor.Direction.REVERSE);
 
 
         shoulder1 = _shoulder1;
