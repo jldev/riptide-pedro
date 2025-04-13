@@ -234,6 +234,20 @@ public RiptideAuto auto;
     }
 
     public Command GoBasket() {
+        if(mOpModeType == OpModeType.AUTO){
+            if(auto.currentState == RiptideAuto.Task.PRELOAD_BASKET){
+                return new SequentialCommandGroup(
+                        new InstantCommand(() -> vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED)),
+                        new WaitCommand(150),
+                        new InstantCommand(() -> horizontal.SetClaw(HorizontalSubsystem.GripState.OPEN)),
+                        new WaitCommand(150),
+                        horizontal.changeServos(HorizontalSubsystem.Position.HOME),
+                        new InstantCommand(() -> vertical.changePositionTo(VerticalSubsystem.Position.BASKET_AUTO)),
+                        vertical.changeServos(VerticalSubsystem.Position.BASKET_AUTO),
+                        new WaitCommand(200),
+                        new HorizontalSlideCommand(horizontal, HorizontalSubsystem.Position.HOME));
+            }
+        }
         return new SequentialCommandGroup(
                 new InstantCommand(() -> vertical.setClawImmediate(VerticalSubsystem.GripState.CLOSED)),
                 new WaitCommand(150),
@@ -244,7 +258,6 @@ public RiptideAuto auto;
                 vertical.changeServos(VerticalSubsystem.Position.BASKET),
                 new WaitCommand(200),
                 new HorizontalSlideCommand(horizontal, HorizontalSubsystem.Position.HOME)
-
         );
     }
 

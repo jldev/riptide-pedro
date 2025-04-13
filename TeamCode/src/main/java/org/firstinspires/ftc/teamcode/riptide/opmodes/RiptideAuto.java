@@ -215,14 +215,14 @@ public class RiptideAuto {
                         new WaitCommand(750),
                         // second deposited
                         new ParallelCommandGroup(
-                                new RoadRunnerTurn(21.5, riptide.drive),
+                                new RoadRunnerTurn(26.5, riptide.drive),
                                 riptide.GoSub()
                         ),
                         new HorizontalSlideCommand(riptide.horizontal, 1000),
                         new WaitCommand(1000),
                         riptide.horizontal.Grab(),
                         new ParallelCommandGroup(
-                                new RoadRunnerTurn(-21.5, riptide.drive),
+                                new RoadRunnerTurn(-26.5, riptide.drive),
                                 riptide.GoHandshake()
                         ),
                         new WaitCommand(1600),
@@ -230,14 +230,14 @@ public class RiptideAuto {
                         new WaitCommand(750),
                         // third deposited
                         new ParallelCommandGroup(
-                                new RoadRunnerTurn(48.5, riptide.drive),
+                                new RoadRunnerTurn(53.5, riptide.drive),
                                 riptide.GoSub()
                         ),
                         new HorizontalSlideCommand(riptide.horizontal, 1150),
                         new WaitCommand(1000),
                         riptide.horizontal.Grab(),
                         new ParallelCommandGroup(
-                                new RoadRunnerTurn(-48.5, riptide.drive),
+                                new RoadRunnerTurn(-53.5, riptide.drive),
                                 riptide.GoHandshake()
                         ),
                         new WaitCommand(1600),

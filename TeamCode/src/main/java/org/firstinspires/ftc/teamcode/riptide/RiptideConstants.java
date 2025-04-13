@@ -39,7 +39,8 @@ public class RiptideConstants {
     public static int VERTICAL_SLIDE_HOME = 0;
     public static int VERTICAL_SLIDE_WALL = 0;
     public static int VERTICAL_SLIDE_HANG = 425;
-    public static int VERTICAL_SLIDE_BASKET = 1875;
+    public static int VERTICAL_SLIDE_BASKET = 1950;
+    public static int VERTICAL_SLIDE_BASKET_AUTO = 1875;
 
     public static final int HEIGHT_LIMIT_WHEN_HORIZONTAL_DEPLOYED = VERTICAL_SLIDE_HANG;
 
@@ -119,7 +120,8 @@ public class RiptideConstants {
     public  static double VERT_PICKUP_ELBOW = 0.9;
 
     // BASKET
-    public static double VERT_BASKET_SHOULDER = 0.4f;
+    public static double VERT_BASKET_SHOULDER = 0.35f;
+    public static double VERT_BASKET_SHOULDER_AUTO = 0.4f;
     public static double VERT_BASKET_ROTATION = 0.375f;
     public static double VERT_BASKET_ELBOW = 0.55f;
 

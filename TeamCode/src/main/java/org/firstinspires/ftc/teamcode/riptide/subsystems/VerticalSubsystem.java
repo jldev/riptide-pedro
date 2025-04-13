@@ -47,6 +47,7 @@ public class VerticalSubsystem extends SubsystemBase {
         WALL,
         HANG,
         BASKET,
+        BASKET_AUTO,
         PRELOAD_BASKET,
         ENDGAME,
         HANDSHAKE
@@ -169,6 +170,9 @@ public class VerticalSubsystem extends SubsystemBase {
                 case BASKET:
                     mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET;
                     break;
+                case BASKET_AUTO:
+                    mSlideTargetPosiion = RiptideConstants.VERTICAL_SLIDE_BASKET_AUTO;
+                    break;
             }
         } else {
             switch (mSlideManualDirection) {
@@ -266,6 +270,19 @@ public class VerticalSubsystem extends SubsystemBase {
                                 new InstantCommand(()-> {
                                     shoulder1.setPosition(RiptideConstants.VERT_BASKET_SHOULDER);
                                     shoulder2.setPosition(RiptideConstants.VERT_BASKET_SHOULDER);
+                                    elbow.setPosition(RiptideConstants.VERT_BASKET_ELBOW);
+                                }),
+                                new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_BASKET_ROTATION))
+                        );
+                    case BASKET_AUTO:
+                        return new SequentialCommandGroup(
+                                new InstantCommand(()-> {
+                                    mGripState = GripState.CLOSED;
+                                    grip.setPosition(RiptideConstants.GRIPPER_CLOSED_VALUE_VERTICAL);
+                                }),
+                                new InstantCommand(()-> {
+                                    shoulder1.setPosition(RiptideConstants.VERT_BASKET_SHOULDER_AUTO);
+                                    shoulder2.setPosition(RiptideConstants.VERT_BASKET_SHOULDER_AUTO);
                                     elbow.setPosition(RiptideConstants.VERT_BASKET_ELBOW);
                                 }),
                                 new InstantCommand(() -> rotation.setPosition(RiptideConstants.VERT_BASKET_ROTATION))
