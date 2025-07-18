@@ -4,6 +4,10 @@ import com.acmerobotics.dashboard.config.Config;
 //import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.pedropathing.commands.FollowPath;
+import com.pedropathing.pathgen.BezierLine;
+import com.pedropathing.pathgen.Path;
+import com.pedropathing.pathgen.Point;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import riptide.Riptide;
@@ -26,6 +30,8 @@ public class BacknForth extends CommandOpMode {
         if(!started)
         {
             started = true;
+            Path forward = new Path(new BezierLine(new Point(0,0, Point.CARTESIAN), new Point(60,0, Point.CARTESIAN)));
+            this.schedule(new FollowPath(riptide.follower, forward));
 //            this.schedule(
 //                    new SequentialCommandGroup(
 //                            new RoadRunnerDrive(48, 0, riptide.drive),
